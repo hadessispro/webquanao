@@ -16,18 +16,14 @@
     "payload": "^3.83.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sass": "^1.99.0",
     "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "autoprefixer": "^10.5.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "postcss": "^8.5.10",
-    "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
 }

@@ -7,8 +7,6 @@ interface LayoutContextType {
   setIsCartOpen: (open: boolean) => void
   isMobileMenuOpen: boolean
   setIsMobileMenuOpen: (open: boolean) => void
-  isSearchOpen: boolean
-  setIsSearchOpen: (open: boolean) => void
 }
 
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined)
@@ -16,19 +14,9 @@ const LayoutContext = createContext<LayoutContextType | undefined>(undefined)
 export function LayoutProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   return (
-    <LayoutContext.Provider
-      value={{
-        isCartOpen,
-        setIsCartOpen,
-        isMobileMenuOpen,
-        setIsMobileMenuOpen,
-        isSearchOpen,
-        setIsSearchOpen,
-      }}
-    >
+    <LayoutContext.Provider value={{ isCartOpen, setIsCartOpen, isMobileMenuOpen, setIsMobileMenuOpen }}>
       {children}
     </LayoutContext.Provider>
   )
