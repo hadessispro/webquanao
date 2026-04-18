@@ -1,0 +1,79 @@
+{
+  "sections": {
+    "collapsible-rows": {
+      "type": "collapsible-rows",
+      "blocks": {
+        "row-1": {
+          "type": "row",
+          "settings": {
+            "title": "What payment methods do you accept?",
+            "expanded_content": "<p>We accept a variety of payment methods including credit/debit cards, PayPal, and other digital wallets for your convenience.</p>"
+          }
+        },
+        "row-2": {
+          "type": "row",
+          "settings": {
+            "title": "How can I track my order?",
+            "expanded_content": "<p>Once your order is shipped, we'll send you a tracking number via email.</p>"
+          }
+        },
+        "row-3": {
+          "type": "row",
+          "settings": {
+            "title": "What is your return policy?",
+            "expanded_content": "<p>We offer a 30-day return policy for unused and unopened products. Please visit our Returns & Exchanges page for more details.</p>"
+          }
+        },
+        "row-4": {
+          "type": "row",
+          "settings": {
+            "title": "Do you ship internationally?",
+            "expanded_content": "<p>Yes, we do ship internationally. Shipping costs and delivery times vary depending on the destination.</p>"
+          }
+        },
+        "row-5": {
+          "type": "row",
+          "settings": {
+            "title": "How can I cancel or modify my order?",
+            "expanded_content": "<p>You can cancel or modify your order within 24 hours of placing it. Please contact our customer service team for assistance.</p>"
+          }
+        },
+        "row-6": {
+          "type": "row",
+          "settings": {
+            "title": "Do you offer any discounts or loyalty rewards?",
+            "expanded_content": "<p>Yes, we offer periodic discounts and have a loyalty program for returning customers. Sign up for our newsletter to stay updated on special offers.</p>"
+          }
+        },
+        "row-7": {
+          "type": "row",
+          "settings": {
+            "title": "Do you offer gift cards?",
+            "expanded_content": "<p>Yes, we offer gift cards in various denominations. You can purchase them directly from our website.</p>"
+          }
+        },
+        "row-8": {
+          "type": "row",
+          "settings": {
+            "title": "What should I do if I receive a damaged item?",
+            "expanded_content": "<p>If you receive a damaged item, please contact our customer service immediately to arrange for a replacement or refund.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "row-1",
+        "row-2",
+        "row-3",
+        "row-4",
+        "row-5",
+        "row-6",
+        "row-7",
+        "row-8"
+      ],
+      "settings": {
+        "title": "Customer service"
+      }
+    }
+  },
+  "order": ["collapsible-rows"]
+}

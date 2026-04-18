@@ -1,0 +1,79 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "hero-logo": {
+      "type": "hero-logo",
+      "name": "Hero logo",
+      "settings": {
+        "home_page_only": true,
+        "show_bottom_border": true,
+        "mobile_text_scale": 2,
+        "desktop_text_scale": 7,
+        "alignment": "left",
+        "logo_max_width": 100,
+        "color_scheme": ""
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "logo": {
+          "type": "logo",
+          "settings": {
+            "logo_max_width": 100
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "heading": "",
+            "text": "<p>This is a demo store.</p>"
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "main_linklist": "main-menu",
+            "show_heading": false
+          }
+        },
+        "menu-1": {
+          "type": "menu",
+          "settings": {
+            "main_linklist": "footer",
+            "show_heading": false
+          }
+        },
+        "social-media": {
+          "type": "social_media",
+          "settings": {
+            "social_alignment": "lg:items-end",
+            "show_social": true,
+            "social_title": "",
+            "enable_follow_on_shop": true
+          }
+        }
+      },
+      "block_order": ["logo", "text", "menu", "menu-1", "social-media"],
+      "settings": {
+        "show_payment_icons": false,
+        "show_locale_selector": true,
+        "show_country_selector": true,
+        "show_newsletter": true,
+        "newsletter_subheading": "<p>Receive special offers and first look at new products.</p>",
+        "newsletter_title": "",
+        "title_text_size": "text-heading-standard",
+        "newsletter_text": "Receive special offers and first look at new products.",
+        "text_size": "text-base",
+        "form_position": "lg:self-end",
+        "newsletter_color_scheme": "",
+        "show_policy_links": false,
+        "show_grid_border": true,
+        "block_heading_font": "font-heading",
+        "color_scheme": ""
+      }
+    }
+  },
+  "order": ["footer", "hero-logo"]
+}

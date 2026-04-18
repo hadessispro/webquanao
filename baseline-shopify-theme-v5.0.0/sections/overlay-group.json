@@ -1,0 +1,1 @@
+{"type":"aside","name":"Overlay","sections":{"promo-popup":{"type":"promo-popup","settings":{"color_scheme":"scheme3"}},"age-check":{"type":"age-check","settings":{}},"privacy-banner":{"type":"privacy-banner","settings":{"color_scheme":"scheme2"}}},"order":["promo-popup","age-check","privacy-banner"]}
