@@ -1,13 +1,7 @@
-'use client'
-
 import React from 'react'
 import Link from 'next/link'
 
 export default function Footer() {
-  const now = new Date()
-  const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })
-
   return (
     <div id="shopify-section-footer" className="shopify-section">
       <style dangerouslySetInnerHTML={{ __html: `
@@ -26,7 +20,6 @@ export default function Footer() {
       </div>
 
       <footer className="bg-footer-background text-footer-text" data-section-type="footer">
-        
         {/* Desktop Logo */}
         <div className="c_footer-logo c_footer-logo-dsktp">
           <img src="//california-arts.com/cdn/shop/files/New_Svg_Logo_3_1.svg?v=1743668488" alt="" />
@@ -38,9 +31,8 @@ export default function Footer() {
               <div className="c_footer-menu">
                 <div className="c_footer-flex grid lg:grid-cols-12 bg-border">
                   
-                  {/* Company */}
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left">
+                    <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Company</h2>
                       <ul className="list-none space-y-1">
                         <li><Link href="/pages/our-story" className="hover:text-footer-accent">About</Link></li>
@@ -50,9 +42,8 @@ export default function Footer() {
                     </div>
                   </div>
 
-                  {/* Community */}
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left">
+                    <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Community</h2>
                       <ul className="list-none space-y-1">
                         <li><a href="https://www.instagram.com/california.arts/" className="hover:text-footer-accent">Instagram</a></li>
@@ -61,9 +52,8 @@ export default function Footer() {
                     </div>
                   </div>
 
-                  {/* Client Services */}
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left">
+                    <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Client Services</h2>
                       <ul className="list-none space-y-1">
                         <li><Link href="/pages/returns-exchanges" className="hover:text-footer-accent">Shipping</Link></li>
@@ -74,9 +64,8 @@ export default function Footer() {
                     </div>
                   </div>
 
-                  {/* Legal */}
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left">
+                    <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Legal</h2>
                       <ul className="list-none space-y-1">
                         <li><Link href="/pages/privacy-policy" className="hover:text-footer-accent">Privacy Policy</Link></li>
@@ -88,48 +77,27 @@ export default function Footer() {
                 </div>
               </div>
 
-              {/* Newsletter */}
               <div className="c_footer-newsletter">
-                <section className="ca_footer-newsletter py-theme border-t-grid border-primary-text bg-footer-background text-footer-text">
+                <section className="ca_footer-newsletter py-theme bg--background text--text border-t-grid border-primary-text">
                   <div className="px-8 py-10">
                     <div className="c_footer-text">
                       <p><strong>Subscribe to West Coast Living<br /></strong>Stay connected for product launches, restocks and events from Southern California.</p>
                     </div>
-                    <div className="mt-4">
-                      <form style={{ display: 'flex', borderRadius: '60px', border: '1px solid currentColor', overflow: 'hidden' }}>
+
+                    <div className="mt-theme-half lg:mt-0">
+                      <div className="lg:ml-4 lg:flex items-end">
                         <input
+                          id="Email-footer"
                           type="email"
                           placeholder="Email"
                           aria-label="Email"
-                          style={{
-                            flex: 1,
-                            padding: '8px 16px',
-                            background: 'transparent',
-                            border: 'none',
-                            color: 'inherit',
-                            fontFamily: 'inherit',
-                            fontSize: '11px',
-                            outline: 'none',
-                          }}
                         />
-                        <button
-                          type="button"
-                          style={{
-                            padding: '8px 20px',
-                            background: 'transparent',
-                            border: 'none',
-                            color: 'inherit',
-                            fontSize: '10px',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          Subscribe
-                        </button>
-                      </form>
+                        <button id="Subscribe" type="button">Subscribe</button>
+                      </div>
                     </div>
-                    <div className="c_footer-text" style={{ marginTop: '10px' }}>
-                      <p>By subscribing, you agree to the <Link href="/pages/privacy-policy" style={{ textDecoration: 'underline' }}>privacy policy</Link></p>
+
+                    <div className="c_footer-text">
+                      <p>By subscribing, you agree to the <Link href="/pages/privacy-policy">privacy policy</Link></p>
                     </div>
                   </div>
                 </section>
@@ -142,7 +110,12 @@ export default function Footer() {
       <div className="c_footer-date">
         <div className="c_footer-container">
           <p>California Arts ® 2024, Southern California</p>
-          <p>{dateStr}. {timeStr}</p>
+          <p suppressHydrationWarning>
+            {(() => {
+              const d = new Date()
+              return `${d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}. ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}`
+            })()}
+          </p>
         </div>
       </div>
     </div>
