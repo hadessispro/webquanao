@@ -1,0 +1,304 @@
+{
+  "collections": [
+    {
+      "id": 443111178520,
+      "title": "Canal Alpaca Knit Sweater",
+      "handle": "canal-alpaca-knit-sweater",
+      "description": "",
+      "published_at": "2023-04-08T10:56:35-07:00",
+      "updated_at": "2026-03-09T21:10:08-07:00",
+      "image": null,
+      "products_count": 4
+    },
+    {
+      "id": 459435933976,
+      "title": "Canyon Denim Jacket",
+      "handle": "canyon-denim-jacket",
+      "description": "",
+      "published_at": "2023-09-11T21:22:03-07:00",
+      "updated_at": "2026-03-09T21:10:08-07:00",
+      "image": null,
+      "products_count": 3
+    },
+    {
+      "id": 512712343832,
+      "title": "Category - Polos",
+      "handle": "category-polos",
+      "description": "",
+      "published_at": "2026-02-15T13:17:19-08:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 22
+    },
+    {
+      "id": 474235732248,
+      "title": "Category - Sweatshirts",
+      "handle": "collection-sweater",
+      "description": "",
+      "published_at": "2024-04-13T14:03:14-07:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 17
+    },
+    {
+      "id": 436138737944,
+      "title": "Category - T Shirts & Sweatshirts",
+      "handle": "t-shirts",
+      "description": "",
+      "published_at": "2023-02-04T16:10:34-08:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 44
+    },
+    {
+      "id": 474235699480,
+      "title": "Category - T-Shirts & Tanks",
+      "handle": "collection-t-shirts-tanks",
+      "description": "",
+      "published_at": "2024-04-13T14:02:54-07:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 27
+    },
+    {
+      "id": 478292869400,
+      "title": "Category Nav - Denim",
+      "handle": "category-nav-denim",
+      "description": "",
+      "published_at": "2024-06-13T09:31:00-07:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 52
+    },
+    {
+      "id": 508199895320,
+      "title": "Category Nav - Vests",
+      "handle": "category-vests",
+      "description": "",
+      "published_at": "2025-11-10T17:20:25-08:00",
+      "updated_at": "2026-03-09T21:10:17-07:00",
+      "image": null,
+      "products_count": 0
+    },
+    {
+      "id": 510518788376,
+      "title": "Coat Gifting",
+      "handle": "coat-gifting",
+      "description": null,
+      "published_at": "2025-12-30T17:10:55-08:00",
+      "updated_at": "2026-04-15T04:08:59-07:00",
+      "image": null,
+      "products_count": 9
+    },
+    {
+      "id": 436138639640,
+      "title": "Coats & Jackets",
+      "handle": "coats-jackets",
+      "description": "",
+      "published_at": "2023-02-04T16:08:55-08:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 67
+    },
+    {
+      "id": 275921862840,
+      "title": "Featured Collection",
+      "handle": "frontpage",
+      "description": "",
+      "published_at": "2021-08-16T19:00:47-07:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 69
+    },
+    {
+      "id": 458563420440,
+      "title": "FW23",
+      "handle": "fw23",
+      "description": "",
+      "published_at": "2023-09-04T13:40:34-07:00",
+      "updated_at": "2026-04-15T04:08:59-07:00",
+      "image": null,
+      "products_count": 24
+    },
+    {
+      "id": 459436523800,
+      "title": "FW23 Denim",
+      "handle": "fw23-denim",
+      "description": "",
+      "published_at": "2023-09-11T21:25:37-07:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 15
+    },
+    {
+      "id": 508767174936,
+      "title": "FW25 Sale - Accessories",
+      "handle": "fw25-sale-all-products-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:22-08:00",
+      "updated_at": "2026-03-17T14:40:55-07:00",
+      "image": null,
+      "products_count": 4
+    },
+    {
+      "id": 508765667608,
+      "title": "FW25 Sale - All Products",
+      "handle": "fw25-sale-all-products",
+      "description": "",
+      "published_at": "2025-11-21T19:40:21-08:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 58
+    },
+    {
+      "id": 508767273240,
+      "title": "FW25 Sale - Denim",
+      "handle": "fw25-sale-outerwear-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:40:47-08:00",
+      "updated_at": "2026-03-17T15:11:11-07:00",
+      "image": null,
+      "products_count": 5
+    },
+    {
+      "id": 508767633688,
+      "title": "FW25 Sale - Knitwear",
+      "handle": "fw25-sale-accessories-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:14-08:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 18
+    },
+    {
+      "id": 508767666456,
+      "title": "FW25 Sale - Outerwear",
+      "handle": "fw25-sale-knitwear-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:03-08:00",
+      "updated_at": "2026-04-15T04:08:59-07:00",
+      "image": null,
+      "products_count": 3
+    },
+    {
+      "id": 508767502616,
+      "title": "FW25 Sale - Shirts",
+      "handle": "fw25-sale-shorts-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:42-08:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 5
+    },
+    {
+      "id": 508767437080,
+      "title": "FW25 Sale - Shorts",
+      "handle": "fw25-sale-vests-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:50-08:00",
+      "updated_at": "2026-03-25T04:05:53-07:00",
+      "image": null,
+      "products_count": 7
+    },
+    {
+      "id": 508767568152,
+      "title": "FW25 Sale - Trousers",
+      "handle": "fw25-sale-shirts-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:34-08:00",
+      "updated_at": "2026-04-16T04:12:33-07:00",
+      "image": null,
+      "products_count": 6
+    },
+    {
+      "id": 508767404312,
+      "title": "FW25 Sale - Vests",
+      "handle": "fw25-sale-denim-copy",
+      "description": "",
+      "published_at": "2025-11-21T21:41:59-08:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 13
+    },
+    {
+      "id": 291210756280,
+      "title": "Gift Card",
+      "handle": "gift-card",
+      "description": "<meta charset=\"UTF-8\"><span data-mce-fragment=\"1\">Casual West Coast cool captured in virtual plastic. Give the gift of California minimalism to anyone, anywhere.</span>",
+      "published_at": "2022-07-18T15:15:53-07:00",
+      "updated_at": "2026-04-11T04:06:25-07:00",
+      "image": null,
+      "products_count": 1
+    },
+    {
+      "id": 484460691736,
+      "title": "Hammer V Neck",
+      "handle": "hammer-v-neck",
+      "description": "",
+      "published_at": "2024-09-09T16:35:13-07:00",
+      "updated_at": "2026-04-10T04:06:04-07:00",
+      "image": null,
+      "products_count": 5
+    },
+    {
+      "id": 484460658968,
+      "title": "Hauser Crewneck",
+      "handle": "hauser-crewneck",
+      "description": "",
+      "published_at": "2024-09-09T16:34:42-07:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 6
+    },
+    {
+      "id": 511936987416,
+      "title": "Housewarming",
+      "handle": "housewarming",
+      "description": null,
+      "published_at": "2026-01-30T20:33:42-08:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 3
+    },
+    {
+      "id": 512059179288,
+      "title": "Housewarming",
+      "handle": "housewarming-1",
+      "description": null,
+      "published_at": "2026-02-01T14:52:49-08:00",
+      "updated_at": "2026-04-17T04:10:23-07:00",
+      "image": null,
+      "products_count": 3
+    },
+    {
+      "id": 493726794008,
+      "title": "NA - Long Sleeve Shirts",
+      "handle": "na-long-sleeve-shirts",
+      "description": "",
+      "published_at": "2025-02-04T20:03:32-08:00",
+      "updated_at": "2026-03-09T21:10:15-07:00",
+      "image": null,
+      "products_count": 4
+    },
+    {
+      "id": 505194381592,
+      "title": "NA: Accessories",
+      "handle": "na-accessories",
+      "description": "",
+      "published_at": "2025-09-04T10:20:57-07:00",
+      "updated_at": "2026-04-13T04:09:15-07:00",
+      "image": null,
+      "products_count": 1
+    },
+    {
+      "id": 505194283288,
+      "title": "NA: Button Up Shirts",
+      "handle": "na-button-up-shirts",
+      "description": "",
+      "published_at": "2025-09-04T10:17:15-07:00",
+      "updated_at": "2026-04-17T04:10:04-07:00",
+      "image": null,
+      "products_count": 1
+    }
+  ]
+}
