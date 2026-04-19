@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import DateDisplay from './DateDisplay'
 
 export default function Footer() {
   return (
@@ -14,13 +15,11 @@ export default function Footer() {
         }
       `}} />
 
-      {/* Mobile Logo */}
       <div className="c_footer-logo c_footer-logo-mbl">
         <img src="//california-arts.com/cdn/shop/files/Mobile_new_Svg.svg?v=1734022795" alt="" />
       </div>
 
       <footer className="bg-footer-background text-footer-text" data-section-type="footer">
-        {/* Desktop Logo */}
         <div className="c_footer-logo c_footer-logo-dsktp">
           <img src="//california-arts.com/cdn/shop/files/New_Svg_Logo_3_1.svg?v=1743668488" alt="" />
         </div>
@@ -30,7 +29,6 @@ export default function Footer() {
             <div className="c_footer-wrapper">
               <div className="c_footer-menu">
                 <div className="c_footer-flex grid lg:grid-cols-12 bg-border">
-                  
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
                     <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Company</h2>
@@ -41,7 +39,6 @@ export default function Footer() {
                       </ul>
                     </div>
                   </div>
-
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
                     <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Community</h2>
@@ -51,7 +48,6 @@ export default function Footer() {
                       </ul>
                     </div>
                   </div>
-
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
                     <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Client Services</h2>
@@ -63,7 +59,6 @@ export default function Footer() {
                       </ul>
                     </div>
                   </div>
-
                   <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
                     <div className="text-left inline-blockk">
                       <h2 className="font-heading text-base mb-4">Legal</h2>
@@ -73,7 +68,6 @@ export default function Footer() {
                       </ul>
                     </div>
                   </div>
-
                 </div>
               </div>
 
@@ -83,19 +77,12 @@ export default function Footer() {
                     <div className="c_footer-text">
                       <p><strong>Subscribe to West Coast Living<br /></strong>Stay connected for product launches, restocks and events from Southern California.</p>
                     </div>
-
                     <div className="mt-theme-half lg:mt-0">
                       <div className="lg:ml-4 lg:flex items-end">
-                        <input
-                          id="Email-footer"
-                          type="email"
-                          placeholder="Email"
-                          aria-label="Email"
-                        />
+                        <input id="Email-footer" type="email" placeholder="Email" aria-label="Email" />
                         <button id="Subscribe" type="button">Subscribe</button>
                       </div>
                     </div>
-
                     <div className="c_footer-text">
                       <p>By subscribing, you agree to the <Link href="/pages/privacy-policy">privacy policy</Link></p>
                     </div>
@@ -110,12 +97,7 @@ export default function Footer() {
       <div className="c_footer-date">
         <div className="c_footer-container">
           <p>California Arts ® 2024, Southern California</p>
-          <p suppressHydrationWarning>
-            {(() => {
-              const d = new Date()
-              return `${d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}. ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}`
-            })()}
-          </p>
+          <DateDisplay />
         </div>
       </div>
     </div>
