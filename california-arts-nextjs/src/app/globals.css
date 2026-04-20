@@ -298,6 +298,137 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   }
 }
 
+/* === CMS PAGES === */
+.cms-page {
+  background: var(--color-primary-background, #fbfbf6);
+  color: var(--color-primary-text, #131818);
+  min-height: calc(100svh - var(--sticky-header-height, 66px));
+}
+
+.cms-page__section {
+  border-top: 1px solid rgba(19, 24, 24, 0.16);
+  overflow: hidden;
+}
+
+.cms-page__section--intro {
+  padding: 84px 0 46px;
+}
+
+.cms-page__section--text {
+  padding: 46px 0;
+}
+
+.cms-page__section--image {
+  padding: 0;
+}
+
+.cms-page__inner {
+  margin: 0 auto;
+  max-width: 1160px;
+  padding: 0 32px;
+}
+
+.cms-page__narrow {
+  max-width: 620px;
+}
+
+.cms-page__right {
+  margin-left: auto;
+}
+
+.cms-page__center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.cms-page h1,
+.cms-page h2,
+.cms-page h3,
+.cms-page p {
+  font-weight: 400;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.cms-page h1 {
+  font-size: 28px;
+  line-height: 1.16;
+}
+
+.cms-page h2 {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.cms-page p {
+  font-size: 14px;
+  line-height: 1.48;
+}
+
+.cms-page p + p,
+.cms-page h2 + p,
+.cms-page h3 + p {
+  margin-top: 18px;
+}
+
+.cms-page a {
+  color: currentColor;
+}
+
+.cms-page__image-link,
+.cms-page__image,
+.cms-page__picture {
+  display: block;
+  width: 100%;
+}
+
+.cms-page__image {
+  height: auto;
+}
+
+.cms-page__campaign-grid {
+  display: grid;
+  gap: 0;
+}
+
+.cms-page__campaign-image {
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.cms-page__button {
+  align-items: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1;
+  min-height: 40px;
+  min-width: 128px;
+  padding: 0 24px;
+}
+
+@media (max-width: 767px) {
+  .cms-page__section--intro {
+    padding: 64px 0 34px;
+  }
+
+  .cms-page__section--text {
+    padding: 34px 0;
+  }
+
+  .cms-page__inner {
+    padding: 0 20px;
+  }
+
+  .cms-page h1 {
+    font-size: 24px;
+  }
+}
+
 /* === STICKY HEADER === */
 .site-header-stack {
   position: sticky;

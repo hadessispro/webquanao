@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:shopify": "tsx scripts/seed-products.ts"
+    "seed:shopify": "tsx scripts/seed-products.ts",
+    "seed:pages": "tsx scripts/seed-pages.ts"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "^3.83.0",

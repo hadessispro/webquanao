@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
+import CmsPageContent from '@/components/page/CmsPageContent'
+import { getPageBySlug } from '@/lib/pages-data'
 
 function TextColumnHeader({ children }: { children: ReactNode }) {
   return (
@@ -56,7 +58,7 @@ function Spacer() {
   )
 }
 
-export default function OurStoryPage() {
+function OurStoryFallback() {
   return (
     <>
       <TextColumnHeader>01 Our Brand Philosophy</TextColumnHeader>
@@ -275,4 +277,10 @@ export default function OurStoryPage() {
       </div>
     </>
   )
+}
+
+export default async function OurStoryPage() {
+  const page = await getPageBySlug('our-story')
+
+  return <CmsPageContent page={page} fallback={<OurStoryFallback />} />
 }

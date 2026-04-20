@@ -1,6 +1,8 @@
 import Link from 'next/link'
+import CmsPageContent from '@/components/page/CmsPageContent'
+import { getPageBySlug } from '@/lib/pages-data'
 
-export default function AboutPage() {
+function AboutFallback() {
   return (
     <>
       <div className="shopify-section">
@@ -88,4 +90,10 @@ export default function AboutPage() {
       </div>
     </>
   )
+}
+
+export default async function AboutPage() {
+  const page = await getPageBySlug('about')
+
+  return <CmsPageContent page={page} fallback={<AboutFallback />} />
 }

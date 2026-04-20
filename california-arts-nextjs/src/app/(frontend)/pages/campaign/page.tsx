@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import CmsPageContent from '@/components/page/CmsPageContent'
+import { getPageBySlug } from '@/lib/pages-data'
 
 type CampaignImage = {
   href: string
@@ -141,7 +143,7 @@ function RichTextSpacer() {
   )
 }
 
-export default function CampaignPage() {
+function CampaignFallback() {
   return (
     <>
       <div className="shopify-section c_text-columns-section">
@@ -251,4 +253,10 @@ export default function CampaignPage() {
       <RichTextSpacer />
     </>
   )
+}
+
+export default async function CampaignPage() {
+  const page = await getPageBySlug('campaign')
+
+  return <CmsPageContent page={page} fallback={<CampaignFallback />} />
 }

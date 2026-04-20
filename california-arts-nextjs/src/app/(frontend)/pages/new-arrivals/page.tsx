@@ -1,4 +1,5 @@
 import ProductGrid from '@/components/product/ProductGrid'
+import { getPageBySlug } from '@/lib/pages-data'
 import { getAllStorefrontProducts } from '@/lib/product-data'
 
 export const metadata = {
@@ -7,6 +8,7 @@ export const metadata = {
 }
 
 export default async function NewArrivalsPage() {
+  const page = await getPageBySlug('new-arrivals')
   const products = await getAllStorefrontProducts()
   const sortedProducts = [...products].sort((a, b) => {
     const dateA = Date.parse(a.published_at || a.created_at || a.updated_at || '')
@@ -18,8 +20,8 @@ export default async function NewArrivalsPage() {
   return (
     <ProductGrid
       products={sortedProducts}
-      sectionTitle="new arrivals"
-      sectionSubtitle="<p><br/><br/><br/>the newest california arts pieces.</p>"
+      sectionTitle={page?.title || 'new arrivals'}
+      sectionSubtitle={page?.contentHtml || '<p><br/><br/><br/>the newest california arts pieces.</p>'}
     />
   )
 }
