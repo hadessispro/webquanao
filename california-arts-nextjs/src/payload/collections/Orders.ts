@@ -9,10 +9,22 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: 'orderNumber',
     defaultColumns: ['orderNumber', 'customerName', 'total', 'status', 'createdAt'],
+    group: 'Commerce',
   },
   access: {
     read: () => true,
     create: () => true,
+  },
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data && !data.orderNumber) {
+          data.orderNumber = `CA-${Date.now().toString(36).toUpperCase()}`
+        }
+
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -21,6 +33,14 @@ export const Orders: CollectionConfig = {
       required: true,
       unique: true,
       admin: { readOnly: true },
+    },
+    {
+      name: 'customer',
+      type: 'relationship',
+      relationTo: 'customers',
+      admin: {
+        position: 'sidebar',
+      },
     },
     // Customer Info
     {
@@ -42,6 +62,7 @@ export const Orders: CollectionConfig = {
       type: 'group',
       fields: [
         { name: 'street', type: 'text' },
+        { name: 'apartment', type: 'text' },
         { name: 'city', type: 'text' },
         { name: 'district', type: 'text' },
         { name: 'zipCode', type: 'text' },
@@ -69,6 +90,19 @@ export const Orders: CollectionConfig = {
     },
     {
       name: 'shippingCost',
+      type: 'number',
+      defaultValue: 0,
+    },
+    {
+      name: 'discountCode',
+      type: 'relationship',
+      relationTo: 'discount-codes',
+      admin: {
+        description: 'Discount code applied to this order, if any.',
+      },
+    },
+    {
+      name: 'discountAmount',
       type: 'number',
       defaultValue: 0,
     },

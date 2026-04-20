@@ -1,21 +1,37 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 
+function formatMoney(value: number) {
+  return `${new Intl.NumberFormat('vi-VN').format(value)}₫`
+}
+
 export default function CartDrawer() {
-  const { isCartOpen, setIsCartOpen } = useLayout()
+  const {
+    cartCount,
+    cartItems,
+    cartSubtotal,
+    isCartOpen,
+    removeCartItem,
+    setIsCartOpen,
+    t,
+    updateCartQuantity,
+  } = useLayout()
 
   if (!isCartOpen) return null
 
   return (
     <>
       <div className="drawer-overlay anim-fade" onClick={() => setIsCartOpen(false)} />
-      <div className="drawer-panel anim-slide-r">
-        <div style={{ padding: '50px 20px 20px 20px', height: '100%', overflow: 'auto' }}>
+      <aside className="drawer-panel cart-drawer anim-slide-r" aria-label={t('cart')}>
+        <div className="cart-drawer__inner">
           <button
+            aria-label={t('closeCart')}
+            className="cart-drawer__close"
             onClick={() => setIsCartOpen(false)}
-            style={{ position: 'absolute', right: '15px', top: '10px', background: 'none', border: 'none', cursor: 'pointer' }}
+            type="button"
           >
             <span className="inline-block w-5 h-5 align-middle">
               <svg aria-hidden="true" focusable="false" className="icon fill-current icon-close" viewBox="0 0 24 24">
@@ -24,19 +40,99 @@ export default function CartDrawer() {
             </span>
           </button>
 
-          <div style={{ textAlign: 'center', paddingTop: '40px' }}>
-            <p>Your cart is empty</p>
-            <div style={{ marginTop: '20px' }}>
+          <header className="cart-drawer__header">
+            <h2>{t('cart')}</h2>
+            <span>{cartCount}</span>
+          </header>
+
+          {cartItems.length === 0 ? (
+            <div className="cart-drawer__empty">
+              <p>{t('emptyCart')}</p>
               <button
                 onClick={() => setIsCartOpen(false)}
-                className="button"
+                className="cart-drawer__continue"
+                type="button"
               >
-                Continue Shopping
+                {t('continueShopping')}
               </button>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="cart-drawer__items">
+                {cartItems.map((item) => (
+                  <article className="cart-drawer__item" key={item.id}>
+                    <Link
+                      className="cart-drawer__image"
+                      href={`/products/${item.handle}`}
+                      onClick={() => setIsCartOpen(false)}
+                      prefetch={false}
+                    >
+                      {item.image ? <img src={item.image} alt={item.title} /> : <span />}
+                    </Link>
+
+                    <div className="cart-drawer__item-main">
+                      <div>
+                        <Link
+                          href={`/products/${item.handle}`}
+                          onClick={() => setIsCartOpen(false)}
+                          prefetch={false}
+                        >
+                          {item.title}
+                        </Link>
+                        <p>
+                          {[item.color, item.size].filter(Boolean).join(' / ') ||
+                            item.variantTitle ||
+                            t('itemDefault')}
+                        </p>
+                      </div>
+
+                      <div className="cart-drawer__quantity">
+                        <button
+                          aria-label={`${t('decreaseQuantity')}: ${item.title}`}
+                          onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
+                          type="button"
+                        >
+                          -
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button
+                          aria-label={`${t('increaseQuantity')}: ${item.title}`}
+                          onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                          type="button"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      <div className="cart-drawer__item-footer">
+                        <span>{formatMoney(item.price * item.quantity)}</span>
+                        <button onClick={() => removeCartItem(item.id)} type="button">
+                          {t('remove')}
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <footer className="cart-drawer__footer">
+                <div className="cart-drawer__subtotal">
+                  <span>{t('subtotal')}</span>
+                  <span>{formatMoney(cartSubtotal)}</span>
+                </div>
+                <Link
+                  className="cart-drawer__checkout"
+                  href="/checkout"
+                  onClick={() => setIsCartOpen(false)}
+                  prefetch={false}
+                >
+                  {t('checkout')}
+                </Link>
+              </footer>
+            </>
+          )}
         </div>
-      </div>
+      </aside>
     </>
   )
 }

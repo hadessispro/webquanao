@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "src/app/(payload)/admin/importMap.ts",
+    "scripts/fix_header.js",
   ]),
 ]);
 

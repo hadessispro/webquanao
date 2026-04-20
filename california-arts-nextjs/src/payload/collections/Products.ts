@@ -8,12 +8,21 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'productType', 'status', 'updatedAt'],
+    defaultColumns: ['title', 'handle', 'productType', 'status', 'updatedAt'],
   },
   access: {
     read: () => true,
   },
   fields: [
+    {
+      name: 'shopifyId',
+      type: 'number',
+      unique: true,
+      admin: {
+        hidden: true,
+        position: 'sidebar',
+      },
+    },
     {
       name: 'title',
       type: 'text',
@@ -52,6 +61,15 @@ export const Products: CollectionConfig = {
       defaultValue: 'California Arts',
     },
     {
+      name: 'collections',
+      type: 'relationship',
+      relationTo: 'product-collections',
+      hasMany: true,
+      admin: {
+        description: 'Collections this product belongs to.',
+      },
+    },
+    {
       name: 'tags',
       type: 'array',
       fields: [
@@ -71,7 +89,26 @@ export const Products: CollectionConfig = {
         { label: 'Archived', value: 'archived' },
       ],
     },
-    // Product Images
+    // Product Media
+    {
+      name: 'mediaLayout',
+      type: 'group',
+      admin: {
+        description:
+          'Controls how product detail media is ordered. Default keeps videos after all selected color images.',
+      },
+      fields: [
+        {
+          name: 'videoPlacement',
+          type: 'select',
+          defaultValue: 'after-images',
+          options: [
+            { label: 'After all product images', value: 'after-images' },
+            { label: 'Manual by position', value: 'manual' },
+          ],
+        },
+      ],
+    },
     {
       name: 'images',
       type: 'array',
@@ -81,10 +118,24 @@ export const Products: CollectionConfig = {
       },
       fields: [
         {
+          name: 'shopifyImageId',
+          type: 'number',
+          admin: {
+            hidden: true,
+          },
+        },
+        {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
-          required: true,
+        },
+        {
+          name: 'sourceUrl',
+          type: 'text',
+          admin: {
+            hidden: true,
+            description: 'Original Shopify CDN URL. Used as a fallback while media is importing.',
+          },
         },
         {
           name: 'alt',
@@ -95,15 +146,235 @@ export const Products: CollectionConfig = {
           type: 'number',
           defaultValue: 0,
         },
+        {
+          name: 'width',
+          type: 'number',
+        },
+        {
+          name: 'height',
+          type: 'number',
+        },
+        {
+          name: 'variantIds',
+          type: 'array',
+          fields: [
+            {
+              name: 'shopifyVariantId',
+              type: 'number',
+              admin: {
+                hidden: true,
+              },
+            },
+          ],
+        },
       ],
     },
-    // Product Options (e.g., Color, Size)
+    {
+      name: 'videos',
+      type: 'array',
+      labels: {
+        singular: 'Video',
+        plural: 'Videos',
+      },
+      admin: {
+        description:
+          'Product detail videos. Upload to Product Videos or use an external MP4/WebM URL. By default videos render after product images.',
+      },
+      fields: [
+        {
+          name: 'video',
+          type: 'upload',
+          relationTo: 'product-videos',
+          admin: {
+            description: 'Managed video file in Payload.',
+          },
+        },
+        {
+          name: 'sourceUrl',
+          type: 'text',
+          admin: {
+            description: 'External MP4/WebM/CDN URL fallback when no Payload video is selected.',
+          },
+        },
+        {
+          name: 'poster',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            description: 'Overrides the poster image from the Product Video asset.',
+          },
+        },
+        {
+          name: 'posterSourceUrl',
+          type: 'text',
+          admin: {
+            description: 'External poster image URL fallback.',
+          },
+        },
+        {
+          name: 'alt',
+          type: 'text',
+        },
+        {
+          name: 'position',
+          type: 'number',
+          defaultValue: 999,
+          admin: {
+            description:
+              'Used when video placement is manual. Smaller numbers appear earlier in the media column.',
+          },
+        },
+        {
+          name: 'placement',
+          type: 'select',
+          defaultValue: 'inherit',
+          options: [
+            { label: 'Use product media layout', value: 'inherit' },
+            { label: 'After images', value: 'after-images' },
+            { label: 'Manual by position', value: 'manual' },
+          ],
+        },
+        {
+          name: 'autoplay',
+          type: 'checkbox',
+          defaultValue: true,
+        },
+        {
+          name: 'loop',
+          type: 'checkbox',
+          defaultValue: true,
+        },
+        {
+          name: 'muted',
+          type: 'checkbox',
+          defaultValue: true,
+        },
+        {
+          name: 'controls',
+          type: 'checkbox',
+          defaultValue: false,
+        },
+      ],
+    },
+    // Storefront Option Controls
+    {
+      name: 'colorOptions',
+      type: 'array',
+      labels: {
+        singular: 'Color',
+        plural: 'Colors',
+      },
+      admin: {
+        description:
+          'Manage storefront color swatches. The value should match the color value used by variants.',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Display label, for example Black or Brown Melange.',
+          },
+        },
+        {
+          name: 'value',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Variant value this color controls. Usually the same as the label.',
+          },
+        },
+        {
+          name: 'swatch',
+          type: 'text',
+          admin: {
+            description: 'Hex color for the swatch, for example #111111.',
+          },
+        },
+        {
+          name: 'position',
+          type: 'number',
+          defaultValue: 0,
+        },
+        {
+          name: 'available',
+          type: 'checkbox',
+          defaultValue: true,
+          admin: {
+            description: 'Hide this color from the storefront when disabled.',
+          },
+        },
+      ],
+    },
+    {
+      name: 'sizeOptions',
+      type: 'array',
+      labels: {
+        singular: 'Size',
+        plural: 'Sizes',
+      },
+      admin: {
+        description:
+          'Manage storefront size order and visibility. The value should match the size value used by variants.',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Display label, for example XS, M, 30, or 36.',
+          },
+        },
+        {
+          name: 'value',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Variant value this size controls. Usually the same as the label.',
+          },
+        },
+        {
+          name: 'position',
+          type: 'number',
+          defaultValue: 0,
+        },
+        {
+          name: 'available',
+          type: 'checkbox',
+          defaultValue: true,
+          admin: {
+            description: 'Hide this size from the storefront when disabled.',
+          },
+        },
+      ],
+    },
+    {
+      name: 'sizeSelectorStyle',
+      type: 'select',
+      defaultValue: 'auto',
+      options: [
+        { label: 'Auto', value: 'auto' },
+        { label: 'Text underline', value: 'text' },
+        { label: 'Box buttons', value: 'box' },
+      ],
+      admin: {
+        description:
+          'Controls storefront size picker style. Auto follows the California Arts template: text labels with underline on the active size.',
+      },
+    },
+    // Legacy product options imported from Shopify.
     {
       name: 'options',
       type: 'array',
       labels: {
         singular: 'Option',
         plural: 'Options',
+      },
+      admin: {
+        description:
+          'Legacy option mapping used by imported variants. Prefer Colors and Sizes above for storefront ordering.',
       },
       fields: [
         {
@@ -123,6 +394,10 @@ export const Products: CollectionConfig = {
             },
           ],
         },
+        {
+          name: 'position',
+          type: 'number',
+        },
       ],
     },
     // Product Variants
@@ -134,6 +409,13 @@ export const Products: CollectionConfig = {
         plural: 'Variants',
       },
       fields: [
+        {
+          name: 'shopifyVariantId',
+          type: 'number',
+          admin: {
+            hidden: true,
+          },
+        },
         {
           name: 'title',
           type: 'text',
@@ -155,6 +437,10 @@ export const Products: CollectionConfig = {
           admin: { description: 'Size value' },
         },
         {
+          name: 'option3',
+          type: 'text',
+        },
+        {
           name: 'price',
           type: 'number',
           required: true,
@@ -174,6 +460,13 @@ export const Products: CollectionConfig = {
           name: 'featuredImage',
           type: 'upload',
           relationTo: 'media',
+        },
+        {
+          name: 'featuredImageSourceUrl',
+          type: 'text',
+          admin: {
+            hidden: true,
+          },
         },
       ],
     },
@@ -206,6 +499,45 @@ export const Products: CollectionConfig = {
       hasMany: true,
       admin: {
         description: '"Style With" section — related products',
+      },
+    },
+    {
+      name: 'care',
+      type: 'richText',
+    },
+    {
+      name: 'sizeFit',
+      type: 'richText',
+    },
+    {
+      name: 'shippingReturns',
+      type: 'richText',
+    },
+    {
+      name: 'material',
+      type: 'text',
+    },
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'shopifyCreatedAt',
+      type: 'date',
+      admin: {
+        hidden: true,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'shopifyUpdatedAt',
+      type: 'date',
+      admin: {
+        hidden: true,
+        position: 'sidebar',
       },
     },
     // SEO

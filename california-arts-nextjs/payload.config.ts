@@ -7,10 +7,13 @@ import sharp from 'sharp'
 
 // Collections
 import { Media } from './src/payload/collections/Media'
+import { ProductVideos } from './src/payload/collections/ProductVideos'
 import { Products } from './src/payload/collections/Products'
 import { ProductCollections } from './src/payload/collections/ProductCollections'
 import { Pages } from './src/payload/collections/Pages'
 import { Orders } from './src/payload/collections/Orders'
+import { DiscountCodes } from './src/payload/collections/DiscountCodes'
+import { Customers } from './src/payload/collections/Customers'
 
 // Globals
 import { Header } from './src/payload/globals/Header'
@@ -47,15 +50,19 @@ export default buildConfig({
       ],
     },
     Media,
+    ProductVideos,
     Products,
     ProductCollections,
     Pages,
+    DiscountCodes,
+    Customers,
     Orders,
   ],
   globals: [Header, Footer, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'default-secret-change-me',
   db: sqliteAdapter({
+    busyTimeout: 5000,
     client: {
       url: process.env.DATABASE_URI || 'file:./database.db',
     },

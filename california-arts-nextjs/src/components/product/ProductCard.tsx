@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Product,
   getDisplayPrice,
@@ -18,6 +19,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
   const mainImage = getMainImageUrl(product);
   const hoverImage = getHoverImageUrl(product);
@@ -30,12 +32,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   // Build the product URL
   const productUrl = `/products/${product.handle}`;
 
-  // Get first color from options for link
-  const firstColor =
-    product.options
-      .find((o) => o.name.toLowerCase() === "color")
-      ?.values[0]?.toLowerCase()
-      .replace(/\s+/g, "-") || "";
+  const prefetchProduct = () => {
+    router.prefetch(productUrl);
+  };
 
   return (
     <li
@@ -43,7 +42,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     >
       <div className="c_grid-inner c_grid-inner-available group block h-full relative text-center text-sm type-product-grid-item hover:text-primary-accent">
         {/* Clickable overlay link */}
-        <Link href={productUrl} className="increase-target">
+        <Link
+          href={productUrl}
+          className="increase-target"
+          onFocus={prefetchProduct}
+          onMouseEnter={prefetchProduct}
+          prefetch={false}
+        >
           <span className="visually-hidden">{product.title}</span>
         </Link>
 

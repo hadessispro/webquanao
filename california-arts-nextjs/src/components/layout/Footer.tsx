@@ -1,105 +1,83 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
-import DateDisplay from './DateDisplay'
+import type { FooterData } from '@/lib/storefront-types'
+import { useLayout } from '@/context/LayoutContext'
 
-export default function Footer() {
+function isExternalHref(href: string) {
+  return href.startsWith('http://') || href.startsWith('https://')
+}
+
+export default function Footer({ footer }: { footer: FooterData }) {
+  const { locale } = useLayout()
+  const logo = footer.desktopLogo || footer.mobileLogo
+  const shippingLabel = locale === 'vi' ? 'giao đến' : 'shipping to'
+  const shippingCountry = locale === 'vi' ? 'việt nam (vnd)' : 'vietnam (vnd)'
+  const newsletterPlaceholder =
+    locale === 'vi' ? 'đăng ký nhận newsletter' : 'sign up for our newsletter'
+  const footerLinks = [
+    { label: locale === 'vi' ? 'giới thiệu' : 'about us', href: '/pages/our-story' },
+    { label: locale === 'vi' ? 'sustainability report' : 'sustainability report', href: '/pages/about' },
+    { label: locale === 'vi' ? 'chăm sóc khách hàng' : 'customer care', href: '/pages/about' },
+    { label: locale === 'vi' ? 'legal / t&c' : 'legal / t&c', href: '/pages/privacy-policy' },
+    { label: locale === 'vi' ? 'privacy' : 'privacy', href: '/pages/privacy-policy' },
+    { label: locale === 'vi' ? 'account' : 'account', href: '/admin' },
+    { label: 'ig', href: 'https://www.instagram.com/california.arts/' },
+  ]
+
   return (
     <div id="shopify-section-footer" className="shopify-section">
-      <style dangerouslySetInnerHTML={{ __html: `
-        :root {
-          --color-footer-accent: var(--color-secondary-accent);
-          --color-footer-text: var(--color-secondary-text);
-          --color-footer-background: var(--color-secondary-background);
-          --color-footer-background-hex: var(--color-secondary-background-hex);
-          --color-footer-meta: var(--color-secondary-meta);
-        }
-      `}} />
+      <footer className="site-footer dien-footer" role="contentinfo">
+        <div className="dien-footer__inner">
+          <div className="dien-footer__shipping">
+            <span>{shippingLabel}</span>
+            <button type="button" aria-label={shippingCountry}>
+              {shippingCountry}
+              <span aria-hidden="true">⌄</span>
+            </button>
+          </div>
 
-      <div className="c_footer-logo c_footer-logo-mbl">
-        <img src="//california-arts.com/cdn/shop/files/Mobile_new_Svg.svg?v=1734022795" alt="" />
-      </div>
-
-      <footer className="bg-footer-background text-footer-text" data-section-type="footer">
-        <div className="c_footer-logo c_footer-logo-dsktp">
-          <img src="//california-arts.com/cdn/shop/files/New_Svg_Logo_3_1.svg?v=1743668488" alt="" />
-        </div>
-
-        <div className="border-t-grid border-grid-color">
-          <div className="c_footer-container">
-            <div className="c_footer-wrapper">
-              <div className="c_footer-menu">
-                <div className="c_footer-flex grid lg:grid-cols-12 bg-border">
-                  <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left inline-blockk">
-                      <h2 className="font-heading text-base mb-4">Company</h2>
-                      <ul className="list-none space-y-1">
-                        <li><Link href="/pages/our-story" className="hover:text-footer-accent">About</Link></li>
-                        <li><Link href="/pages/campaign" className="hover:text-footer-accent">Campaign</Link></li>
-                        <li><Link href="/collections/shop-all" className="hover:text-footer-accent">Shop All</Link></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left inline-blockk">
-                      <h2 className="font-heading text-base mb-4">Community</h2>
-                      <ul className="list-none space-y-1">
-                        <li><a href="https://www.instagram.com/california.arts/" className="hover:text-footer-accent">Instagram</a></li>
-                        <li><a href="https://www.tiktok.com/@california.arts" className="hover:text-footer-accent">Tik Tok</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left inline-blockk">
-                      <h2 className="font-heading text-base mb-4">Client Services</h2>
-                      <ul className="list-none space-y-1">
-                        <li><Link href="/pages/returns-exchanges" className="hover:text-footer-accent">Shipping</Link></li>
-                        <li><Link href="/pages/returns-exchanges" className="hover:text-footer-accent">Returns</Link></li>
-                        <li><Link href="/pages/about" className="hover:text-footer-accent">Contact</Link></li>
-                        <li><Link href="/products/giftcard" className="hover:text-footer-accent">Gift Card</Link></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="c_footer-column section-x-padding py-theme bg-footer-background text-footer-text">
-                    <div className="text-left inline-blockk">
-                      <h2 className="font-heading text-base mb-4">Legal</h2>
-                      <ul className="list-none space-y-1">
-                        <li><Link href="/pages/privacy-policy" className="hover:text-footer-accent">Privacy Policy</Link></li>
-                        <li><Link href="/pages/about" className="hover:text-footer-accent">Accessibility</Link></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+          <div className="dien-footer__brand">
+            {logo && (
+              <div className="dien-footer__logo">
+                <img src={logo.src} alt={logo.alt || 'điển'} />
               </div>
+            )}
+            <p>{locale === 'vi' ? 'the next great american heritage brand.' : 'the next great american heritage brand.'}</p>
+          </div>
 
-              <div className="c_footer-newsletter">
-                <section className="ca_footer-newsletter py-theme bg--background text--text border-t-grid border-primary-text">
-                  <div className="px-8 py-10">
-                    <div className="c_footer-text">
-                      <p><strong>Subscribe to West Coast Living<br /></strong>Stay connected for product launches, restocks and events from Southern California.</p>
-                    </div>
-                    <div className="mt-theme-half lg:mt-0">
-                      <div className="lg:ml-4 lg:flex items-end">
-                        <input id="Email-footer" type="email" placeholder="Email" aria-label="Email" />
-                        <button id="Subscribe" type="button">Subscribe</button>
-                      </div>
-                    </div>
-                    <div className="c_footer-text">
-                      <p>By subscribing, you agree to the <Link href="/pages/privacy-policy">privacy policy</Link></p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
+          <div className="dien-footer__bottom">
+            <form className="dien-footer__newsletter">
+              <label className="visually-hidden" htmlFor="dien-footer-email">
+                {newsletterPlaceholder}
+              </label>
+              <input
+                id="dien-footer-email"
+                autoComplete="email"
+                name="email"
+                placeholder={newsletterPlaceholder}
+                type="email"
+              />
+              <button type="submit">send</button>
+            </form>
+
+            <nav aria-label="footer" className="dien-footer__links">
+              {footerLinks.map((link) =>
+                isExternalHref(link.href) ? (
+                  <a href={link.href} key={link.label} rel="noreferrer" target="_blank">
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link href={link.href} key={link.label}>
+                    {link.label}
+                  </Link>
+                ),
+              )}
+            </nav>
           </div>
         </div>
       </footer>
-
-      <div className="c_footer-date">
-        <div className="c_footer-container">
-          <p>California Arts ® 2024, Southern California</p>
-          <DateDisplay />
-        </div>
-      </div>
     </div>
   )
 }

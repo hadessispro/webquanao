@@ -1,78 +1,144 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
+import { FooterData, HeaderNavItem } from '@/lib/storefront-types'
+import type { Locale } from '@/lib/i18n'
 
-export default function MobileMenuDrawer() {
-  const { isMobileMenuOpen, setIsMobileMenuOpen } = useLayout()
-  const [shopOpen, setShopOpen] = useState(false)
+interface MobileMenuDrawerProps {
+  footer: FooterData
+  navigation: HeaderNavItem[]
+}
+
+function localizedText(locale: Locale, text?: string, textVi?: string) {
+  return locale === 'vi' && textVi ? textVi : text
+}
+
+function flattenFooterLinks(footer: FooterData) {
+  return footer.columns.flatMap((column) => column.links).slice(0, 6)
+}
+
+export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawerProps) {
+  const { isMobileMenuOpen, locale, setIsMobileMenuOpen } = useLayout()
+  const primaryMega = navigation.find((item) => item.megaMenu?.enabled)?.megaMenu
+  const footerLinks = flattenFooterLinks(footer)
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return undefined
+
+    document.documentElement.classList.add('art-menu-lock')
+    document.body.classList.add('art-menu-lock')
+
+    return () => {
+      document.documentElement.classList.remove('art-menu-lock')
+      document.body.classList.remove('art-menu-lock')
+    }
+  }, [isMobileMenuOpen])
 
   if (!isMobileMenuOpen) return null
 
-  const categories = [
-    { label: 'View All', href: '/collections/coats-jackets' },
-    { label: 'Outerwear', href: '/collections/coats-jackets' },
-    { label: 'Tailoring', href: '/collections/category-tailoring' },
-    { label: 'Knitwear', href: '/collections/knitwear' },
-    { label: 'Sweatshirts & Sweatpants', href: '/collections/collection-sweater' },
-    { label: 'Shirts', href: '/collections/shirts-all-navigation' },
-    { label: 'Polos', href: '/collections/category-polos' },
-    { label: 'Tees & Henleys', href: '/collections/collection-t-shirts-tanks' },
-    { label: 'Tanks & Vests', href: '/collections/category-vests' },
-    { label: 'Pants & Shorts', href: '/collections/trousers-shorts' },
-    { label: 'Denim', href: '/collections/category-nav-denim' },
-    { label: 'Accessories', href: '/collections/accessories' },
-    { label: 'Gift Card', href: '/products/giftcard' },
-  ]
-
   return (
-    <>
-      <div className="drawer-overlay anim-fade" onClick={() => setIsMobileMenuOpen(false)} />
-      <div className="drawer-panel-left anim-slide-l">
-        <div style={{ padding: '20px', height: '100%', overflow: 'auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-            <button onClick={() => setIsMobileMenuOpen(false)}>
-              <span className="inline-block w-5 h-5 align-middle">
-                <svg aria-hidden="true" focusable="false" className="icon fill-current icon-close" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M18.364 4.222l1.414 1.414L13.414 12l6.364 6.364-1.414 1.414L12 13.414l-6.364 6.364-1.414-1.414L10.586 12 4.222 5.636l1.414-1.414L12 10.586z" />
-                </svg>
-              </span>
-            </button>
+    <nav aria-label="menu" className="art-menu">
+      <button
+        aria-label="close menu"
+        className="art-menu__scrim"
+        onClick={() => setIsMobileMenuOpen(false)}
+        type="button"
+      />
+      <aside className="art-menu__panel">
+        <button
+          aria-label="close menu"
+          className="art-menu__close"
+          onClick={() => setIsMobileMenuOpen(false)}
+          type="button"
+        >
+          <span />
+        </button>
+
+        <div className="art-menu__scroll">
+          <div className="art-menu__primary">
+            {navigation.map((item) => (
+              <Link
+                className="art-menu__primary-link"
+                href={item.href}
+                key={`${item.label}-${item.href}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {localizedText(locale, item.label, item.labelVi)}
+              </Link>
+            ))}
           </div>
 
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            <li style={{ marginBottom: '16px' }}>
-              <button
-                onClick={() => setShopOpen(!shopOpen)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'inherit', fontSize: 'inherit' }}
-              >
-                <span>01 Shop All</span>
-                <span className="inline-block align-middle svg-scale" style={{ transform: shopOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }}>
-                  <svg aria-hidden="true" focusable="false" className="icon fill-current" viewBox="0 0 24 24" style={{ width: '12px', height: '12px' }}>
-                    <path fillRule="evenodd" d="M12 16.596L4.222 8.818l1.414-1.414L12 13.768l6.364-6.364 1.414 1.414z" />
-                  </svg>
-                </span>
+          {primaryMega && (
+            <div className="art-menu__mega">
+              {primaryMega.columns.map((column) => (
+                <section className="art-menu__column" key={column.heading}>
+                  <h2 className="art-menu__column-title">
+                    {column.headingHref ? (
+                      <Link href={column.headingHref} onClick={() => setIsMobileMenuOpen(false)}>
+                        {localizedText(locale, column.heading, column.headingVi)}
+                      </Link>
+                    ) : (
+                      localizedText(locale, column.heading, column.headingVi)
+                    )}
+                  </h2>
+                  <div className="art-menu__column-links">
+                    {column.links.map((link) => (
+                      <Link
+                        className="art-menu__sub-link"
+                        href={link.href}
+                        key={`${link.label}-${link.href}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {localizedText(locale, link.label, link.labelVi)}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
+
+          <form className="art-menu__newsletter">
+            <label className="art-menu__newsletter-label" htmlFor="art-menu-email">
+              {localizedText(locale, footer.newsletter.title, footer.newsletter.titleVi)}
+            </label>
+            <div className="art-menu__newsletter-row">
+              <input
+                id="art-menu-email"
+                name="email"
+                placeholder={localizedText(locale, footer.newsletter.placeholder, footer.newsletter.placeholderVi)}
+                type="email"
+              />
+              <button type="submit">
+                {localizedText(locale, footer.newsletter.buttonLabel, footer.newsletter.buttonLabelVi)}
               </button>
-              {shopOpen && (
-                <ul style={{ listStyle: 'none', padding: '10px 0 0 16px', margin: 0 }}>
-                  {categories.map((cat, i) => (
-                    <li key={i} style={{ marginBottom: '8px' }}>
-                      <Link href={cat.href} onClick={() => setIsMobileMenuOpen(false)}>{cat.label}</Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-            <li style={{ marginBottom: '16px' }}>
-              <Link href="/pages/our-story" onClick={() => setIsMobileMenuOpen(false)}>02 About the Brand</Link>
-            </li>
-            <li style={{ marginBottom: '16px' }}>
-              <Link href="/pages/campaign" onClick={() => setIsMobileMenuOpen(false)}>03 Creative Campaign</Link>
-            </li>
-          </ul>
+            </div>
+            <p>{localizedText(locale, footer.newsletter.privacyText, footer.newsletter.privacyTextVi)}</p>
+          </form>
+
+          <footer className="art-menu__footer">
+            <div className="art-menu__footer-links">
+              {footerLinks.map((link) => (
+                <Link
+                  className="art-menu__footer-link"
+                  href={link.href}
+                  key={`${link.label}-${link.href}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  target={link.openInNewTab ? '_blank' : undefined}
+                >
+                  {localizedText(locale, link.label, link.labelVi)}
+                </Link>
+              ))}
+            </div>
+            <div className="art-menu__meta">
+              <span>{footer.locationText}</span>
+              <span>{footer.copyright}</span>
+            </div>
+          </footer>
         </div>
-      </div>
-    </>
+      </aside>
+    </nav>
   )
 }

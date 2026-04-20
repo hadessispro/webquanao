@@ -1,105 +1,278 @@
-import React from 'react'
+import type { ReactNode } from 'react'
+import Link from 'next/link'
+
+function TextColumnHeader({ children }: { children: ReactNode }) {
+  return (
+    <div className="shopify-section c_text-columns-section">
+      <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
+        <div className="px-8 lg:px-8 py-2">
+          <div className="multi-column col-gap-lg lg:col-count-4 space-y-2 text-left text-base lg:text-base">
+            <div className="rte px-4 text-sm">
+              <p>{children}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function RichTextSection({
+  children,
+  justify = 'justify-start',
+  textSize = 'text-sm',
+  width = 'lg:w-1/2',
+}: {
+  children: ReactNode
+  justify?: string
+  textSize?: string
+  width?: string
+}) {
+  return (
+    <div className="shopify-section">
+      <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
+        <div className="px-8 lg:px-8 pb-4">
+          <div className={`flex ${textSize} default text-left ${justify}`}>
+            <div className={`w-full ${width}`}>
+              <div className="rte font-body break-words px-4">{children}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function Spacer() {
+  return (
+    <RichTextSection textSize="text-2xl lg:text-5xl" width="lg:w-full">
+      <p>
+        <br />
+      </p>
+      <p>
+        <br />
+      </p>
+    </RichTextSection>
+  )
+}
 
 export default function OurStoryPage() {
   return (
     <>
-      {/* 01 Our Brand Philosophy */}
-      <div className="category-header">
-        <span>01 Our Brand Philosophy</span>
-      </div>
-      <section style={{ padding: '3rem var(--spacing-section-h)' }}>
-        <div style={{ maxWidth: '500px' }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>
-            The California Arts &amp;<br />Recreation Board
-          </h2>
-          <div style={{ fontSize: '0.875rem', lineHeight: 1.7 }}>
-            <p style={{ marginBottom: '1rem' }}>
-              We believe that art is our day-to-day is a driving force for a creative life. But
-              today, design in menswear is either produced by small brands with the same
-              re-imagined styles or by luxury fashion houses at exclusive prices.
-            </p>
-            <p style={{ marginBottom: '1rem' }}>
-              We pursue the mission of releasing beautiful design from exclusive pricing so we
-              can all enjoy the kind of art that inspires our everyday.
-            </p>
-            <p>
-              Live creatively.<br />
-              Foster deeper connections.
-            </p>
+      <TextColumnHeader>01 Our Brand Philosophy</TextColumnHeader>
+
+      <RichTextSection>
+        <p>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <strong>
+            The California Arts &amp;
+            <br />
+            Recreation Board
+          </strong>
+          <br />
+          <br />
+          We believe that art in our day-to-day
+          <br />
+          is a driving force for a creative life. But
+          <br />
+          today, design in menswear is either
+          <br />
+          produced by small brands with the same
+          <br />
+          un-inspired styles or by luxury fashion
+          <br />
+          houses at exclusive prices.
+        </p>
+        <p>
+          We pursue the mission of releasing
+          <br />
+          beautiful design from exclusive pricing
+          <br />
+          so we can all enjoy the luxury of art
+          <br />
+          that inspires our everyday.
+          <br />
+          <br />
+          Live creatively.
+          <br />
+          Foster the deeper connections.
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+        </p>
+      </RichTextSection>
+
+      <TextColumnHeader>02 Our Production Philosophy</TextColumnHeader>
+
+      <RichTextSection justify="justify-center">
+        <p>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <strong>
+            California Minimalism:
+            <br />
+          </strong>
+          Accessible design by producing less &amp;
+          <br />
+          building better.
+        </p>
+        <p>
+          <br />
+        </p>
+        <p>
+          <em>West Coast Minimalism</em>
+        </p>
+        <p>
+          Capturing the laid-back, effortless cool of
+          <br />
+          California. Inspired by the past, made for living
+          <br />
+          in the present. The result is a fresh take on
+          <br />
+          American sportswear that endures season
+          <br />
+          after season.
+        </p>
+        <p>
+          <em>Modular Minimalism</em>
+        </p>
+        <p>
+          We believe that the simplest things are the most
+          <br />
+          complex. We take the time to re-imagine one
+          <br />
+          piece at a time, creating less but better modular
+          <br />
+          staples. By avoiding multi-piece collections and
+          <br />
+          seasonal fashion calendars, we minimize excess
+          <br />
+          inventory and trend-based waste.
+        </p>
+        <p>
+          <em>Sustainable Minimalism</em>
+        </p>
+        <p>
+          We are critical with our textile choices,
+          <br />
+          favouring natural and biodegradable materials
+          <br />
+          over micro-plastic blends. From the lining to
+          <br />
+          the exteriors, we find creative ways to use and
+          <br />
+          reuse fabrics and scraps.
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+        </p>
+      </RichTextSection>
+
+      <Spacer />
+
+      <TextColumnHeader>03 Founder Notes</TextColumnHeader>
+
+      <RichTextSection justify="justify-end">
+        <p>
+          <br />
+          <br />
+          <br />
+          <br />
+        </p>
+        <p>
+          I believe that the people and the things we
+          <br />
+          surround ourselves with, have the power to
+          <br />
+          influence the way we navigate everyday life.
+          <br />
+          Whether that&apos;s unconventional thinking, a
+          <br />
+          pursuit of personal passions or a life of
+          <br />
+          meaning. For me, it was a release from a
+          <br />
+          corporate 9-5 to build a brand that has
+          <br />
+          renewed my sense of purpose.
+          <br />
+          <br />
+          But I&apos;ve always wondered why good design
+          <br />
+          was made at price points so few Americans
+          <br />
+          could afford. I created California Arts&trade;
+          <br />
+          to release forward thinking design from
+          <br />
+          inaccessible price points so we can all
+          <br />
+          realize its benefit in our everyday.
+        </p>
+        <p>
+          With gratitude &amp; a full heart,
+          <br />
+          GT
+        </p>
+        <p>
+          <br />
+          You can always reach me directly.
+          <br />
+          gary@california-arts.com
+        </p>
+      </RichTextSection>
+
+      <RichTextSection textSize="text-2xl lg:text-5xl" width="lg:w-full">
+        <p />
+        <p>
+          <br />
+          <br />
+        </p>
+      </RichTextSection>
+
+      <div className="shopify-section">
+        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
+          <div className="px-8 lg:px-8 pb-4">
+            <div className="flex text-base default text-right justify-start">
+              <div className="w-full lg:w-full">
+                <div className="rte font-body break-words px-4">
+                  <p>
+                    <br />
+                  </p>
+                  <p>Discover the Perennial Collection</p>
+                </div>
+                <div className="mt-4 text-0 px-4">
+                  <Link
+                    className="inline-flex justify-center items-center text-base px-8 py-2 rounded-full bg-transparent text-primary-text border-text border-primary-text hover:border-primary-accent hover:text-primary-accent"
+                    href="/collections/coats-jackets"
+                  >
+                    <span>Shop All</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* 02 Our Production Philosophy */}
-      <div className="category-header">
-        <span>02 Our Production Philosophy</span>
+        </section>
       </div>
-      <section style={{ padding: '3rem var(--spacing-section-h)' }}>
-        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <h3 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-            California Minimalism
-          </h3>
-          <p style={{ fontSize: '0.875rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            Accessible design by producing less &amp; building better.
-          </p>
-
-          <h3 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-            West Coast Alternative
-          </h3>
-          <p style={{ fontSize: '0.875rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            Capturing the laid-back, effortless cool of California. Inspired by the past, made
-            for living in the present. The result is a fresh take on American sportswear that
-            outlasts seasons after season.
-          </p>
-
-          <h3 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-            Modular Alternative
-          </h3>
-          <p style={{ fontSize: '0.875rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-            We believe that the simplest things are the most complex. We take the time to
-            re-imagine one piece at a time, creating less but better modular staples.
-          </p>
-
-          <h3 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-            Sustainable Alternative
-          </h3>
-          <p style={{ fontSize: '0.875rem', lineHeight: 1.7 }}>
-            We are critical with our textile choices, favoring natural and biodegradable
-            materials over micro-plastic blends. From the lining to the stitching, we find
-            creative ways to use and reuse fabrics and scraps.
-          </p>
-        </div>
-      </section>
-
-      {/* 03 Founder Notes */}
-      <div className="category-header">
-        <span>03 Founder Notes</span>
-      </div>
-      <section style={{ padding: '3rem var(--spacing-section-h)' }}>
-        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <div style={{ fontSize: '0.875rem', lineHeight: 1.7 }}>
-            <p style={{ marginBottom: '1rem' }}>
-              I believe that the people and the things we surround ourselves with, have the power
-              to influence the way we navigate everyday life. Whether that&apos;s unconventional
-              thinking, a pursuit of personal passions or a life of meaning.
-            </p>
-            <p style={{ marginBottom: '1rem' }}>
-              But I&apos;ve always wondered why good design was made at price points so few
-              Americans could afford. I created California Arts™ to release forward thinking
-              design from inaccessible price points so we can all realize its benefit in our
-              everyday.
-            </p>
-            <p style={{ marginBottom: '1rem' }}>
-              With gratitude &amp; a full heart,<br />
-              QV
-            </p>
-            <p>
-              You can always reach me directly:<br />
-              guy@california-arts.com
-            </p>
-          </div>
-        </div>
-      </section>
     </>
   )
 }

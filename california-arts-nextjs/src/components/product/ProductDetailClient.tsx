@@ -1,37 +1,73 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useLayout } from "@/context/LayoutContext";
+import type { Product, ProductImage, ProductVariant, ProductVideo } from "@/lib/products";
 import {
-  Product,
   getProductColors,
   getProductSizes,
   isProductSoldOut,
 } from "@/lib/products";
 
+type ProductPreview = Pick<Product, "handle" | "images" | "title" | "variants">;
+
+type ProductDetailMediaItem =
+  | {
+      image: ProductImage;
+      key: string;
+      position: number;
+      type: "image";
+    }
+  | {
+      key: string;
+      position: number;
+      type: "video";
+      video: ProductVideo;
+    };
+
+function normalizeOptionName(name: string) {
+  return name.toLowerCase().trim();
+}
+
+function normalizeOptionValue(value?: string | null) {
+  return (value || "").toLowerCase().trim().replace(/\s+/g, "-");
+}
+
+function getVariantOption(product: Product, variant: ProductVariant, optionName: string) {
+  const option = product.options.find(
+    (item) => normalizeOptionName(item.name) === normalizeOptionName(optionName),
+  );
+  const position = option?.position || (optionName.toLowerCase() === "color" ? 1 : 2);
+  const key = `option${position}` as "option1" | "option2" | "option3";
+
+  return variant[key] || "";
+}
+
 function buildColorImages(product: Product) {
   const allImgs = product.images
     .slice()
     .sort((a, b) => a.position - b.position);
-  const colors =
-    product.options.find((o) => o.name.toLowerCase() === "color")?.values || [];
+  const colors = getProductColors(product);
 
-  if (colors.length <= 1) return { [colors[0] || ""]: allImgs };
+  if (colors.length <= 1) return { [colors[0] || "default"]: allImgs };
 
   const leadPos: Record<string, number> = {};
   for (const v of product.variants) {
-    if (v.option1 && !leadPos[v.option1] && v.featured_image) {
-      leadPos[v.option1] =
+    const color = getVariantOption(product, v, "color");
+    if (color && !leadPos[color] && v.featured_image) {
+      leadPos[color] =
         (v.featured_image as { position?: number }).position ||
         v.featured_image.id ||
         999;
     }
   }
 
-  // Find actual lead positions from images that have variant_ids
   for (const color of colors) {
     if (leadPos[color]) continue;
     const colorVarIds = product.variants
-      .filter((v) => v.option1 === color)
+      .filter((v) => getVariantOption(product, v, "color") === color)
       .map((v) => v.id);
     const leadImg = allImgs.find((img) =>
       img.variant_ids.some((vid) => colorVarIds.includes(vid)),
@@ -54,7 +90,86 @@ function buildColorImages(product: Product) {
     );
     if (groups[color].length === 0) groups[color] = allImgs;
   }
+
   return groups;
+}
+
+function buildProductMediaItems(
+  product: Product,
+  images: ProductImage[],
+): ProductDetailMediaItem[] {
+  const imageItems: ProductDetailMediaItem[] = images.map((image, index) => ({
+    image,
+    key: `image-${image.id || index}`,
+    position: image.position || index + 1,
+    type: "image",
+  }));
+  const videoItems = (product.videos || []).map(
+    (video, index) => ({
+      key: `video-${video.id || index}`,
+      position: video.position ?? 999 + index,
+      type: "video" as const,
+      video,
+    }),
+  );
+
+  if (videoItems.length === 0) return imageItems;
+
+  const usesManualPlacement =
+    product.mediaLayout?.videoPlacement === "manual" ||
+    (product.videos || []).some((video) => video.placement === "manual");
+
+  if (usesManualPlacement) {
+    return [...imageItems, ...videoItems].sort((a, b) => a.position - b.position);
+  }
+
+  return [
+    ...imageItems,
+    ...videoItems
+      .filter((item) => item.video.placement !== "manual")
+      .sort((a, b) => a.position - b.position),
+  ];
+}
+
+function ProductMediaImage({
+  image,
+  index,
+  title,
+}: {
+  image: ProductImage;
+  index: number;
+  title: string;
+}) {
+  return (
+    <img
+      className="product-detail__image"
+      src={image.src}
+      alt={image.alt || `${title} ${index + 1}`}
+      width={image.width || undefined}
+      height={image.height || undefined}
+      loading={index === 0 ? "eager" : "lazy"}
+    />
+  );
+}
+
+function ProductMediaVideo({ video }: { video: ProductVideo }) {
+  const autoplay = video.autoplay !== false;
+  const muted = autoplay ? true : video.muted !== false;
+
+  return (
+    <video
+      aria-label={video.alt || undefined}
+      autoPlay={autoplay}
+      className="product-detail__video"
+      controls={video.controls === true}
+      loop={video.loop !== false}
+      muted={muted}
+      playsInline
+      poster={video.poster || undefined}
+      preload="metadata"
+      src={video.src}
+    />
+  );
 }
 
 const COLOR_MAP: Record<string, string> = {
@@ -64,15 +179,15 @@ const COLOR_MAP: Record<string, string> = {
   blue: "#3b5998",
   "vintage blue": "#4a6fa5",
   "light rinse": "#8ba9c9",
-  white: "#f5f5f0",
+  white: "#f7f7f2",
   "off-white": "#f5f5f0",
   ivory: "#f5f1e3",
   cream: "#f5f0e0",
   red: "#8b2020",
-  merlot: "#722F37",
+  merlot: "#722f37",
   sienna: "#a0522d",
   redwood: "#6b3a3a",
-  olive: "#556B2F",
+  olive: "#556b2f",
   green: "#4a6741",
   grey: "#808080",
   gray: "#808080",
@@ -85,182 +200,414 @@ function colorToHex(name: string): string {
   for (const [key, hex] of Object.entries(COLOR_MAP)) {
     if (lower.includes(key)) return hex;
   }
-  return "#ccc";
+  return "#c9c9c9";
 }
 
-export default function ProductDetailClient({ product }: { product: Product }) {
+function getColorControl(product: Product, color: string) {
+  return product.colorOptions?.find(
+    (option) =>
+      normalizeOptionValue(option.value) === normalizeOptionValue(color) ||
+      normalizeOptionValue(option.label) === normalizeOptionValue(color),
+  );
+}
+
+function getColorLabel(product: Product, color: string) {
+  const control = getColorControl(product, color);
+  return control?.label || color;
+}
+
+function getColorSwatch(product: Product, color: string) {
+  const control = getColorControl(product, color);
+  return control?.swatch || colorToHex(color);
+}
+
+function getSizeLabel(product: Product, size: string) {
+  const control = product.sizeOptions?.find(
+    (option) =>
+      normalizeOptionValue(option.value) === normalizeOptionValue(size) ||
+      normalizeOptionValue(option.label) === normalizeOptionValue(size),
+  );
+  return control?.label || size;
+}
+
+function getSizeSelectorStyle(product: Product) {
+  if (product.sizeSelectorStyle && product.sizeSelectorStyle !== "auto") {
+    return product.sizeSelectorStyle;
+  }
+
+  return "text";
+}
+
+function formatPrice(value?: string) {
+  const amount = Number.parseInt(value || "0", 10);
+  return `${new Intl.NumberFormat("vi-VN").format(Number.isNaN(amount) ? 0 : amount)}₫`;
+}
+
+function productPrice(product: Pick<Product, "variants">) {
+  return formatPrice(product.variants[0]?.price);
+}
+
+function ProductMiniCard({ product }: { product: ProductPreview }) {
+  const image = product.images[0];
+
+  return (
+    <article className="product-detail-card">
+      <Link className="product-detail-card__link" href={`/products/${product.handle}`} prefetch={false}>
+        {image ? (
+          <img
+            className="product-detail-card__image"
+            src={image.src}
+            alt={image.alt || product.title}
+            loading="lazy"
+          />
+        ) : (
+          <span className="product-detail-card__empty">No image</span>
+        )}
+        <span className="product-detail-card__meta">
+          <span>{product.title}</span>
+          <span>{productPrice(product)}</span>
+        </span>
+      </Link>
+    </article>
+  );
+}
+
+function ProductRail({
+  emptyText,
+  products,
+  title,
+}: {
+  emptyText?: string;
+  products: ProductPreview[];
+  title: string;
+}) {
+  return (
+    <section className="product-detail-rail">
+      <h2 className="product-detail-rail__title">{title}</h2>
+      {products.length > 0 ? (
+        <div className="product-detail-rail__grid">
+          {products.map((item) => (
+            <ProductMiniCard key={item.handle} product={item} />
+          ))}
+        </div>
+      ) : (
+        <p className="product-detail-rail__empty">{emptyText}</p>
+      )}
+    </section>
+  );
+}
+
+const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
+  Details:
+    "<p>- 100% wool exterior<br />- Oversized fit<br />- Oversized military collar<br />- Stand-up collar with button closure<br />- Double breasted<br />- Color matched button closures<br />- Front welt pockets<br />- Below the knee, long length<br />- Center-back vented hem<br />- Interior chest pocket<br />- Matching removable belt<br />- Back belt loops</p><p>Materials & Care<br />- Outer: 100% wool<br />- Care: Dry clean only</p>",
+  "Size & Fit":
+    '<p>Fit: Oversized with generous proportions. Take your regular size for the intended aesthetic. Jude is 6\'1" and wears a size L.</p><p><a href="#size-guide">Size Guide</a></p>',
+  Sustainability:
+    "<p>Constructed in 100% responsibly sourced, biodegradable wool. Intentionally made without wool blends containing polyester and other micro-plastics.</p>",
+  "Shipping & Returns":
+    '<p>Free shipping on all US orders over $150 USD and to all other countries over $250 USD. See <a href="/pages/returns-exchanges">Shipping and Returns</a> for additional shipping options and rates.</p><p>Refunds accepted within 14 days of product delivery for all orders. There are no surprise duties or fees upon delivery. Duties are covered by California Arts.</p>',
+  "Need Assistance?":
+    '<p>Contact us at <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>',
+};
+
+function getFallbackAccordionHtml(product: Product, title: string) {
+  if (product.handle === "lyndonoversizedwatchcoat" && LYNDON_ACCORDION_CONTENT[title]) {
+    return LYNDON_ACCORDION_CONTENT[title];
+  }
+
+  switch (title) {
+    case "Details":
+      return product.material
+        ? `<p>${product.material}</p>`
+        : "<p>Made with considered proportions and everyday wear in mind.</p>";
+    case "Size & Fit":
+      return "<p>Designed for a relaxed California Arts fit. Select your usual size for the intended silhouette.</p>";
+    case "Sustainability":
+      return "<p>We advocate for sustainability by producing less and building better.</p>";
+    case "Shipping & Returns":
+      return '<p>Complimentary shipping is available on qualifying orders. Returns are accepted within 14 days of delivery.</p>';
+    case "Need Assistance?":
+      return '<p>Contact us at <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>';
+    default:
+      return "";
+  }
+}
+
+export default function ProductDetailClient({
+  allProducts,
+  product,
+  suggestedProducts,
+  styleWithProducts,
+}: {
+  allProducts: ProductPreview[];
+  product: Product;
+  suggestedProducts: ProductPreview[];
+  styleWithProducts: ProductPreview[];
+}) {
+  const searchParams = useSearchParams();
+  const { addCartItem, setIsCartOpen, t } = useLayout();
   const colors = getProductColors(product);
   const sizes = getProductSizes(product);
+  const sizeSelectorStyle = getSizeSelectorStyle(product);
   const soldOut = isProductSoldOut(product);
   const colorImageMap = useMemo(() => buildColorImages(product), [product]);
+  const initialVariantId = Number(searchParams.get("variant") || 0);
+  const initialColorParam = searchParams.get("color") || undefined;
+  const variantFromUrl = useMemo(() => {
+    if (!initialVariantId) return undefined;
+    return product.variants.find((variant) => variant.id === initialVariantId);
+  }, [initialVariantId, product.variants]);
+  const colorFromUrl = useMemo(() => {
+    const colorParam = normalizeOptionValue(initialColorParam);
+    if (!colorParam) return "";
+    return (
+      colors.find((color) => normalizeOptionValue(color) === colorParam) || ""
+    );
+  }, [colors, initialColorParam]);
+  const resolvedInitialColor =
+    (variantFromUrl && getVariantOption(product, variantFromUrl, "color")) ||
+    colorFromUrl ||
+    colors[0] ||
+    "";
+  const initialSize =
+    (variantFromUrl && getVariantOption(product, variantFromUrl, "size")) || "";
 
-  const [selColor, setSelColor] = useState(colors[0] || "");
-  const [selSize, setSelSize] = useState("");
+  const [selColor, setSelColor] = useState(resolvedInitialColor);
+  const [selSize, setSelSize] = useState(initialSize);
   const [mobileIdx, setMobileIdx] = useState(0);
   const [openAcc, setOpenAcc] = useState<number | null>(null);
+  const [recentlyViewedHandles, setRecentlyViewedHandles] = useState<string[]>([]);
 
-  const imgs = colorImageMap[selColor] || Object.values(colorImageMap)[0] || [];
+  const imgs = useMemo(
+    () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
+    [colorImageMap, selColor],
+  );
+  const mediaItems = useMemo(
+    () => buildProductMediaItems(product, imgs),
+    [imgs, product],
+  );
   const colorVariants = useMemo(
     () =>
       selColor
-        ? product.variants.filter((v) => v.option1 === selColor)
+        ? product.variants.filter((v) => getVariantOption(product, v, "color") === selColor)
         : product.variants,
-    [product.variants, selColor],
+    [product, selColor],
   );
   const selVariant = useMemo(() => {
-    if (selSize)
+    if (selSize) {
       return colorVariants.find(
-        (v) => v.option2 === selSize || v.title === selSize,
+        (v) => getVariantOption(product, v, "size") === selSize,
       );
-    return colorVariants[0];
-  }, [colorVariants, selSize]);
+    }
+    return colorVariants.find((v) => v.available) || colorVariants[0];
+  }, [colorVariants, product, selSize]);
 
-  const fmt = (p: string) =>
-    new Intl.NumberFormat("vi-VN").format(parseInt(p)) + "₫";
+  const requiresSize = sizes.length > 0;
+  const selectedVariantAvailable = selVariant?.available ?? !soldOut;
+  const canAddToBag =
+    !soldOut && selectedVariantAvailable && (!requiresSize || Boolean(selSize));
+  const buttonLabel = soldOut
+    ? t("soldOut")
+    : requiresSize && !selSize
+      ? t("selectSize")
+      : selectedVariantAvailable
+        ? t("addToBag")
+        : t("unavailable");
+
   const price = selVariant
-    ? fmt(selVariant.price)
-    : fmt(product.variants[0]?.price || "0");
+    ? formatPrice(selVariant.price)
+    : formatPrice(product.variants[0]?.price);
   const cmpPrice = selVariant?.compare_at_price
-    ? fmt(selVariant.compare_at_price)
+    ? formatPrice(selVariant.compare_at_price)
     : null;
+  const selectedImage =
+    selVariant?.featured_image?.src ||
+    imgs[0]?.src ||
+    product.images[0]?.src ||
+    product.videos?.[0]?.poster ||
+    "";
+  const selectedColorLabel = selColor ? getColorLabel(product, selColor) : "";
+  const displayTitle = selectedColorLabel ? `${product.title} | ${selectedColorLabel}` : product.title;
 
   const accordions = useMemo(() => {
-    const s: { title: string; html: string }[] = [];
-    if (product.body_html)
-      s.push({ title: "Details", html: product.body_html });
-    s.push({
-      title: "Size & Fit",
-      html: "<p>See our size guide for detailed measurements.</p>",
-    });
-    s.push({
-      title: "Sustainability",
-      html: "<p>We advocate for sustainability by producing less, building better.</p>",
-    });
-    s.push({
-      title: "Shipping & Returns",
-      html: "<p>Complimentary shipping on US orders over $150 USD. Refund within 14 days and exchange within 30 days of delivery.</p>",
-    });
-    s.push({
-      title: "Need Assistance?",
-      html: '<p>Contact us at <a href="mailto:info@california-arts.com" style="text-decoration:underline">info@california-arts.com</a></p>',
-    });
-    return s;
-  }, [product.body_html]);
+    const orderedTitles = [
+      { title: "Details", label: t("details") },
+      { title: "Size & Fit", label: t("sizeFit") },
+      { title: "Sustainability", label: t("sustainability") },
+      { title: "Shipping & Returns", label: t("shippingReturns") },
+      { title: "Need Assistance?", label: t("needAssistance") },
+    ];
+    const payloadAccordions = product.accordions || [];
 
-  const pickColor = (c: string) => {
-    setSelColor(c);
+    return orderedTitles.map(({ label, title }) => {
+      const payloadAccordion = payloadAccordions.find(
+        (item) => item.title.toLowerCase() === title.toLowerCase(),
+      );
+
+      return {
+        label,
+        title,
+        html: payloadAccordion?.html || getFallbackAccordionHtml(product, title),
+      };
+    });
+  }, [product, t]);
+
+  const pickColor = (color: string) => {
+    setSelColor(color);
     setMobileIdx(0);
-    setSelSize("");
+    setSelSize((currentSize) => {
+      const stillAvailable = product.variants.some(
+        (variant) =>
+          getVariantOption(product, variant, "color") === color &&
+          getVariantOption(product, variant, "size") === currentSize &&
+          variant.available,
+      );
+
+      return stillAvailable ? currentSize : "";
+    });
   };
 
+  const nextMobileImage = () => {
+    setMobileIdx((current) => {
+      const bounded = Math.min(current, mediaItems.length - 1);
+      return bounded === mediaItems.length - 1 ? 0 : bounded + 1;
+    });
+  };
+
+  const prevMobileImage = () => {
+    setMobileIdx((current) => {
+      const bounded = Math.min(current, mediaItems.length - 1);
+      return bounded === 0 ? mediaItems.length - 1 : bounded - 1;
+    });
+  };
+
+  const addSelectedVariantToCart = () => {
+    if (!canAddToBag || !selVariant) return;
+
+    addCartItem({
+      productId: product.id,
+      handle: product.handle,
+      title: product.title,
+      image: selectedImage,
+      variantId: selVariant.id,
+      variantTitle: selVariant.title,
+      color: selColor || undefined,
+      size: selSize || undefined,
+      sku: selVariant.sku,
+      price: Number.parseInt(selVariant.price || "0", 10) || 0,
+      compareAtPrice: selVariant.compare_at_price
+        ? Number.parseInt(selVariant.compare_at_price, 10)
+        : null,
+    });
+    setIsCartOpen(true);
+  };
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      const raw = window.localStorage.getItem("ca_recently_viewed_products");
+      let stored: string[] = [];
+
+      try {
+        stored = raw ? (JSON.parse(raw) as string[]) : [];
+      } catch {
+        stored = [];
+      }
+
+      const previous = stored
+        .filter((handle) => handle && handle !== product.handle)
+        .slice(0, 8);
+
+      setRecentlyViewedHandles(previous);
+      window.localStorage.setItem(
+        "ca_recently_viewed_products",
+        JSON.stringify([product.handle, ...previous].slice(0, 12)),
+      );
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, [product.handle]);
+
+  const recentlyViewedProducts = recentlyViewedHandles
+    .map((handle) => allProducts.find((item) => item.handle === handle))
+    .filter(Boolean)
+    .slice(0, 4) as ProductPreview[];
+  const safeMobileIdx =
+    mediaItems.length > 0 ? Math.min(mobileIdx, mediaItems.length - 1) : 0;
+  const currentMobileMedia = mediaItems[safeMobileIdx];
+
   return (
-    <div className="bg-primary-background text-primary-text">
-      <div style={{ display: "flex", minHeight: "100vh" }}>
-        {/* ══════ LEFT: IMAGES ══════ */}
-        {/* Desktop: stacked vertical scroll */}
-        <div
-          className="hidden lg:block"
-          style={{ flex: "0 0 58%", maxWidth: "58%" }}
-        >
-          {imgs.map((img, i) => (
-            <img
-              key={img.id || i}
-              src={img.src}
-              alt={`${product.title} - ${i + 1}`}
-              width={img.width}
-              height={img.height}
-              loading={i === 0 ? "eager" : "lazy"}
-              style={{ display: "block", width: "100%", height: "auto" }}
-            />
-          ))}
-          {imgs.length === 0 && (
-            <div
-              style={{
-                height: "80vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#f5f5f5",
-              }}
-            >
-              <p style={{ opacity: 0.4 }}>No images available</p>
-            </div>
+    <section className="product-detail bg-primary-background text-primary-text">
+      <div className="product-detail__layout">
+        <div className="product-detail__media product-detail__media--desktop">
+          {mediaItems.length > 0 ? (
+            mediaItems.map((item, index) => (
+              <figure
+                className={
+                  item.type === "image"
+                    ? "product-detail__image-frame"
+                    : "product-detail__video-frame"
+                }
+                key={item.key}
+              >
+                {item.type === "image" ? (
+                  <ProductMediaImage
+                    image={item.image}
+                    index={index}
+                    title={product.title}
+                  />
+                ) : (
+                  <ProductMediaVideo video={item.video} />
+                )}
+              </figure>
+            ))
+          ) : (
+            <div className="product-detail__empty-media">No images available</div>
           )}
         </div>
 
-        {/* Mobile: swipeable carousel */}
-        <div className="lg:hidden w-full">
-          {imgs.length > 0 ? (
-            <div style={{ position: "relative" }}>
-              <img
-                src={imgs[mobileIdx]?.src}
-                alt={product.title}
-                style={{ display: "block", width: "100%", height: "auto" }}
-              />
-              {imgs.length > 1 && (
+        <div className="product-detail__mobile-gallery">
+          {currentMobileMedia ? (
+            <div className="product-detail__mobile-frame">
+              {currentMobileMedia.type === "image" ? (
+                <ProductMediaImage
+                  image={currentMobileMedia.image}
+                  index={safeMobileIdx}
+                  title={product.title}
+                />
+              ) : (
+                <ProductMediaVideo video={currentMobileMedia.video} />
+              )}
+
+              {mediaItems.length > 1 && (
                 <>
                   <button
-                    onClick={() =>
-                      setMobileIdx((p) => (p === 0 ? imgs.length - 1 : p - 1))
-                    }
-                    style={{
-                      position: "absolute",
-                      left: 12,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "rgba(255,255,255,.7)",
-                      border: "none",
-                      width: 32,
-                      height: 32,
-                      cursor: "pointer",
-                      fontSize: 14,
-                    }}
+                    aria-label="Previous product image"
+                    className="product-detail__carousel-button product-detail__carousel-button--prev"
+                    onClick={prevMobileImage}
+                    type="button"
                   >
-                    ←
+                    {"<"}
                   </button>
                   <button
-                    onClick={() =>
-                      setMobileIdx((p) => (p === imgs.length - 1 ? 0 : p + 1))
-                    }
-                    style={{
-                      position: "absolute",
-                      right: 12,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "rgba(255,255,255,.7)",
-                      border: "none",
-                      width: 32,
-                      height: 32,
-                      cursor: "pointer",
-                      fontSize: 14,
-                    }}
+                    aria-label="Next product image"
+                    className="product-detail__carousel-button product-detail__carousel-button--next"
+                    onClick={nextMobileImage}
+                    type="button"
                   >
-                    →
+                    {">"}
                   </button>
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 16,
-                      left: 0,
-                      right: 0,
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: 6,
-                    }}
-                  >
-                    {imgs.map((_, i) => (
+                  <div className="product-detail__dots" aria-hidden="true">
+                    {mediaItems.map((item, index) => (
                       <button
-                        key={i}
-                        onClick={() => setMobileIdx(i)}
-                        style={{
-                          width: 7,
-                          height: 7,
-                          borderRadius: "50%",
-                          border: "none",
-                          background: "var(--color-primary-text)",
-                          opacity: i === mobileIdx ? 1 : 0.3,
-                          cursor: "pointer",
-                        }}
+                        className={
+                          index === safeMobileIdx
+                            ? "product-detail__dot product-detail__dot--active"
+                            : "product-detail__dot"
+                        }
+                        key={item.key}
+                        onClick={() => setMobileIdx(index)}
+                        tabIndex={-1}
+                        type="button"
                       />
                     ))}
                   </div>
@@ -268,163 +615,106 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               )}
             </div>
           ) : (
-            <div
-              style={{
-                height: "60vh",
-                background: "#f5f5f5",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <p style={{ opacity: 0.4 }}>No images</p>
+            <div className="product-detail__empty-media product-detail__empty-media--mobile">
+              No images available
             </div>
           )}
         </div>
 
-        {/* ══════ RIGHT: PRODUCT INFO (sticky) ══════ */}
-        <div
-          className="hidden lg:block"
-          style={{ flex: "0 0 42%", maxWidth: "42%" }}
-        >
-          <div
-            style={{
-              position: "sticky",
-              top: 0,
-              padding: "40px 48px",
-              maxHeight: "100vh",
-              overflowY: "auto",
-            }}
-          >
-            {/* Title */}
-            <h1
-              style={{
-                fontFamily: "var(--body-font-stack)",
-                fontSize: "0.8rem",
-                fontWeight: 400,
-                letterSpacing: "0.02em",
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
-              {product.title}
-            </h1>
-
-            {/* Price */}
-            <div style={{ fontSize: "0.8rem", marginTop: 4 }}>
-              {cmpPrice && (
-                <span
-                  style={{
-                    textDecoration: "line-through",
-                    opacity: 0.5,
-                    marginRight: 8,
-                  }}
-                >
-                  {cmpPrice}
-                </span>
-              )}
-              <span>{price}</span>
+        <aside className="product-detail__summary">
+          <div className="product-detail__summary-inner">
+            <div className="product-detail__heading">
+              <h1 className="product-detail__title">{displayTitle}</h1>
+              <div className="product-detail__price">
+                {cmpPrice && (
+                  <span className="product-detail__compare-price">
+                    {cmpPrice}
+                  </span>
+                )}
+                <span>{price}</span>
+              </div>
             </div>
 
-            {/* Description */}
             {product.body_html && (
               <div
-                style={{
-                  fontSize: "0.64rem",
-                  lineHeight: 1.8,
-                  marginTop: 20,
-                  opacity: 0.8,
-                }}
+                className="product-detail__description"
                 dangerouslySetInnerHTML={{ __html: product.body_html }}
               />
             )}
 
-            {/* Color circles */}
             {colors.length > 1 && (
-              <div style={{ marginTop: 28 }}>
-                <div
-                  style={{
-                    fontSize: "0.64rem",
-                    letterSpacing: "0.05em",
-                    marginBottom: 8,
-                  }}
-                >
-                  Color
-                </div>
-                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  {colors.map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => pickColor(c)}
-                      title={c}
-                      style={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        padding: 0,
-                        cursor: "pointer",
-                        background: colorToHex(c),
-                        border:
-                          selColor === c
-                            ? "2px solid var(--color-primary-text)"
-                            : "1px solid #ccc",
-                        outline:
-                          selColor === c
-                            ? "2px solid var(--color-primary-text)"
-                            : "none",
-                        outlineOffset: 2,
-                      }}
-                    />
-                  ))}
+              <div
+                aria-label={t("color")}
+                className="product-detail__option product-detail__option--inline"
+                role="group"
+              >
+                <span className="product-detail__option-label">{t("color")}</span>
+                <div className="product-detail__swatches">
+                  {colors.map((color) => {
+                    const label = getColorLabel(product, color);
+
+                    return (
+                      <button
+                        aria-label={label}
+                        aria-pressed={selColor === color}
+                        className={
+                          selColor === color
+                            ? "product-detail__swatch product-detail__swatch--active"
+                            : "product-detail__swatch"
+                        }
+                        key={color}
+                        onClick={() => pickColor(color)}
+                        style={{ backgroundColor: getColorSwatch(product, color) }}
+                        title={label}
+                        type="button"
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}
 
-            {/* Size */}
             {sizes.length > 0 && (
-              <div style={{ marginTop: 20 }}>
+              <div
+                aria-label={t("size")}
+                className="product-detail__option product-detail__option--inline"
+                role="group"
+              >
+                <span className="product-detail__option-label">{t("size")}</span>
                 <div
-                  style={{
-                    fontSize: "0.64rem",
-                    letterSpacing: "0.05em",
-                    marginBottom: 8,
-                    display: "flex",
-                    gap: 12,
-                    alignItems: "center",
-                  }}
+                  className={
+                    sizeSelectorStyle === "text"
+                      ? "product-detail__sizes product-detail__sizes--text"
+                      : "product-detail__sizes product-detail__sizes--box"
+                  }
                 >
-                  <span>Size</span>
-                  {sizes.map((sz) => {
-                    const avail = colorVariants.some(
+                  {sizes.map((size) => {
+                    const available = colorVariants.some(
                       (v) =>
-                        (v.option2 === sz || v.title === sz) && v.available,
+                        getVariantOption(product, v, "size") === size && v.available,
                     );
-                    const active = selSize === sz;
+                    const active = selSize === size;
+                    const label = getSizeLabel(product, size);
+
                     return (
                       <button
-                        key={sz}
-                        onClick={() => avail && setSelSize(sz)}
-                        disabled={!avail}
-                        style={{
-                          fontSize: "0.64rem",
-                          background: "none",
-                          border: "none",
-                          padding: "2px 4px",
-                          cursor: avail ? "pointer" : "not-allowed",
-                          color: active
-                            ? "var(--color-primary-text)"
-                            : avail
-                              ? "var(--color-primary-text)"
-                              : "var(--color-border)",
-                          textDecoration: avail
-                            ? active
-                              ? "underline"
-                              : "none"
-                            : "line-through",
-                          fontWeight: active ? 600 : 400,
-                        }}
+                        aria-pressed={active}
+                        className={[
+                          "product-detail__size",
+                          sizeSelectorStyle === "text"
+                            ? "product-detail__size--text"
+                            : "product-detail__size--box",
+                          active ? "product-detail__size--active" : "",
+                          !available ? "product-detail__size--disabled" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        disabled={!available}
+                        key={size}
+                        onClick={() => setSelSize(size)}
+                        type="button"
                       >
-                        {sz}
+                        {label}
                       </button>
                     );
                   })}
@@ -432,258 +722,83 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               </div>
             )}
 
-            {/* Add To Bag */}
-            <div style={{ marginTop: 32 }}>
-              <button
-                disabled={soldOut || !selSize}
-                style={{
-                  width: "100%",
-                  padding: "16px 0",
-                  fontSize: "0.64rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  fontWeight: 400,
-                  border: "none",
-                  borderRadius: 0,
-                  background: soldOut
-                    ? "var(--color-border)"
-                    : "var(--color-primary-text)",
-                  color: soldOut
-                    ? "var(--color-primary-text)"
-                    : "var(--color-primary-background)",
-                  cursor: soldOut || !selSize ? "not-allowed" : "pointer",
-                  opacity: soldOut ? 0.5 : 1,
-                }}
-              >
-                {soldOut ? "Sold Out" : "Add To Bag"}
-              </button>
-            </div>
-
-            {/* Accordions */}
-            <div
-              style={{
-                marginTop: 32,
-                borderTop: "1px solid var(--color-border)",
-              }}
+            <button
+              className="product-detail__add-button"
+              disabled={!canAddToBag}
+              onClick={addSelectedVariantToCart}
+              type="button"
             >
-              {accordions.map((acc, i) => (
+              {buttonLabel}
+            </button>
+
+            <div className="product-detail__accordions">
+              {accordions.map((accordion, index) => (
                 <div
-                  key={i}
-                  style={{ borderBottom: "1px solid var(--color-border)" }}
+                  className={
+                    openAcc === index
+                      ? "product-detail__accordion product-detail__accordion--open"
+                      : "product-detail__accordion"
+                  }
+                  key={accordion.title}
                 >
                   <button
-                    onClick={() => setOpenAcc(openAcc === i ? null : i)}
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "14px 0",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "var(--color-primary-text)",
-                      fontSize: "0.64rem",
-                      letterSpacing: "0.05em",
-                    }}
+                    aria-expanded={openAcc === index}
+                    className="product-detail__accordion-trigger"
+                    onClick={() => setOpenAcc(openAcc === index ? null : index)}
+                    type="button"
                   >
-                    <span>{acc.title}</span>
-                    <span style={{ fontSize: "0.8rem" }}>
-                      {openAcc === i ? "−" : "+"}
+                    <span>{accordion.label}</span>
+                    <span aria-hidden="true">
+                      {openAcc === index ? "-" : "+"}
                     </span>
                   </button>
-                  {openAcc === i && (
+                  <div className="product-detail__accordion-panel">
                     <div
-                      style={{
-                        paddingBottom: 14,
-                        fontSize: "0.64rem",
-                        lineHeight: 1.8,
-                      }}
-                      dangerouslySetInnerHTML={{ __html: acc.html }}
+                      className="product-detail__accordion-body"
+                      dangerouslySetInnerHTML={{ __html: accordion.html }}
                     />
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
+
+            {styleWithProducts.length > 0 && (
+              <section className="product-detail__style-with">
+                <h2 className="product-detail__style-title">{t("styleWith")}</h2>
+                <div className="product-detail__style-grid">
+                  {styleWithProducts.slice(0, 3).map((item) => (
+                    <Link
+                      className="product-detail__style-card"
+                      href={`/products/${item.handle}`}
+                      key={item.handle}
+                      prefetch={false}
+                    >
+                      {item.images[0] ? (
+                        <img
+                          src={item.images[0].src}
+                          alt={item.images[0].alt || item.title}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span>No image</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-        </div>
+        </aside>
       </div>
 
-      {/* ══════ MOBILE INFO (below image) ══════ */}
-      <div className="lg:hidden" style={{ padding: "24px 20px" }}>
-        <h1
-          style={{
-            fontFamily: "var(--body-font-stack)",
-            fontSize: "0.8rem",
-            fontWeight: 400,
-            margin: 0,
-          }}
-        >
-          {product.title}
-        </h1>
-        <div style={{ fontSize: "0.8rem", marginTop: 4 }}>
-          {cmpPrice && (
-            <span
-              style={{
-                textDecoration: "line-through",
-                opacity: 0.5,
-                marginRight: 8,
-              }}
-            >
-              {cmpPrice}
-            </span>
-          )}
-          <span>{price}</span>
-        </div>
-        {product.body_html && (
-          <div
-            style={{
-              fontSize: "0.64rem",
-              lineHeight: 1.8,
-              marginTop: 16,
-              opacity: 0.8,
-            }}
-            dangerouslySetInnerHTML={{ __html: product.body_html }}
-          />
-        )}
-        {colors.length > 1 && (
-          <div
-            style={{
-              marginTop: 20,
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-            }}
-          >
-            <span style={{ fontSize: "0.64rem" }}>Color</span>
-            {colors.map((c) => (
-              <button
-                key={c}
-                onClick={() => pickColor(c)}
-                title={c}
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  padding: 0,
-                  cursor: "pointer",
-                  background: colorToHex(c),
-                  border:
-                    selColor === c
-                      ? "2px solid var(--color-primary-text)"
-                      : "1px solid #ccc",
-                  outlineOffset: 2,
-                  outline:
-                    selColor === c
-                      ? "2px solid var(--color-primary-text)"
-                      : "none",
-                }}
-              />
-            ))}
-          </div>
-        )}
-        {sizes.length > 0 && (
-          <div
-            style={{
-              marginTop: 16,
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <span style={{ fontSize: "0.64rem" }}>Size</span>
-            {sizes.map((sz) => {
-              const avail = colorVariants.some(
-                (v) => (v.option2 === sz || v.title === sz) && v.available,
-              );
-              return (
-                <button
-                  key={sz}
-                  onClick={() => avail && setSelSize(sz)}
-                  disabled={!avail}
-                  style={{
-                    fontSize: "0.64rem",
-                    background: "none",
-                    border: "none",
-                    padding: "2px 4px",
-                    cursor: avail ? "pointer" : "not-allowed",
-                    color: avail
-                      ? "var(--color-primary-text)"
-                      : "var(--color-border)",
-                    textDecoration:
-                      selSize === sz
-                        ? "underline"
-                        : avail
-                          ? "none"
-                          : "line-through",
-                    fontWeight: selSize === sz ? 600 : 400,
-                  }}
-                >
-                  {sz}
-                </button>
-              );
-            })}
-          </div>
-        )}
-        <div style={{ marginTop: 24 }}>
-          <button
-            disabled={soldOut || !selSize}
-            style={{
-              width: "100%",
-              padding: "14px 0",
-              fontSize: "0.64rem",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              border: "none",
-              background: "var(--color-primary-text)",
-              color: "var(--color-primary-background)",
-              opacity: soldOut ? 0.5 : 1,
-              cursor: soldOut || !selSize ? "not-allowed" : "pointer",
-            }}
-          >
-            {soldOut ? "Sold Out" : "Add To Bag"}
-          </button>
-        </div>
-        <div
-          style={{ marginTop: 24, borderTop: "1px solid var(--color-border)" }}
-        >
-          {accordions.map((acc, i) => (
-            <div
-              key={i}
-              style={{ borderBottom: "1px solid var(--color-border)" }}
-            >
-              <button
-                onClick={() => setOpenAcc(openAcc === i ? null : i)}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  padding: "14px 0",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "var(--color-primary-text)",
-                  fontSize: "0.64rem",
-                }}
-              >
-                <span>{acc.title}</span>
-                <span>{openAcc === i ? "−" : "+"}</span>
-              </button>
-              {openAcc === i && (
-                <div
-                  style={{
-                    paddingBottom: 14,
-                    fontSize: "0.64rem",
-                    lineHeight: 1.8,
-                  }}
-                  dangerouslySetInnerHTML={{ __html: acc.html }}
-                />
-              )}
-            </div>
-          ))}
-        </div>
+      <div className="product-detail__after">
+        <ProductRail products={suggestedProducts} title={t("suggestedForYou")} />
+        <ProductRail
+          emptyText={t("recentlyViewedEmpty")}
+          products={recentlyViewedProducts}
+          title={t("recentlyViewed")}
+        />
       </div>
-    </div>
+    </section>
   );
 }

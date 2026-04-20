@@ -3,11 +3,25 @@ import productsData from "../../json/products-json.json";
 export interface ProductImage {
   id: number;
   src: string;
+  sourceUrl?: string;
   width: number;
   height: number;
   position: number;
   alt?: string;
   variant_ids: number[];
+}
+
+export interface ProductVideo {
+  id: number | string;
+  src: string;
+  poster?: string;
+  alt?: string;
+  position: number;
+  placement?: "inherit" | "after-images" | "manual";
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  controls?: boolean;
 }
 
 export interface ProductVariant {
@@ -36,6 +50,26 @@ export interface ProductOption {
   values: string[];
 }
 
+export interface ProductColorOption {
+  label: string;
+  value: string;
+  swatch?: string;
+  position?: number;
+  available?: boolean;
+}
+
+export interface ProductSizeOption {
+  label: string;
+  value: string;
+  position?: number;
+  available?: boolean;
+}
+
+export interface ProductAccordion {
+  title: string;
+  html: string;
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -43,66 +77,71 @@ export interface Product {
   body_html: string;
   vendor: string;
   product_type: string;
+  material?: string;
   tags: string[];
   variants: ProductVariant[];
   images: ProductImage[];
+  videos?: ProductVideo[];
+  mediaLayout?: {
+    videoPlacement?: "after-images" | "manual";
+  };
   options: ProductOption[];
+  sizeSelectorStyle?: "auto" | "text" | "box";
+  colorOptions?: ProductColorOption[];
+  sizeOptions?: ProductSizeOption[];
+  accordions?: ProductAccordion[];
+  collections?: string[];
   published_at: string;
   created_at: string;
   updated_at: string;
 }
 
-/**
- * Convert a Shopify CDN URL to a local path under /products/[handle]/
- * e.g. "https://cdn.shopify.com/.../CA-MARCH-26-C19759.jpg?v=123"
- *   → "/products/coldwaterjeans/CA-MARCH-26-C19759.jpg"
- */
-function toLocalImagePath(src: string, handle: string): string {
+export function normalizeImageUrl(src: string): string {
   if (!src) return "";
-  // Remove protocol
-  let url = src.startsWith("//") ? `https:${src}` : src;
-  try {
-    const u = new URL(url);
-    const segments = u.pathname.split("/");
-    const filename = segments[segments.length - 1];
-    return `/products/${handle}/${filename}`;
-  } catch {
-    // fallback: just extract last part
-    const parts = url.split("/");
-    let filename = parts[parts.length - 1];
-    if (filename.includes("?")) filename = filename.split("?")[0];
-    return `/products/${handle}/${filename}`;
-  }
+  return src.startsWith("//") ? `https:${src}` : src;
 }
 
-// Get all products with local image paths
-export function getAllProducts(): Product[] {
+export function getAllProductsFromJson(): Product[] {
   const raw = (productsData as { products: Product[] }).products;
   return raw.map((p) => ({
     ...p,
     images: p.images.map((img) => ({
       ...img,
-      src: toLocalImagePath(img.src, p.handle),
+      sourceUrl: img.src,
+      src: normalizeImageUrl(img.src),
     })),
     variants: p.variants.map((v) => ({
       ...v,
       featured_image: v.featured_image
         ? {
             ...v.featured_image,
-            src: toLocalImagePath(v.featured_image.src, p.handle),
+            src: normalizeImageUrl(v.featured_image.src),
           }
         : null,
     })),
   }));
 }
 
-// Get a single product by handle
+// Synchronous JSON fallback used before Payload has been seeded.
+export function getAllProducts(): Product[] {
+  return getAllProductsFromJson();
+}
+
 export function getProductByHandle(handle: string): Product | undefined {
-  return getAllProducts().find((p) => p.handle === handle);
+  return getAllProductsFromJson().find((p) => p.handle === handle);
 }
 
 // Get unique color options
 export function getProductColors(product: Product): string[] {
+  if (product.colorOptions?.length) {
+    return product.colorOptions
+      .filter((option) => option.available !== false)
+      .slice()
+      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+      .map((option) => option.value || option.label)
+      .filter(Boolean);
+  }
+
   const colorOption = product.options.find(
     (o) => o.name.toLowerCase() === "color",
   );
@@ -111,6 +150,15 @@ export function getProductColors(product: Product): string[] {
 
 // Get unique size options
 export function getProductSizes(product: Product): string[] {
+  if (product.sizeOptions?.length) {
+    return product.sizeOptions
+      .filter((option) => option.available !== false)
+      .slice()
+      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+      .map((option) => option.value || option.label)
+      .filter(Boolean);
+  }
+
   const sizeOption = product.options.find(
     (o) => o.name.toLowerCase() === "size",
   );

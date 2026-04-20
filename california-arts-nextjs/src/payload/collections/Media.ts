@@ -9,6 +9,10 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
+  admin: {
+    useAsTitle: 'alt',
+    defaultColumns: ['alt', 'source', 'filename', 'updatedAt'],
+  },
   upload: {
     staticDir: 'media',
     imageSizes: [
@@ -39,6 +43,60 @@ export const Media: CollectionConfig = {
       name: 'alt',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'source',
+      type: 'select',
+      defaultValue: 'manual',
+      options: [
+        { label: 'Manual upload', value: 'manual' },
+        { label: 'Shopify import', value: 'shopify' },
+        { label: 'Layout asset', value: 'layout' },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'sourceUrl',
+      type: 'text',
+      unique: true,
+      admin: {
+        hidden: true,
+        description: 'Original URL used for imports. Keeps media imports idempotent.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'sourceId',
+      type: 'text',
+      admin: {
+        hidden: true,
+        description: 'Shopify image ID or other upstream identifier.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'sourceFilename',
+      type: 'text',
+      admin: {
+        hidden: true,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'originalWidth',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'originalHeight',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+      },
     },
   ],
 }

@@ -15,6 +15,14 @@ export const Pages: CollectionConfig = {
   },
   fields: [
     {
+      name: 'shopifyId',
+      type: 'number',
+      unique: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,
@@ -28,6 +36,28 @@ export const Pages: CollectionConfig = {
     {
       name: 'content',
       type: 'richText',
+    },
+    {
+      name: 'contentHtml',
+      type: 'textarea',
+      admin: {
+        description: 'Legacy Shopify/exported HTML content.',
+      },
+    },
+    {
+      name: 'template',
+      type: 'select',
+      defaultValue: 'standard',
+      options: [
+        { label: 'Standard', value: 'standard' },
+        { label: 'About / Contact', value: 'about' },
+        { label: 'Our Story', value: 'our-story' },
+        { label: 'Campaign', value: 'campaign' },
+        { label: 'Policy', value: 'policy' },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'sections',

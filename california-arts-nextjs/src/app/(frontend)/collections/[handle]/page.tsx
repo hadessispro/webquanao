@@ -1,21 +1,34 @@
 import React from "react";
-import { getAllProducts } from "@/lib/products";
+import { getStorefrontCollectionByHandle } from "@/lib/product-data";
 import ProductGrid from "@/components/product/ProductGrid";
 
-export const metadata = {
-  title: "Shop All | California Arts",
-  description:
-    "Shop all California Arts products. Intentional proportions with superior craftsmanship.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}) {
+  const { handle } = await params;
+  const collection = await getStorefrontCollectionByHandle(handle);
 
-export default function CollectionPage() {
-  const allProducts = getAllProducts();
+  return {
+    title: collection.seoTitle || `${collection.title} | california arts`,
+    description: collection.seoDescription,
+  };
+}
+
+export default async function CollectionPage({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}) {
+  const { handle } = await params;
+  const collection = await getStorefrontCollectionByHandle(handle);
 
   return (
     <ProductGrid
-      products={allProducts}
-      sectionTitle="View All"
-      sectionSubtitle={`<p><br/><br/><br/><br/></p><p><br/><br/><br/>Our Product Philosophy:<br/><em>"Less and More."</em></p><p>We re-imagine one garment at a time, combining<br/>intentional proportions with superior craftsmanship.<br/>We advocate for sustainability by producing less,<br/>building better &amp; simplifying the way we get dressed.</p>`}
+      products={collection.products}
+      sectionTitle={collection.title}
+      sectionSubtitle={collection.descriptionHtml}
     />
   );
 }

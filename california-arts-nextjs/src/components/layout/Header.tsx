@@ -1,35 +1,261 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useLayout } from '@/context/LayoutContext'
+import { HeaderData, HeaderMegaMenu, HeaderNavItem } from '@/lib/storefront-types'
+import type { Locale } from '@/lib/i18n'
 
-export default function Header() {
-  const { setIsCartOpen, setIsMobileMenuOpen } = useLayout()
-  const [searchOpen, setSearchOpen] = useState(false)
+interface HeaderProps {
+  header: HeaderData
+}
+
+function SmartLink({
+  href,
+  className,
+  children,
+  openInNewTab,
+  onClick,
+}: {
+  href: string
+  className?: string
+  children: React.ReactNode
+  openInNewTab?: boolean
+  onClick?: () => void
+}) {
+  const external = href.startsWith('http')
+  const target = openInNewTab || external ? '_blank' : undefined
+  const rel = target ? 'noreferrer' : undefined
+
+  if (external) {
+    return (
+      <a href={href} className={className} target={target} rel={rel} onClick={onClick}>
+        {children}
+      </a>
+    )
+  }
 
   return (
-    <>
-      {/* Free Shipping Bar */}
-      <div className="ge-free-shipping-container ge-free-shipping-container-desktop">
-        <div className="ge-free-shipping-msg ge-free-shipping-msg-desktop">
-          Complimentary shipping to Vietnam on all orders over ₫6,578,950. No additional duties and fees upon delivery.
-        </div>
-      </div>
+    <Link href={href} className={className} target={target} rel={rel} onClick={onClick}>
+      {children}
+    </Link>
+  )
+}
 
-      {/* Announcement Bar */}
-      <div id="shopify-section-announcement-bar" className="shopify-section">
-        <div className="bg-primary-background text-primary-text text-sm border-b-grid border-grid-color text-center py-2" role="complementary">
-          <Link className="section-x-padding hover:text-primary-accent" href="/pages/returns-exchanges">
-            Complimentary shipping to Vietnam on all orders over ₫6,578,950. No additional duties and fees upon delivery.
-          </Link>
-        </div>
-      </div>
+function Chevron() {
+  return (
+    <span className="inline-block align-middle svg-scale mr-1 transform origin-center rotate transition">
+      <svg aria-hidden="true" focusable="false" role="presentation" className="icon fill-current" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d="M12 16.596L4.222 8.818l1.414-1.414L12 13.768l6.364-6.364 1.414 1.414z" />
+      </svg>
+    </span>
+  )
+}
 
-      {/* Sticky Header */}
-      <div className="relative">
-        <div id="shopify-section-header" className="shopify-section section-header" style={{ position: 'sticky', top: 0, zIndex: 30 }}>
-          <style dangerouslySetInnerHTML={{ __html: `
+function BagIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="header-bag-icon"
+      focusable="false"
+      height="22"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="22"
+    >
+      <path d="M7.25 8.25V7a4.75 4.75 0 0 1 9.5 0v1.25h2.18l.82 12.5H4.25l.82-12.5h2.18Zm1.5 0h6.5V7a3.25 3.25 0 0 0-6.5 0v1.25Zm-2.27 1.5-.62 9.5h12.28l-.62-9.5H6.48Z" />
+    </svg>
+  )
+}
+
+function MenuIcon() {
+  return (
+    <span aria-hidden="true" className="header-menu-toggle__mark">
+      <span />
+      <span />
+    </span>
+  )
+}
+
+function CartButton({ cartCount, onClick, label }: { cartCount: number; label: string; onClick: () => void }) {
+  return (
+    <button
+      aria-label={`${label} (${cartCount})`}
+      className="header-bag-button"
+      onClick={onClick}
+      type="button"
+    >
+      <BagIcon />
+      {cartCount > 0 && <span className="header-bag-count">{cartCount}</span>}
+    </button>
+  )
+}
+
+function localizedText(locale: Locale, text?: string, textVi?: string) {
+  return locale === 'vi' && textVi ? textVi : text
+}
+
+function MegaMenu({ locale, megaMenu }: { locale: Locale; megaMenu: HeaderMegaMenu }) {
+  if (!megaMenu.enabled) return null
+
+  return (
+    <div className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-t-grid border-b-grid border-grid-color">
+      <div className="c_megamenu-main section-x-padding text-center">
+        <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center -ml-16">
+          {megaMenu.columns.length > 0 && (
+            <div className="c_megamenu-inner-menu">
+              {megaMenu.columns.map((column, index) => (
+                <div className="c_megamenu-inner-a ml-16" key={`${column.heading}-${index}`}>
+                  <h2 className="c_megamenu-second font-heading mb-2">
+                    <SmartLink className="inline-block py-1" href={column.headingHref || '#'}>
+                      {localizedText(locale, column.heading, column.headingVi)}
+                    </SmartLink>
+                  </h2>
+                  <ul className="c_megamenu-third-ul">
+                    {column.links.map((item) => (
+                      <li key={`${item.label}-${item.href}`}>
+                        <SmartLink className="inline-block py-1" href={item.href}>
+                          {localizedText(locale, item.label, item.labelVi)}
+                        </SmartLink>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {megaMenu.imageCards.length > 0 && (
+            <div className="c_megamenu-inner-image">
+              {megaMenu.imageCards.map((card, index) => (
+                <div className="c_megamenu-inner-a c_megamenu-inner-images ml-16" key={`${card.caption || 'image'}-${index}`}>
+                  {card.image && (
+                    <div className="c_megamenu-image">
+                      <SmartLink href={card.href || '#'}>
+                        <img src={card.image.src} alt={card.image.alt || card.caption || ''} />
+                      </SmartLink>
+                    </div>
+                  )}
+                  {card.caption && (
+                    <div className="c_megamenu-content">
+                      <h2>
+                        <SmartLink href={card.href || '#'}>
+                          {localizedText(locale, card.caption, card.captionVi)}
+                        </SmartLink>
+                      </h2>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="c_megamenu-inner-after" />
+      </div>
+    </div>
+  )
+}
+
+function DesktopNavItem({ item, locale }: { item: HeaderNavItem; locale: Locale }) {
+  const hasMegaMenu = Boolean(item.megaMenu?.enabled)
+
+  return (
+    <li className="ca_menu-1st-c">
+      <div className={hasMegaMenu ? 'no-js-focus-wrapper' : undefined}>
+        <SmartLink
+          className={`ca_menu-1st-button inline-flex items-center ${hasMegaMenu ? '' : 'relative'}`}
+          href={item.href}
+          openInNewTab={item.openInNewTab}
+        >
+          <span className="inline-block pr-1">{localizedText(locale, item.label, item.labelVi)}</span>
+          {hasMegaMenu && <Chevron />}
+        </SmartLink>
+        {item.megaMenu && <MegaMenu locale={locale} megaMenu={item.megaMenu} />}
+      </div>
+    </li>
+  )
+}
+
+export default function Header({ header }: HeaderProps) {
+  const { cartCount, locale, setIsCartOpen, setIsMobileMenuOpen, t, toggleLocale } = useLayout()
+  const pathname = usePathname()
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [nearFooter, setNearFooter] = useState(false)
+  const logo = header.logo
+  const isHome = pathname === '/'
+
+  useEffect(() => {
+    let frameId = 0
+
+    const updateHeaderState = () => {
+      frameId = 0
+      setScrolled(window.scrollY > 18)
+
+      const footer = document.getElementById('shopify-section-footer')
+      if (!footer) {
+        setNearFooter(false)
+        return
+      }
+
+      const footerRect = footer.getBoundingClientRect()
+      const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
+      const headerHeight = headerEl?.getBoundingClientRect().height || 90
+      const footerRevealPoint = Math.max(headerHeight + 44, window.innerHeight * 0.72)
+
+      setNearFooter(footerRect.top <= footerRevealPoint && footerRect.bottom > headerHeight)
+    }
+
+    const queueUpdate = () => {
+      if (frameId) return
+      frameId = window.requestAnimationFrame(updateHeaderState)
+    }
+
+    updateHeaderState()
+    window.addEventListener('scroll', queueUpdate, { passive: true })
+    window.addEventListener('resize', queueUpdate)
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId)
+      window.removeEventListener('scroll', queueUpdate)
+      window.removeEventListener('resize', queueUpdate)
+    }
+  }, [pathname])
+
+  const headerStackClass = [
+    'site-header-stack',
+    isHome ? 'site-header-stack--home' : '',
+    scrolled ? 'site-header-stack--scrolled' : '',
+    nearFooter ? 'site-header-stack--footer-near' : '',
+    searchOpen ? 'site-header-stack--search-open' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  return (
+    <div className={headerStackClass}>
+      {header.shippingBar.enabled && (
+        <div id="shopify-section-announcement-bar" className="shopify-section site-announcement">
+          <div className="ge-free-shipping-container">
+            <div className="ge-free-shipping-msg">
+                  {header.shippingBar.href ? (
+                <SmartLink href={header.shippingBar.href} className="section-x-padding hover:text-primary-accent">
+                  {localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)}
+                </SmartLink>
+              ) : (
+                localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="header-sticky-shell relative" style={{ position: 'sticky', top: 0, zIndex: 30 }}>
+        <div id="shopify-section-header" className="shopify-section section-header" style={{ position: 'relative', zIndex: 30 }}>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
             :root {
               --color-header-accent: var(--color-primary-accent);
               --color-header-text: var(--color-primary-text);
@@ -40,154 +266,77 @@ export default function Header() {
               --sticky-header-height: 66px;
             }
             .logo-image { display: block; max-width: 120px; }
-          `}} />
+          `,
+            }}
+          />
 
           <section data-section-type="header" data-sticky="true">
             <header className="bg-header-background text-header-text border-b-grid relative z-10 border-theme-color">
-              
-              {/* DESKTOP NAV */}
               <nav className="relative hidden lg:block" aria-label="Primary">
-                <div className="c_header-main section-x-padding flex items-center justify-between flex-wrap py-1 text-sm">
-                  
-                  {/* Logo */}
-                  <div className="c_header-logo">
-                    <div className="flex items-center">
-                      <div>
-                        <h1>
-                          <Link href="/" className="inline-block logo-image break-all">
-                            <img
-                              src="//california-arts.com/cdn/shop/files/Asset_9_4x_614e882d-af68-488c-a539-fd6f96b13db1_120x.png?v=1719078598"
-                              srcSet="//california-arts.com/cdn/shop/files/Asset_9_4x_614e882d-af68-488c-a539-fd6f96b13db1_120x.png?v=1719078598 1x, //california-arts.com/cdn/shop/files/Asset_9_4x_614e882d-af68-488c-a539-fd6f96b13db1_120x@2x.png?v=1719078598 2x"
-                              alt="California Arts"
-                            />
-                          </Link>
-                        </h1>
-                      </div>
-                    </div>
+                <div className="c_header-main site-header__inner section-x-padding text-sm">
+                  <div className="site-header__left">
+                    <button
+                      aria-label={t('menu')}
+                      className="header-menu-toggle header-menu-toggle--desktop"
+                      onClick={() => setIsMobileMenuOpen(true)}
+                      type="button"
+                    >
+                      <MenuIcon />
+                    </button>
                   </div>
 
-                  {/* Menu */}
-                  <div className="c_header-menu">
+                  <h1 className="c_header-logo site-header__brand">
+                    <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
+                      {logo ? <img src={logo.src} alt={logo.alt || header.logoAlt} /> : header.logoText}
+                    </SmartLink>
+                  </h1>
+
+                  <div className="c_header-menu site-header__menu">
                     <ul className="c_header-menu-ul flex flex-wrap">
-                      {/* Shop All with mega menu */}
-                      <li className="ca_menu-1st-c">
-                        <div className="no-js-focus-wrapper">
-                          <button className="ca_menu-1st-button inline-block flex items-center">
-                            <span className="inline-block pr-1">01 Shop All</span>
-                            <span className="inline-block align-middle svg-scale mr-1 transform origin-center rotate transition">
-                              <svg aria-hidden="true" focusable="false" role="presentation" className="icon fill-current" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 16.596L4.222 8.818l1.414-1.414L12 13.768l6.364-6.364 1.414 1.414z" /></svg>
-                            </span>
-                          </button>
-                          <div className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-t-grid border-b-grid border-grid-color">
-                            <div className="c_megamenu-main section-x-padding text-center">
-                              <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center -ml-16">
-                                <div className="c_megamenu-inner-menu">
-                                  <div className="c_megamenu-inner-a ml-16">
-                                    <h2 className="c_megamenu-second font-heading mb-2">
-                                      <Link className="inline-block py-1" href="/collections/coats-jackets">Shop by Category</Link>
-                                    </h2>
-                                    <ul className="c_megamenu-third-ul">
-                                      {[
-                                        { label: 'View All', href: '/collections/coats-jackets' },
-                                        { label: 'Outerwear', href: '/collections/coats-jackets' },
-                                        { label: 'Tailoring', href: '/collections/category-tailoring' },
-                                        { label: 'Knitwear', href: '/collections/knitwear' },
-                                        { label: 'Sweatshirts & Sweatpants', href: '/collections/collection-sweater' },
-                                        { label: 'Shirts', href: '/collections/shirts-all-navigation' },
-                                        { label: 'Polos', href: '/collections/category-polos' },
-                                        { label: 'Tees & Henleys', href: '/collections/collection-t-shirts-tanks' },
-                                        { label: 'Tanks & Vests', href: '/collections/category-vests' },
-                                        { label: 'Pants & Shorts', href: '/collections/trousers-shorts' },
-                                        { label: 'Denim', href: '/collections/category-nav-denim' },
-                                        { label: 'Accessories', href: '/collections/accessories' },
-                                        { label: 'Gift Card', href: '/products/giftcard' },
-                                      ].map((item, i) => (
-                                        <li key={i}><Link className="inline-block py-1" href={item.href}>{item.label}</Link></li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                  <div className="c_megamenu-inner-a ml-16">
-                                    <h2 className="c_megamenu-second font-heading mb-2">
-                                      <Link className="inline-block py-1" href="/pages/campaign">In Focus</Link>
-                                    </h2>
-                                    <ul className="c_megamenu-third-ul">
-                                      <li><Link className="inline-block py-1" href="/pages/new-arrivals">New Arrivals</Link></li>
-                                      <li><Link className="inline-block py-1" href="/pages/campaign">Campaign</Link></li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="c_megamenu-inner-image">
-                                  <div className="c_megamenu-inner-a c_megamenu-inner-images ml-16">
-                                    <div className="c_megamenu-image">
-                                      <Link href="/collections/category-tailoring">
-                                        <img src="//california-arts.com/cdn/shop/files/Asset_352_3x_dbdd82e6-4465-4e61-9689-c70fca184266.png?v=1762811468" alt="" />
-                                      </Link>
-                                    </div>
-                                    <div className="c_megamenu-content"><h2><Link href="/collections/category-tailoring">Tailoring</Link></h2></div>
-                                  </div>
-                                  <div className="c_megamenu-inner-a c_megamenu-inner-images ml-16">
-                                    <div className="c_megamenu-image">
-                                      <Link href="/collections/accessories">
-                                        <img src="//california-arts.com/cdn/shop/files/Asset_351_3x_31d33670-8ce1-43c9-816d-182528667610.png?v=1762810489" alt="" />
-                                      </Link>
-                                    </div>
-                                    <div className="c_megamenu-content"><h2><Link href="/collections/accessories">Accessories</Link></h2></div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="c_megamenu-inner-after"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="ca_menu-1st-c">
-                        <Link className="ca_menu-1st-button inline-block pt-2 relative" href="/pages/our-story">02 About the Brand</Link>
-                      </li>
-                      <li className="ca_menu-1st-c">
-                        <Link className="ca_menu-1st-button inline-block pt-2 relative" href="/pages/campaign">03 Creative Campaign</Link>
-                      </li>
+                      {header.navigation.map((item) => (
+                        <DesktopNavItem item={item} key={`${item.label}-${item.href}`} locale={locale} />
+                      ))}
                     </ul>
                   </div>
 
-                  {/* Icons */}
-                  <div className="c_header-icons">
+                  <div className="c_header-icons site-header__actions">
                     <ul className="c_header-icons-ul">
+                      {header.countrySelector.enabled && (
+                        <li>
+                          <button type="button" className="localization__list--button">
+                            {localizedText(locale, header.countrySelector.label, header.countrySelector.labelVi) || t('countryLabel')}
+                          </button>
+                        </li>
+                      )}
                       <li>
-                        <button type="button" className="localization__list--button">Vietnam | VND ₫</button>
+                        <button
+                          aria-label={t('languageToggle')}
+                          className="header-locale-toggle"
+                          onClick={toggleLocale}
+                          type="button"
+                        >
+                          {locale === 'en' ? 'VI' : 'EN'}
+                        </button>
                       </li>
                       <li>
                         <div className="whitespace-nowrap">
-                          <button onClick={() => setSearchOpen(!searchOpen)} className="inline-block pt-2">Search</button>
-                          {searchOpen && (
-                            <div className="search-overlay anim-fade" onClick={(e) => e.stopPropagation()}>
-                              <div className="section-x-padding">
-                                <form action="/search" method="get" className="input-group search" role="search">
-                                  <div className="flex items-center justify-between">
-                                    <button className="py-2 mr-4" aria-label="Submit" type="submit">
-                                      <span className="inline-block w-5 h-5 align-middle">
-                                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-search" viewBox="0 0 24 24"><path fillRule="evenodd" d="M10.533 17.438a6.968 6.968 0 01-6.96-6.96 6.968 6.968 0 016.96-6.96 6.968 6.968 0 016.96 6.96 6.968 6.968 0 01-6.96 6.96zm6.949-1.314a8.917 8.917 0 002.01-5.646c0-4.941-4.02-8.96-8.96-8.96-4.94 0-8.96 4.019-8.96 8.96 0 4.94 4.02 8.96 8.96 8.96 2.082 0 3.996-.72 5.52-1.916l4.962 4.96 1.415-1.413-4.947-4.945z" /></svg>
-                                      </span>
-                                    </button>
-                                    <input type="text" name="q" placeholder="Search" className="placeholder-current font-body w-full block bg-transparent" autoFocus />
-                                    <button className="py-2 ml-4" onClick={() => setSearchOpen(false)} type="button">
-                                      <span className="inline-block w-5 h-5 align-middle">
-                                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-close" viewBox="0 0 24 24"><path fillRule="evenodd" d="M18.364 4.222l1.414 1.414L13.414 12l6.364 6.364-1.414 1.414L12 13.414l-6.364 6.364-1.414-1.414L10.586 12 4.222 5.636l1.414-1.414L12 10.586z" /></svg>
-                                      </span>
-                                    </button>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                          )}
+                          <button
+                            aria-label={t('openSearch')}
+                            onClick={() => setSearchOpen((open) => !open)}
+                            className="header-search-toggle"
+                          >
+                            {t('search')}
+                          </button>
                         </div>
                       </li>
                       <li>
                         <div className="flex items-center justify-end text-right">
                           <div className="c_header-cartCount whitespace-nowrap">
-                            <button onClick={() => setIsCartOpen(true)} className="inline-block pt-2">
-                              <span className="c_header-cartText">Cart</span>{' '}
-                              <span className="c_header-cartCounter"><span>0</span></span>
-                            </button>
+                            <CartButton
+                              cartCount={cartCount}
+                              label={t('openCart')}
+                              onClick={() => setIsCartOpen(true)}
+                            />
                           </div>
                         </div>
                       </li>
@@ -196,40 +345,81 @@ export default function Header() {
                 </div>
               </nav>
 
-              {/* MOBILE NAV */}
               <div className="lg:hidden">
-                <div className="lg:relative section-x-padding flex items-center justify-between py-2">
-                  <div className="flex items-center">
-                    <div className="mr-4">
-                      <h1>
-                        <Link href="/" className="inline-block logo-image break-all">
-                          <img src="//california-arts.com/cdn/shop/files/Asset_9_4x_614e882d-af68-488c-a539-fd6f96b13db1_120x.png?v=1719078598" alt="California Arts" />
-                        </Link>
-                      </h1>
-                    </div>
-                  </div>
-                  <div className="ca_header-icons flex items-center justify-end text-right">
+                <div className="site-header__mobile section-x-padding">
+                  <button
+                    aria-label={t('menu')}
+                    className="header-menu-toggle header-menu-toggle--mobile"
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    type="button"
+                  >
+                    <MenuIcon />
+                  </button>
+
+                  <h1 className="site-header__mobile-brand">
+                    <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
+                      {logo ? <img src={logo.src} alt={logo.alt || header.logoAlt} /> : header.logoText}
+                    </SmartLink>
+                  </h1>
+
+                  <div className="ca_header-icons site-header__mobile-actions">
+                    <button
+                      aria-label={t('languageToggle')}
+                      className="header-locale-toggle"
+                      onClick={toggleLocale}
+                      type="button"
+                    >
+                      {locale === 'en' ? 'VI' : 'EN'}
+                    </button>
                     <div className="ca_header-icons__search whitespace-nowrap ml-4">
-                      <button onClick={() => setSearchOpen(!searchOpen)} className="inline-block pt-2">Search</button>
-                    </div>
-                    <div className="c_header-cartCount ml-4 whitespace-nowrap">
-                      <button onClick={() => setIsCartOpen(true)} className="inline-block pt-2">
-                        <span className="c_header-cartText">Cart</span>{' '}
-                        <span className="c_header-cartCounter"><span>0</span></span>
+                      <button
+                        aria-label={t('openSearch')}
+                        onClick={() => setSearchOpen((open) => !open)}
+                        className="header-search-toggle"
+                      >
+                        {t('search')}
                       </button>
                     </div>
-                    <button className="inline-block pt-2 ml-4" onClick={() => setIsMobileMenuOpen(true)}>
-                      <span className="inline-block w-5 h-5 align-middle">
-                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-menu" viewBox="0 0 24 24"><path fillRule="evenodd" d="M23 18v2H1v-2h22zm0-7v2H1v-2h22zm0-7v2H1V4h22z" /></svg>
-                      </span>
-                    </button>
+                    <div className="c_header-cartCount ml-4 whitespace-nowrap">
+                      <CartButton
+                        cartCount={cartCount}
+                        label={t('openCart')}
+                        onClick={() => setIsCartOpen(true)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </header>
           </section>
+
+          {searchOpen && (
+            <div className="search-overlay anim-fade" onClick={(event) => event.stopPropagation()}>
+              <div className="section-x-padding">
+                <form action="/search" method="get" className="input-group search" role="search">
+                  <div className="flex items-center justify-between">
+                    <button className="py-2 mr-4" aria-label={t('submitSearch')} type="submit">
+                      <span className="inline-block w-5 h-5 align-middle">
+                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-search" viewBox="0 0 24 24">
+                          <path fillRule="evenodd" d="M10.533 17.438a6.968 6.968 0 01-6.96-6.96 6.968 6.968 0 016.96-6.96 6.968 6.968 0 016.96 6.96 6.968 6.968 0 01-6.96 6.96zm6.949-1.314a8.917 8.917 0 002.01-5.646c0-4.941-4.02-8.96-8.96-8.96-4.94 0-8.96 4.019-8.96 8.96 0 4.94 4.02 8.96 8.96 8.96 2.082 0 3.996-.72 5.52-1.916l4.962 4.96 1.415-1.413-4.947-4.945z" />
+                        </svg>
+                      </span>
+                    </button>
+                    <input type="text" name="q" placeholder={t('search')} className="placeholder-current font-body w-full block bg-transparent" autoFocus />
+                    <button className="py-2 ml-4" aria-label={t('closeSearch')} onClick={() => setSearchOpen(false)} type="button">
+                      <span className="inline-block w-5 h-5 align-middle">
+                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-close" viewBox="0 0 24 24">
+                          <path fillRule="evenodd" d="M18.364 4.222l1.414 1.414L13.414 12l6.364 6.364-1.414 1.414L12 13.414l-6.364 6.364-1.414-1.414L10.586 12 4.222 5.636l1.414-1.414L12 10.586z" />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
