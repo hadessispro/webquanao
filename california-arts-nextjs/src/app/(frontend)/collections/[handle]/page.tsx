@@ -35,7 +35,6 @@ export default async function CollectionPage({
   return (
     <ProductGrid
       barLabel={collection.title}
-      productLimit={2}
       products={collection.products}
       sectionSubtitle={collection.descriptionHtml}
       showSectionTitle={false}

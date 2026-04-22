@@ -31,7 +31,7 @@ export default function ProductGrid({
   return (
     <>
       {barLabel && (
-        <div className="c_text-columns-section">
+        <div className="c_text-columns-section product-grid__bar">
           <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
             <div className="px-8 lg:px-88 section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">

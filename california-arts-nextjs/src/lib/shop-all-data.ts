@@ -16,8 +16,6 @@ type ShopAllSectionDefinition = {
   match: (product: Product, text: string) => boolean
 }
 
-const PRODUCT_LIMIT_PER_SECTION = 2
-
 const SHOP_ALL_SECTION_DEFINITIONS: ShopAllSectionDefinition[] = [
   {
     handle: 'coats',
@@ -258,7 +256,6 @@ function pickSectionProducts(allProducts: Product[], definition: ShopAllSectionD
             ? collectionFallbackWithReuse
             : fallbackWithReuse
   )
-    .slice(0, PRODUCT_LIMIT_PER_SECTION)
 
   selected.forEach((product) => {
     usedHandles.add(product.handle)
