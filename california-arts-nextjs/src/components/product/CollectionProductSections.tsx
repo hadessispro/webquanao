@@ -19,6 +19,18 @@ function productSectionDescription(product: Product) {
     .trim();
 }
 
+function IntroFeaturedSpacer() {
+  return (
+    <section className="featured-collection border-grid-color collection-product-page__intro-spacer">
+      <div className="py-8">
+        <div className="bg-primary-background section-x-padding px-88 py-8">
+          <ul className="grid grid-cols-2 lg:grid-cols-12 gap-gutter" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function CollectionProductSections({
   collection,
 }: {
@@ -50,8 +62,10 @@ export default function CollectionProductSections({
                 </div>
               </div>
             </div>
-          </section>
+            </section>
         )}
+
+        <IntroFeaturedSpacer />
       </div>
 
       <div className="collection-product-page__sections">

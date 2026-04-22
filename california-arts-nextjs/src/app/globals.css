@@ -1087,6 +1087,8 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 .product-grid__bar .rte,
 .shop-all-page__intro .rte,
 .collection-product-page__intro .rte {
+  font-size: 10.4px;
+  line-height: 1.2;
   margin: 0;
 }
 
@@ -1094,6 +1096,21 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 .shop-all-page__intro .rte p,
 .collection-product-page__intro .rte p {
   margin: 0;
+}
+
+.product-grid__bar h2 {
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.shop-all-page__intro-spacer,
+.collection-product-page__intro-spacer {
+  margin: 5px 0;
+}
+
+.shop-all-page__intro-spacer ul,
+.collection-product-page__intro-spacer ul {
+  min-height: 1px;
 }
 
 .collection-category-bar,

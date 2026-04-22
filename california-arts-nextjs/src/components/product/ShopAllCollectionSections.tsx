@@ -6,6 +6,18 @@ import { useLayout } from '@/context/LayoutContext'
 import type { StorefrontCollection } from '@/lib/product-data'
 import type { StorefrontShopAllSection } from '@/lib/shop-all-data'
 
+function IntroFeaturedSpacer() {
+  return (
+    <section className="featured-collection border-grid-color shop-all-page__intro-spacer">
+      <div className="py-8">
+        <div className="bg-primary-background section-x-padding px-88 py-8">
+          <ul className="grid grid-cols-2 lg:grid-cols-12 gap-gutter" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function ShopAllCollectionSections({
   collection,
   sections,
@@ -42,8 +54,10 @@ export default function ShopAllCollectionSections({
                 </div>
               </div>
             </div>
-          </section>
+            </section>
         )}
+
+        <IntroFeaturedSpacer />
       </div>
 
       <div className="shop-all-page__sections">
