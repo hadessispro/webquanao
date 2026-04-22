@@ -1066,6 +1066,12 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   z-index: 9;
 }
 
+.product-grid__bar--stuck > section,
+.shop-all-page__intro > .c_text-columns-section > section,
+.collection-product-page__intro > .c_text-columns-section > section {
+  border-top-width: 0;
+}
+
 .shop-all-page__intro > .c_text-columns-section,
 .collection-product-page__intro > .c_text-columns-section {
   background: #fff;
