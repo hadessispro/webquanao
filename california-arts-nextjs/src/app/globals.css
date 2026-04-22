@@ -2258,7 +2258,7 @@ body.art-menu-lock {
 
 .product-detail__media--desktop {
   display: grid;
-  gap: 8px;
+  gap: 14px;
 }
 
 .product-detail__mobile-gallery {
@@ -2604,7 +2604,7 @@ body.art-menu-lock {
 
 .product-detail__style-grid {
   display: grid;
-  gap: 0;
+  gap: 10px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 12px;
   max-width: 378px;
@@ -3469,13 +3469,13 @@ body.art-menu-lock {
 }
 
 .product-grid__items {
-  column-gap: 8px;
-  row-gap: 16px;
+  column-gap: 12px;
+  row-gap: 22px;
 }
 
 @media (min-width: 1024px) {
   .product-grid__items {
-    column-gap: 12px;
-    row-gap: 18px;
+    column-gap: 16px;
+    row-gap: 26px;
   }
 }
