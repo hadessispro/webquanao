@@ -435,11 +435,11 @@ export async function getNewsletterPopupData(): Promise<NewsletterPopupData> {
       delayMs: popup.delayMs ?? DEFAULT_NEWSLETTER_POPUP.delayMs,
       dismissDays: popup.dismissDays ?? DEFAULT_NEWSLETTER_POPUP.dismissDays,
       logo:
-        mediaToImage(popup.logo, popup.title || DEFAULT_NEWSLETTER_POPUP.logo?.alt) ||
+        mediaToImage(popup.logo, DEFAULT_HEADER.logoAlt || DEFAULT_NEWSLETTER_POPUP.logo?.alt) ||
         (popup.logoSourceUrl
           ? {
               src: ensureAbsoluteUrl(popup.logoSourceUrl) || popup.logoSourceUrl,
-              alt: popup.title || DEFAULT_NEWSLETTER_POPUP.logo?.alt,
+              alt: DEFAULT_HEADER.logoAlt || DEFAULT_NEWSLETTER_POPUP.logo?.alt,
             }
           : DEFAULT_NEWSLETTER_POPUP.logo),
       title: popup.title || DEFAULT_NEWSLETTER_POPUP.title,

@@ -1361,8 +1361,8 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 }
 
 .newsletter-popup__mark {
-  max-height: 58px !important;
-  max-width: 36px !important;
+  max-height: 44px !important;
+  max-width: 104px !important;
 }
 
 .newsletter-popup__dots {

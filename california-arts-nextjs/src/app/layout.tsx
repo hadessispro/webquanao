@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "California Arts™ — California Minimalism",
-  description: "Accessible design by producing less & building better.",
+  title: "Điển",
+  description: "Điển. Accessible design by producing less & building better.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

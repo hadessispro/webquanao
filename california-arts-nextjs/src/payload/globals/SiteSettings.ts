@@ -10,12 +10,12 @@ export const SiteSettings: GlobalConfig = {
     {
       name: 'siteName',
       type: 'text',
-      defaultValue: 'California Arts',
+      defaultValue: 'Điển',
     },
     {
       name: 'siteDescription',
       type: 'textarea',
-      defaultValue: 'California Minimalism. Accessible design by producing less & building better.',
+      defaultValue: 'Điển. Accessible design by producing less & building better.',
     },
     {
       name: 'currency',
@@ -247,12 +247,12 @@ export const SiteSettings: GlobalConfig = {
         {
           name: 'title',
           type: 'text',
-          defaultValue: 'join us, in southern california',
+          defaultValue: 'join us, at điển',
         },
         {
           name: 'titleVi',
           type: 'text',
-          defaultValue: 'tham gia cùng chúng tôi, tại southern california',
+          defaultValue: 'tham gia cùng điển',
         },
         {
           name: 'description',
@@ -308,12 +308,12 @@ export const SiteSettings: GlobalConfig = {
         {
           name: 'title',
           type: 'text',
-          defaultValue: 'California Arts™ — California Minimalism',
+          defaultValue: 'Điển',
         },
         {
           name: 'description',
           type: 'textarea',
-          defaultValue: 'Accessible design by producing less & building better.',
+          defaultValue: 'Điển. Accessible design by producing less & building better.',
         },
         {
           name: 'image',

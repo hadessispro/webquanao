@@ -39,9 +39,9 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
   const [message, setMessage] = useState('')
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const popupMark = {
-    src: '/media/d-brandmark.png',
-    alt: 'đ',
+  const popupMark = settings.logo || {
+    src: '/media/dien-logo-header.png',
+    alt: 'điển',
   }
 
   const canShowOnPath = useMemo(
@@ -130,7 +130,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
         </button>
 
         <div className="newsletter-popup__brand">
-          <img className="newsletter-popup__mark" src={popupMark.src} alt={popupMark.alt} />
+          <img className="newsletter-popup__mark" src={popupMark.src} alt={popupMark.alt || 'điển'} />
           <div className="newsletter-popup__dots" aria-hidden="true">
             {Array.from({ length: 16 }).map((_, index) => (
               <span key={index} />
