@@ -121,6 +121,17 @@ export default function CartDrawer() {
                   <span>{t('subtotal')}</span>
                   <BrandPrice amount={formatMoney(cartSubtotal)} />
                 </div>
+                <div className="cart-drawer__payment-info">
+                  <div className="cart-drawer__payment-logos" aria-label="logo thanh toán">
+                    <span className="cart-drawer__payment-logo cart-drawer__payment-logo--vnpay">
+                      VNPay
+                    </span>
+                    <span className="cart-drawer__payment-logo">ATM</span>
+                    <span className="cart-drawer__payment-logo">COD</span>
+                    <span className="cart-drawer__payment-logo">Bank</span>
+                  </div>
+                  <p>Thanh toán an toàn, xác nhận đơn trước khi xử lý giao hàng tại Việt Nam.</p>
+                </div>
                 <Link
                   className="cart-drawer__checkout"
                   href="/checkout"

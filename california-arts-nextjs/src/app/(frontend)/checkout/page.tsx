@@ -116,6 +116,23 @@ export default function CheckoutPage() {
     () => Math.max(cartSubtotal - discountAmount, 0),
     [cartSubtotal, discountAmount],
   )
+  const paymentMethods = [
+    {
+      description: 'trả tiền khi nhận hàng',
+      label: t('cashOnDelivery'),
+      value: 'cod',
+    },
+    {
+      description: 'xác nhận qua tài khoản',
+      label: t('bankTransfer'),
+      value: 'bank_transfer',
+    },
+    {
+      description: 'ví, thẻ ATM, QR',
+      label: 'VNPay',
+      value: 'vnpay',
+    },
+  ]
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -421,18 +438,36 @@ export default function CheckoutPage() {
               <div className="checkout-page__section-head">
                 <h2>{t('payment')}</h2>
               </div>
-              <label className="checkout-page__field checkout-page__field--full">
+              <div className="checkout-page__field checkout-page__field--full">
                 <span>{t('method')}</span>
-                <select
-                  name="paymentMethod"
-                  onChange={(event) => updateProfile('paymentMethod', event.target.value)}
-                  value={profile.paymentMethod}
+                <div
+                  aria-label={t('method')}
+                  className="checkout-page__payment-methods"
+                  role="radiogroup"
                 >
-                  <option value="cod">{t('cashOnDelivery')}</option>
-                  <option value="bank_transfer">{t('bankTransfer')}</option>
-                  <option value="vnpay">VNPay</option>
-                </select>
-              </label>
+                  {paymentMethods.map((method) => {
+                    const isActive = profile.paymentMethod === method.value
+
+                    return (
+                      <button
+                        aria-checked={isActive}
+                        className={
+                          isActive
+                            ? 'checkout-page__payment-method checkout-page__payment-method--active'
+                            : 'checkout-page__payment-method'
+                        }
+                        key={method.value}
+                        onClick={() => updateProfile('paymentMethod', method.value)}
+                        role="radio"
+                        type="button"
+                      >
+                        <span>{method.label}</span>
+                        <small>{method.description}</small>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
               <label className="checkout-page__field checkout-page__field--full">
                 <span>{t('notesOptional')}</span>
                 <textarea
@@ -518,6 +553,23 @@ export default function CheckoutPage() {
                 <span>{t('total')}</span>
                 <BrandPrice amount={formatMoney(total)} />
               </p>
+            </div>
+
+            <div className="checkout-page__payment-info">
+              <p>phương thức thanh toán được hỗ trợ</p>
+              <div className="checkout-page__payment-logos" aria-label="logo thanh toán">
+                <span className="checkout-page__payment-logo checkout-page__payment-logo--vnpay">
+                  VNPay
+                </span>
+                <span className="checkout-page__payment-logo">ATM</span>
+                <span className="checkout-page__payment-logo">COD</span>
+                <span className="checkout-page__payment-logo">Bank</span>
+              </div>
+              <ul className="checkout-page__payment-policy">
+                <li>Thanh toán an toàn qua VNPay, chuyển khoản hoặc tiền mặt khi nhận hàng.</li>
+                <li>Đơn hàng được giữ và xử lý sau khi thông tin thanh toán được xác nhận.</li>
+                <li>Phí vận chuyển, ưu đãi và tổng tiền sẽ được kiểm tra trước khi xác nhận đơn.</li>
+              </ul>
             </div>
             <button
               className="checkout-page__submit"

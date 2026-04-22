@@ -21,25 +21,21 @@ function TextColumnHeader({ children }: { children: ReactNode }) {
 
 function RichTextSection({
   children,
-  justify = 'justify-start',
+  placement = 'start',
   sectionClassName = '',
   textSize = 'text-sm',
-  width = 'lg:w-1/2',
 }: {
   children: ReactNode
-  justify?: string
+  placement?: 'start' | 'center' | 'end'
   sectionClassName?: string
   textSize?: string
-  width?: string
 }) {
   return (
     <div className={`shopify-section our-story-page__copy-section ${sectionClassName}`.trim()}>
       <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-        <div className="px-8 lg:px-8 pb-4">
-          <div className={`flex ${textSize} default text-left ${justify}`}>
-            <div className={`w-full ${width}`}>
-              <div className="rte font-body break-words px-4 our-story-page__copy">{children}</div>
-            </div>
+        <div className={`our-story-page__copy-wrap ${textSize} default text-left`}>
+          <div className={`our-story-page__copy-slot our-story-page__copy-slot--${placement}`}>
+            <div className="rte font-body break-words our-story-page__copy">{children}</div>
           </div>
         </div>
       </section>
@@ -52,7 +48,6 @@ function Spacer() {
     <RichTextSection
       sectionClassName="our-story-page__copy-section--spacer"
       textSize="text-2xl lg:text-5xl"
-      width="lg:w-full"
     >
       <p>
         <br />
@@ -71,12 +66,6 @@ function OurStoryFallback() {
 
       <RichTextSection sectionClassName="our-story-page__copy-section--brand">
         <p>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
           <strong>
             The California Arts &amp;
             <br />
@@ -109,28 +98,16 @@ function OurStoryFallback() {
           Live creatively.
           <br />
           Foster the deeper connections.
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
         </p>
       </RichTextSection>
 
       <TextColumnHeader>02 Our Production Philosophy</TextColumnHeader>
 
-      <RichTextSection justify="justify-center" sectionClassName="our-story-page__copy-section--production">
+      <RichTextSection
+        placement="center"
+        sectionClassName="our-story-page__copy-section--production"
+      >
         <p>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
           <strong>
             California Minimalism:
             <br />
@@ -185,13 +162,6 @@ function OurStoryFallback() {
           the exteriors, we find creative ways to use and
           <br />
           reuse fabrics and scraps.
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
         </p>
       </RichTextSection>
 
@@ -199,13 +169,7 @@ function OurStoryFallback() {
 
       <TextColumnHeader>03 Founder Notes</TextColumnHeader>
 
-      <RichTextSection justify="justify-end" sectionClassName="our-story-page__copy-section--founder">
-        <p>
-          <br />
-          <br />
-          <br />
-          <br />
-        </p>
+      <RichTextSection placement="end" sectionClassName="our-story-page__copy-section--founder">
         <p>
           I believe that the people and the things we
           <br />
@@ -252,7 +216,6 @@ function OurStoryFallback() {
       <RichTextSection
         sectionClassName="our-story-page__copy-section--spacer"
         textSize="text-2xl lg:text-5xl"
-        width="lg:w-full"
       >
         <p />
         <p>
