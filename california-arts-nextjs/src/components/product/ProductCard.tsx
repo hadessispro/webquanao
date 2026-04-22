@@ -13,6 +13,7 @@ import {
   isProductSoldOut,
   getProductSizes,
 } from "@/lib/products";
+import { BrandPrice } from "@/components/ui/BrandCurrency";
 
 interface ProductCardProps {
   product: Product;
@@ -153,10 +154,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                     className="dfgjghjhg4"
                     style={{ textDecoration: "line-through", opacity: 0.5 }}
                   >
-                    {comparePrice}
+                    <BrandPrice amount={comparePrice} />
                   </span>
                 )}
-                <span className="dfgjghjhg4">{price}</span>
+                <span className="dfgjghjhg4">
+                  <BrandPrice amount={price} />
+                </span>
               </div>
 
               {/* Sold out indicator */}

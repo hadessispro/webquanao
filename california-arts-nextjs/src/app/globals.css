@@ -909,11 +909,28 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   display: block;
   filter: none;
   height: auto;
-  max-height: 68px;
-  max-width: 190px;
+  max-height: 82px;
+  max-width: 226px;
   object-fit: contain;
   opacity: 0.94;
   width: auto;
+}
+
+.brand-price,
+.brand-currency-code {
+  align-items: baseline;
+  display: inline-flex;
+  gap: 0.22em;
+  white-space: nowrap;
+}
+
+.brand-currency-mark {
+  background: center / contain no-repeat url('/media/dien-mark-black.png');
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 1.08em;
+  transform: translateY(0.1em);
+  width: 0.72em;
 }
 
 .dien-footer__brand p {
@@ -1002,6 +1019,11 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
     padding-top: 48px;
   }
 
+  .dien-footer__logo img {
+    max-height: 74px;
+    max-width: 204px;
+  }
+
   .dien-footer__bottom {
     display: grid;
     grid-template-columns: 1fr;
@@ -1011,6 +1033,57 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 
   .dien-footer__links {
     justify-content: flex-start;
+  }
+}
+
+.shop-all-page__sections {
+  background: #fff;
+}
+
+.shop-all-collection {
+  position: relative;
+}
+
+.shop-all-collection__bar {
+  background: #fff;
+  border-bottom: 1px solid rgba(19, 24, 24, 0.18);
+  border-top: 1px solid rgba(19, 24, 24, 0.18);
+  position: sticky;
+  top: var(--sticky-header-height, 66px);
+  z-index: 14;
+}
+
+.shop-all-collection__bar-inner {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  min-height: 30px;
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.shop-all-collection__bar-inner h2 {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.shop-all-collection__index {
+  flex: 0 0 28px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+@media (max-width: 767px) {
+  .shop-all-collection__bar-inner {
+    gap: 10px;
+    min-height: 28px;
+  }
+
+  .shop-all-collection__bar-inner h2,
+  .shop-all-collection__index {
+    font-size: 14px;
   }
 }
 

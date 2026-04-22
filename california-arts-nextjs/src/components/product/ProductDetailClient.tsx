@@ -4,6 +4,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLayout } from "@/context/LayoutContext";
+import { BrandPrice } from "@/components/ui/BrandCurrency";
+import { formatVndAmount } from "@/lib/price";
 import type { Product, ProductImage, ProductVariant, ProductVideo } from "@/lib/products";
 import {
   getProductColors,
@@ -239,8 +241,7 @@ function getSizeSelectorStyle(product: Product) {
 }
 
 function formatPrice(value?: string) {
-  const amount = Number.parseInt(value || "0", 10);
-  return `${new Intl.NumberFormat("vi-VN").format(Number.isNaN(amount) ? 0 : amount)}₫`;
+  return formatVndAmount(value);
 }
 
 function productPrice(product: Pick<Product, "variants">) {
@@ -265,7 +266,7 @@ function ProductMiniCard({ product }: { product: ProductPreview }) {
         )}
         <span className="product-detail-card__meta">
           <span>{product.title}</span>
-          <span>{productPrice(product)}</span>
+          <BrandPrice amount={productPrice(product)} />
         </span>
       </Link>
     </article>
@@ -628,10 +629,10 @@ export default function ProductDetailClient({
               <div className="product-detail__price">
                 {cmpPrice && (
                   <span className="product-detail__compare-price">
-                    {cmpPrice}
+                    <BrandPrice amount={cmpPrice} />
                   </span>
                 )}
-                <span>{price}</span>
+                <BrandPrice amount={price} />
               </div>
             </div>
 

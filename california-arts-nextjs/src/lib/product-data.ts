@@ -100,8 +100,11 @@ type PayloadCollectionDoc = {
   id: number | string
   title?: string
   handle?: string
+  menuLabel?: string
   descriptionHtml?: string
   description?: unknown
+  products?: Array<PayloadProductDoc | number | string>
+  sortOrder?: number
   seo?: {
     title?: string
     description?: string
@@ -568,7 +571,7 @@ async function getPayloadCollectionByHandle(handle: string): Promise<PayloadColl
     const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'product-collections',
-      depth: 1,
+      depth: 2,
       limit: 1,
       where: {
         and: [
@@ -584,6 +587,35 @@ async function getPayloadCollectionByHandle(handle: string): Promise<PayloadColl
   }
 }
 
+function collectionProductsFromDoc(collection: PayloadCollectionDoc | undefined, allProducts: Product[]) {
+  if (!Array.isArray(collection?.products) || collection.products.length === 0) return []
+
+  const productsByHandle = new Map(allProducts.map((product) => [product.handle, product]))
+  const seen = new Set<string>()
+
+  return collection.products
+    .map((relation) => {
+      if (relation && typeof relation === 'object') {
+        const relationHandle = relation.handle
+        if (relationHandle && productsByHandle.has(relationHandle)) {
+          return productsByHandle.get(relationHandle)
+        }
+
+        return normalizePayloadProduct(relation as PayloadProductDoc)
+      }
+
+      const relationId = Number(relation)
+      if (Number.isNaN(relationId)) return undefined
+
+      return allProducts.find((product) => product.id === relationId)
+    })
+    .filter((product): product is Product => {
+      if (!product?.handle || seen.has(product.handle)) return false
+      seen.add(product.handle)
+      return true
+    })
+}
+
 export async function getStorefrontCollectionByHandle(handle: string): Promise<StorefrontCollection> {
   const [collection, allProducts] = await Promise.all([
     getPayloadCollectionByHandle(handle),
@@ -591,11 +623,15 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
   ])
   const alias = COLLECTION_ALIASES[handle]
   const matchHandles = [handle, ...(alias?.sourceHandles || [])]
-  let products = allProducts.filter((product) => {
-    if (handle === 'shop-all') return true
-    if (hasCollection(product, matchHandles)) return true
-    return alias?.match?.(product) || false
-  })
+  const explicitProducts = collectionProductsFromDoc(collection, allProducts)
+  let products =
+    explicitProducts.length > 0
+      ? explicitProducts
+      : allProducts.filter((product) => {
+          if (handle === 'shop-all') return true
+          if (hasCollection(product, matchHandles)) return true
+          return alias?.match?.(product) || false
+        })
   if (products.length === 0 && collection?.title) {
     const titleText = collection.title.toLowerCase()
     products = allProducts.filter((product) => {

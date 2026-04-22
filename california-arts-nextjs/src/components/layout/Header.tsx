@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLayout } from '@/context/LayoutContext'
+import { BrandCurrencyText } from '@/components/ui/BrandCurrency'
 import { HeaderData, HeaderMegaMenu, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
@@ -239,12 +240,12 @@ export default function Header({ header }: HeaderProps) {
         <div id="shopify-section-announcement-bar" className="shopify-section site-announcement">
           <div className="ge-free-shipping-container">
             <div className="ge-free-shipping-msg">
-                  {header.shippingBar.href ? (
+              {header.shippingBar.href ? (
                 <SmartLink href={header.shippingBar.href} className="section-x-padding hover:text-primary-accent">
-                  {localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)}
+                  <BrandCurrencyText text={localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)} />
                 </SmartLink>
               ) : (
-                localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)
+                <BrandCurrencyText text={localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)} />
               )}
             </div>
           </div>
@@ -304,7 +305,9 @@ export default function Header({ header }: HeaderProps) {
                       {header.countrySelector.enabled && (
                         <li>
                           <button type="button" className="localization__list--button">
-                            {localizedText(locale, header.countrySelector.label, header.countrySelector.labelVi) || t('countryLabel')}
+                            <BrandCurrencyText
+                              text={localizedText(locale, header.countrySelector.label, header.countrySelector.labelVi) || t('countryLabel')}
+                            />
                           </button>
                         </li>
                       )}

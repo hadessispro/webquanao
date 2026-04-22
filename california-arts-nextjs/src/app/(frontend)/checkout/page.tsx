@@ -3,6 +3,7 @@
 import React, { FormEvent, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
+import { BrandPrice } from '@/components/ui/BrandCurrency'
 
 const CHECKOUT_PROFILE_KEY = 'california_arts_checkout_profile'
 
@@ -44,7 +45,7 @@ const emptyProfile: CheckoutProfile = {
 }
 
 function formatMoney(value: number) {
-  return `${new Intl.NumberFormat('vi-VN').format(value)}₫`
+  return value
 }
 
 function makeOrderNumber() {
@@ -463,7 +464,9 @@ export default function CheckoutPage() {
                         t('itemDefault')}
                     </span>
                   </div>
-                  <strong>{formatMoney(item.price * item.quantity)}</strong>
+                  <strong>
+                    <BrandPrice amount={formatMoney(item.price * item.quantity)} />
+                  </strong>
                 </article>
               ))}
             </div>
@@ -499,12 +502,12 @@ export default function CheckoutPage() {
             <div className="checkout-page__totals">
               <p>
                 <span>{t('subtotal')}</span>
-                <span>{formatMoney(cartSubtotal)}</span>
+                <BrandPrice amount={formatMoney(cartSubtotal)} />
               </p>
               {appliedDiscount && (
                 <p>
                   <span>{appliedDiscount.code}</span>
-                  <span>-{formatMoney(discountAmount)}</span>
+                  <BrandPrice amount={formatMoney(discountAmount)} prefix="-" />
                 </p>
               )}
               <p>
@@ -513,7 +516,7 @@ export default function CheckoutPage() {
               </p>
               <p className="checkout-page__total">
                 <span>{t('total')}</span>
-                <span>{formatMoney(total)}</span>
+                <BrandPrice amount={formatMoney(total)} />
               </p>
             </div>
             <button
@@ -527,7 +530,9 @@ export default function CheckoutPage() {
           <div className="checkout-page__sticky-total">
             <span>
               <small>{t('total')}</small>
-              <strong>{formatMoney(total)}</strong>
+              <strong>
+                <BrandPrice amount={formatMoney(total)} />
+              </strong>
             </span>
             <button disabled={status === 'submitting'} type="submit">
               {status === 'submitting' ? t('placingOrder') : t('placeOrder')}

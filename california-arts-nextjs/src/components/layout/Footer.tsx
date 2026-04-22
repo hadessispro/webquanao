@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import type { FooterData } from '@/lib/storefront-types'
 import { useLayout } from '@/context/LayoutContext'
+import { BrandCurrencyText } from '@/components/ui/BrandCurrency'
 
 function isExternalHref(href: string) {
   return href.startsWith('http://') || href.startsWith('https://')
@@ -13,7 +14,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
   const { locale } = useLayout()
   const logo = footer.desktopLogo || footer.mobileLogo
   const shippingLabel = locale === 'vi' ? 'giao đến' : 'shipping to'
-  const shippingCountry = locale === 'vi' ? 'việt nam (vnd)' : 'vietnam (vnd)'
+  const shippingCountry = locale === 'vi' ? 'việt nam | vnd ₫' : 'vietnam | vnd ₫'
   const newsletterPlaceholder =
     locale === 'vi' ? 'đăng ký nhận newsletter' : 'sign up for our newsletter'
   const footerLinks = [
@@ -33,7 +34,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
           <div className="dien-footer__shipping">
             <span>{shippingLabel}</span>
             <button type="button" aria-label={shippingCountry}>
-              {shippingCountry}
+              <BrandCurrencyText text={shippingCountry} />
               <span aria-hidden="true">⌄</span>
             </button>
           </div>

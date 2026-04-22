@@ -1,4 +1,5 @@
 import productsData from "../../json/products-json.json";
+import { formatVndAmount } from "./price";
 
 export interface ProductImage {
   id: number;
@@ -168,16 +169,14 @@ export function getProductSizes(product: Product): string[] {
 // Format price in VND
 export function getDisplayPrice(product: Product): string {
   const price = parseInt(product.variants[0]?.price || "0", 10);
-  return new Intl.NumberFormat("vi-VN").format(price) + "₫";
+  return formatVndAmount(price);
 }
 
 // Get compare_at_price if exists
 export function getCompareAtPrice(product: Product): string | null {
   const comparePrice = product.variants[0]?.compare_at_price;
   if (!comparePrice) return null;
-  return (
-    new Intl.NumberFormat("vi-VN").format(parseInt(comparePrice, 10)) + "₫"
-  );
+  return formatVndAmount(parseInt(comparePrice, 10));
 }
 
 // Check if product is fully sold out

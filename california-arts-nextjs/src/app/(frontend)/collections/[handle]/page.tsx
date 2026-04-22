@@ -1,6 +1,8 @@
 import React from "react";
 import { getStorefrontCollectionByHandle } from "@/lib/product-data";
 import ProductGrid from "@/components/product/ProductGrid";
+import ShopAllCollectionSections from "@/components/product/ShopAllCollectionSections";
+import { getStorefrontShopAllSections } from "@/lib/shop-all-data";
 
 export async function generateMetadata({
   params,
@@ -23,6 +25,12 @@ export default async function CollectionPage({
 }) {
   const { handle } = await params;
   const collection = await getStorefrontCollectionByHandle(handle);
+
+  if (handle === "shop-all") {
+    const sections = await getStorefrontShopAllSections();
+
+    return <ShopAllCollectionSections collection={collection} sections={sections} />;
+  }
 
   return (
     <ProductGrid

@@ -3,9 +3,10 @@
 import React from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
+import { BrandPrice } from '@/components/ui/BrandCurrency'
 
 function formatMoney(value: number) {
-  return `${new Intl.NumberFormat('vi-VN').format(value)}₫`
+  return value
 }
 
 export default function CartDrawer() {
@@ -105,7 +106,7 @@ export default function CartDrawer() {
                       </div>
 
                       <div className="cart-drawer__item-footer">
-                        <span>{formatMoney(item.price * item.quantity)}</span>
+                        <BrandPrice amount={formatMoney(item.price * item.quantity)} />
                         <button onClick={() => removeCartItem(item.id)} type="button">
                           {t('remove')}
                         </button>
@@ -118,7 +119,7 @@ export default function CartDrawer() {
               <footer className="cart-drawer__footer">
                 <div className="cart-drawer__subtotal">
                   <span>{t('subtotal')}</span>
-                  <span>{formatMoney(cartSubtotal)}</span>
+                  <BrandPrice amount={formatMoney(cartSubtotal)} />
                 </div>
                 <Link
                   className="cart-drawer__checkout"
