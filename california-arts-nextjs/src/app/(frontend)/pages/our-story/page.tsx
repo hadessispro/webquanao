@@ -5,7 +5,7 @@ import { getPageBySlug } from '@/lib/pages-data'
 
 function TextColumnHeader({ children }: { children: ReactNode }) {
   return (
-    <div className="shopify-section c_text-columns-section">
+    <div className="shopify-section c_text-columns-section our-story-page__bar">
       <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
         <div className="px-8 lg:px-8 py-2">
           <div className="multi-column col-gap-lg lg:col-count-4 space-y-2 text-left text-base lg:text-base">
@@ -22,21 +22,23 @@ function TextColumnHeader({ children }: { children: ReactNode }) {
 function RichTextSection({
   children,
   justify = 'justify-start',
+  sectionClassName = '',
   textSize = 'text-sm',
   width = 'lg:w-1/2',
 }: {
   children: ReactNode
   justify?: string
+  sectionClassName?: string
   textSize?: string
   width?: string
 }) {
   return (
-    <div className="shopify-section">
+    <div className={`shopify-section our-story-page__copy-section ${sectionClassName}`.trim()}>
       <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
         <div className="px-8 lg:px-8 pb-4">
           <div className={`flex ${textSize} default text-left ${justify}`}>
             <div className={`w-full ${width}`}>
-              <div className="rte font-body break-words px-4">{children}</div>
+              <div className="rte font-body break-words px-4 our-story-page__copy">{children}</div>
             </div>
           </div>
         </div>
@@ -47,7 +49,11 @@ function RichTextSection({
 
 function Spacer() {
   return (
-    <RichTextSection textSize="text-2xl lg:text-5xl" width="lg:w-full">
+    <RichTextSection
+      sectionClassName="our-story-page__copy-section--spacer"
+      textSize="text-2xl lg:text-5xl"
+      width="lg:w-full"
+    >
       <p>
         <br />
       </p>
@@ -60,10 +66,10 @@ function Spacer() {
 
 function OurStoryFallback() {
   return (
-    <>
+    <div className="our-story-page">
       <TextColumnHeader>01 Our Brand Philosophy</TextColumnHeader>
 
-      <RichTextSection>
+      <RichTextSection sectionClassName="our-story-page__copy-section--brand">
         <p>
           <br />
           <br />
@@ -117,7 +123,7 @@ function OurStoryFallback() {
 
       <TextColumnHeader>02 Our Production Philosophy</TextColumnHeader>
 
-      <RichTextSection justify="justify-center">
+      <RichTextSection justify="justify-center" sectionClassName="our-story-page__copy-section--production">
         <p>
           <br />
           <br />
@@ -193,7 +199,7 @@ function OurStoryFallback() {
 
       <TextColumnHeader>03 Founder Notes</TextColumnHeader>
 
-      <RichTextSection justify="justify-end">
+      <RichTextSection justify="justify-end" sectionClassName="our-story-page__copy-section--founder">
         <p>
           <br />
           <br />
@@ -243,7 +249,11 @@ function OurStoryFallback() {
         </p>
       </RichTextSection>
 
-      <RichTextSection textSize="text-2xl lg:text-5xl" width="lg:w-full">
+      <RichTextSection
+        sectionClassName="our-story-page__copy-section--spacer"
+        textSize="text-2xl lg:text-5xl"
+        width="lg:w-full"
+      >
         <p />
         <p>
           <br />
@@ -251,7 +261,7 @@ function OurStoryFallback() {
         </p>
       </RichTextSection>
 
-      <div className="shopify-section">
+      <div className="shopify-section our-story-page__cta-section">
         <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
           <div className="px-8 lg:px-8 pb-4">
             <div className="flex text-base default text-right justify-start">
@@ -275,7 +285,7 @@ function OurStoryFallback() {
           </div>
         </section>
       </div>
-    </>
+    </div>
   )
 }
 
