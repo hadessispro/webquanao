@@ -4,6 +4,7 @@ import React, { FormEvent, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
+import PaymentLogoStrip from '@/components/ui/PaymentLogos'
 
 const CHECKOUT_PROFILE_KEY = 'california_arts_checkout_profile'
 
@@ -118,16 +119,19 @@ export default function CheckoutPage() {
   )
   const paymentMethods = [
     {
+      badge: 'COD',
       description: 'trả tiền khi nhận hàng',
       label: t('cashOnDelivery'),
       value: 'cod',
     },
     {
+      badge: 'BANK',
       description: 'xác nhận qua tài khoản',
       label: t('bankTransfer'),
       value: 'bank_transfer',
     },
     {
+      badge: 'VNPay',
       description: 'ví, thẻ ATM, QR',
       label: 'VNPay',
       value: 'vnpay',
@@ -461,6 +465,7 @@ export default function CheckoutPage() {
                         role="radio"
                         type="button"
                       >
+                        <b>{method.badge}</b>
                         <span>{method.label}</span>
                         <small>{method.description}</small>
                       </button>
@@ -556,19 +561,15 @@ export default function CheckoutPage() {
             </div>
 
             <div className="checkout-page__payment-info">
-              <p>phương thức thanh toán được hỗ trợ</p>
-              <div className="checkout-page__payment-logos" aria-label="logo thanh toán">
-                <span className="checkout-page__payment-logo checkout-page__payment-logo--vnpay">
-                  VNPay
-                </span>
-                <span className="checkout-page__payment-logo">ATM</span>
-                <span className="checkout-page__payment-logo">COD</span>
-                <span className="checkout-page__payment-logo">Bank</span>
+              <div className="checkout-page__payment-head">
+                <p>phương thức thanh toán được hỗ trợ</p>
+                <span>bảo mật & xác nhận</span>
               </div>
+              <PaymentLogoStrip className="checkout-page__payment-logos" />
               <ul className="checkout-page__payment-policy">
-                <li>Thanh toán an toàn qua VNPay, chuyển khoản hoặc tiền mặt khi nhận hàng.</li>
-                <li>Đơn hàng được giữ và xử lý sau khi thông tin thanh toán được xác nhận.</li>
-                <li>Phí vận chuyển, ưu đãi và tổng tiền sẽ được kiểm tra trước khi xác nhận đơn.</li>
+                <li>Hỗ trợ VNPay, Visa, Mastercard, JCB, American Express, Napas và ATM nội địa.</li>
+                <li>Đơn hàng được giữ và chỉ xử lý sau khi thông tin thanh toán được xác nhận.</li>
+                <li>Chuyển khoản và thanh toán khi nhận hàng vẫn khả dụng trong giai đoạn chưa kết nối API.</li>
               </ul>
             </div>
             <button

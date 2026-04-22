@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
+import PaymentLogoStrip from '@/components/ui/PaymentLogos'
 
 function formatMoney(value: number) {
   return value
@@ -134,17 +135,10 @@ export default function CartDrawer() {
                     <span>thanh toán an toàn</span>
                     <small>xác nhận trước khi giao</small>
                   </div>
-                  <div className="cart-drawer__payment-logos" aria-label="logo thanh toán">
-                    <span className="cart-drawer__payment-logo cart-drawer__payment-logo--vnpay">
-                      VNPay
-                    </span>
-                    <span className="cart-drawer__payment-logo">ATM</span>
-                    <span className="cart-drawer__payment-logo">COD</span>
-                    <span className="cart-drawer__payment-logo">Bank</span>
-                  </div>
+                  <PaymentLogoStrip compact className="cart-drawer__payment-logos" />
                   <div className="cart-drawer__policy-list">
                     <p>Đơn hàng được giữ sau khi bấm checkout.</p>
-                    <p>Hỗ trợ VNPay, chuyển khoản hoặc thanh toán khi nhận hàng.</p>
+                    <p>Hỗ trợ thẻ quốc tế, Napas, VNPay, chuyển khoản hoặc COD.</p>
                     <p>Phí vận chuyển và ưu đãi được kiểm tra lại trước khi xác nhận.</p>
                   </div>
                 </div>
