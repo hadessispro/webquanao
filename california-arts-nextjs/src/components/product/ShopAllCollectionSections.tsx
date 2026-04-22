@@ -3,7 +3,10 @@
 import React from 'react'
 import ProductGrid from './ProductGrid'
 import { useLayout } from '@/context/LayoutContext'
-import { DEMO_COLLECTION_BAR_DESCRIPTION_HTML } from '@/lib/collection-bar-content'
+import {
+  DEFAULT_COLLECTION_INTRO_HTML,
+  DEMO_COLLECTION_BAR_DESCRIPTION_HTML,
+} from '@/lib/collection-bar-content'
 import type { StorefrontCollection } from '@/lib/product-data'
 import type { StorefrontShopAllSection } from '@/lib/shop-all-data'
 
@@ -28,6 +31,7 @@ export default function ShopAllCollectionSections({
 }) {
   const { locale } = useLayout()
   const introLabel = locale === 'vi' ? 'Xem Tất Cả' : 'View All'
+  const introHtml = collection.descriptionHtml?.trim() || DEFAULT_COLLECTION_INTRO_HTML
 
   return (
     <>
@@ -44,19 +48,17 @@ export default function ShopAllCollectionSections({
           </section>
         </div>
 
-        {collection.descriptionHtml && (
-          <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-            <div className="px-8 lg:px-8 pb-4">
-              <div className="flex text-sm default text-left">
-                <div className="w-full">
-                  <div className="rte font-body break-words px-4">
-                    <div dangerouslySetInnerHTML={{ __html: collection.descriptionHtml }} />
-                  </div>
+        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
+          <div className="px-8 lg:px-8 pb-4">
+            <div className="flex text-sm default text-left">
+              <div className="w-full">
+                <div className="rte font-body break-words px-4">
+                  <div dangerouslySetInnerHTML={{ __html: introHtml }} />
                 </div>
               </div>
             </div>
-            </section>
-        )}
+          </div>
+        </section>
 
         <IntroFeaturedSpacer />
       </div>
