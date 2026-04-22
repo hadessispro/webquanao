@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLayout } from '@/context/LayoutContext'
@@ -23,7 +23,7 @@ function SmartLink({
   className?: string
   children: React.ReactNode
   openInNewTab?: boolean
-  onClick?: () => void
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
 }) {
   const external = href.startsWith('http')
   const target = openInNewTab || external ? '_blank' : undefined
@@ -97,7 +97,17 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
 
-function MegaMenu({ locale, megaMenu }: { locale: Locale; megaMenu: HeaderMegaMenu }) {
+function MegaMenu({
+  fallbackHref,
+  locale,
+  megaMenu,
+  onNavigate,
+}: {
+  fallbackHref: string
+  locale: Locale
+  megaMenu: HeaderMegaMenu
+  onNavigate?: () => void
+}) {
   if (!megaMenu.enabled) return null
 
   return (
@@ -109,14 +119,18 @@ function MegaMenu({ locale, megaMenu }: { locale: Locale; megaMenu: HeaderMegaMe
               {megaMenu.columns.map((column, index) => (
                 <div className="c_megamenu-inner-a ml-16" key={`${column.heading}-${index}`}>
                   <h2 className="c_megamenu-second font-heading mb-2">
-                    <SmartLink className="inline-block py-1" href={column.headingHref || '#'}>
+                    <SmartLink
+                      className="inline-block py-1"
+                      href={column.headingHref || fallbackHref || column.links[0]?.href || '#'}
+                      onClick={onNavigate}
+                    >
                       {localizedText(locale, column.heading, column.headingVi)}
                     </SmartLink>
                   </h2>
                   <ul className="c_megamenu-third-ul">
                     {column.links.map((item) => (
                       <li key={`${item.label}-${item.href}`}>
-                        <SmartLink className="inline-block py-1" href={item.href}>
+                        <SmartLink className="inline-block py-1" href={item.href} onClick={onNavigate}>
                           {localizedText(locale, item.label, item.labelVi)}
                         </SmartLink>
                       </li>
@@ -133,7 +147,7 @@ function MegaMenu({ locale, megaMenu }: { locale: Locale; megaMenu: HeaderMegaMe
                 <div className="c_megamenu-inner-a c_megamenu-inner-images ml-16" key={`${card.caption || 'image'}-${index}`}>
                   {card.image && (
                     <div className="c_megamenu-image">
-                      <SmartLink href={card.href || '#'}>
+                      <SmartLink href={card.href || '#'} onClick={onNavigate}>
                         <img src={card.image.src} alt={card.image.alt || card.caption || ''} />
                       </SmartLink>
                     </div>
@@ -141,7 +155,7 @@ function MegaMenu({ locale, megaMenu }: { locale: Locale; megaMenu: HeaderMegaMe
                   {card.caption && (
                     <div className="c_megamenu-content">
                       <h2>
-                        <SmartLink href={card.href || '#'}>
+                        <SmartLink href={card.href || '#'} onClick={onNavigate}>
                           {localizedText(locale, card.caption, card.captionVi)}
                         </SmartLink>
                       </h2>
@@ -158,21 +172,48 @@ function MegaMenu({ locale, megaMenu }: { locale: Locale; megaMenu: HeaderMegaMe
   )
 }
 
-function DesktopNavItem({ item, locale }: { item: HeaderNavItem; locale: Locale }) {
-  const hasMegaMenu = Boolean(item.megaMenu?.enabled)
+function DesktopNavItem({
+  isOpen,
+  item,
+  locale,
+  onClose,
+  onOpen,
+}: {
+  isOpen: boolean
+  item: HeaderNavItem
+  locale: Locale
+  onClose: () => void
+  onOpen: () => void
+}) {
+  const hasMegaMenu = Boolean(item.megaMenu?.enabled && (item.megaMenu.columns.length > 0 || item.megaMenu.imageCards.length > 0))
+
+  const handleBlurCapture = (event: React.FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      onClose()
+    }
+  }
 
   return (
-    <li className="ca_menu-1st-c">
-      <div className={hasMegaMenu ? 'no-js-focus-wrapper' : undefined}>
+    <li
+      className={['ca_menu-1st-c', hasMegaMenu && isOpen ? 'ca_menu-1st-c--open' : ''].filter(Boolean).join(' ')}
+      onMouseEnter={hasMegaMenu ? onOpen : undefined}
+      onMouseLeave={hasMegaMenu ? onClose : undefined}
+    >
+      <div
+        className={hasMegaMenu ? 'no-js-focus-wrapper' : undefined}
+        onBlurCapture={hasMegaMenu ? handleBlurCapture : undefined}
+        onFocusCapture={hasMegaMenu ? onOpen : undefined}
+      >
         <SmartLink
           className={`ca_menu-1st-button inline-flex items-center ${hasMegaMenu ? '' : 'relative'}`}
           href={item.href}
           openInNewTab={item.openInNewTab}
+          onClick={hasMegaMenu ? () => onClose() : undefined}
         >
           <span className="inline-block pr-1">{localizedText(locale, item.label, item.labelVi)}</span>
           {hasMegaMenu && <Chevron />}
         </SmartLink>
-        {item.megaMenu && <MegaMenu locale={locale} megaMenu={item.megaMenu} />}
+        {item.megaMenu && <MegaMenu fallbackHref={item.href} locale={locale} megaMenu={item.megaMenu} onNavigate={onClose} />}
       </div>
     </li>
   )
@@ -181,9 +222,11 @@ function DesktopNavItem({ item, locale }: { item: HeaderNavItem; locale: Locale 
 export default function Header({ header }: HeaderProps) {
   const { cartCount, locale, setIsCartOpen, setIsMobileMenuOpen, t, toggleLocale } = useLayout()
   const pathname = usePathname()
+  const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [nearFooter, setNearFooter] = useState(false)
+  const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
   const logo = header.logo
   const isHome = pathname === '/'
 
@@ -223,6 +266,30 @@ export default function Header({ header }: HeaderProps) {
       window.removeEventListener('resize', queueUpdate)
     }
   }, [pathname])
+
+  useEffect(() => {
+    if (!openMegaMenuHref) return undefined
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!desktopMenuRef.current?.contains(event.target as Node)) {
+        setOpenMegaMenuHref(null)
+      }
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenMegaMenuHref(null)
+      }
+    }
+
+    window.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [openMegaMenuHref])
 
   const headerStackClass = [
     'site-header-stack',
@@ -292,10 +359,17 @@ export default function Header({ header }: HeaderProps) {
                     </SmartLink>
                   </h1>
 
-                  <div className="c_header-menu site-header__menu">
+                  <div className="c_header-menu site-header__menu" ref={desktopMenuRef}>
                     <ul className="c_header-menu-ul flex flex-wrap">
                       {header.navigation.map((item) => (
-                        <DesktopNavItem item={item} key={`${item.label}-${item.href}`} locale={locale} />
+                        <DesktopNavItem
+                          isOpen={openMegaMenuHref === item.href}
+                          item={item}
+                          key={`${item.label}-${item.href}`}
+                          locale={locale}
+                          onClose={() => setOpenMegaMenuHref((current) => (current === item.href ? null : current))}
+                          onOpen={() => setOpenMegaMenuHref(item.href)}
+                        />
                       ))}
                     </ul>
                   </div>

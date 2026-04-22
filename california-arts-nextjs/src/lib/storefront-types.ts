@@ -250,8 +250,8 @@ export const DEFAULT_NEWSLETTER_POPUP: NewsletterPopupData = {
   delayMs: 1800,
   dismissDays: 7,
   logo: {
-    src: '/media/dien-logo-header.png',
-    alt: 'điển',
+    src: '/media/d-brandmark.png',
+    alt: 'đ',
   },
   title: 'join us, in southern california',
   titleVi: 'tham gia cùng chúng tôi, tại southern california',

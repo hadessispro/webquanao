@@ -45,7 +45,12 @@ function mediaToImage(media: MediaLike, fallbackAlt?: string): StorefrontImage |
   }
 }
 
-function normalizeMegaColumns(columns: unknown): HeaderMegaColumn[] {
+function isViewAllLabel(label?: string) {
+  const value = (label || '').trim().toLowerCase()
+  return value === 'view all' || value === 'xem tất cả' || value === 'xem tat ca'
+}
+
+function normalizeMegaColumns(columns: unknown, parentHref?: string): HeaderMegaColumn[] {
   if (!Array.isArray(columns)) return []
 
   return columns
@@ -62,25 +67,29 @@ function normalizeMegaColumns(columns: unknown): HeaderMegaColumn[] {
         }>
       }
 
+      const normalizedLinks = Array.isArray(value.links)
+        ? value.links
+            .map((link) => {
+              const collection =
+                link?.collection && typeof link.collection === 'object'
+                  ? link.collection
+                  : undefined
+              const label = link?.label || collection?.menuLabel || collection?.title
+              const href =
+                link?.href ||
+                (collection?.handle ? `/collections/${collection.handle}` : undefined) ||
+                (isViewAllLabel(label) ? value.headingHref || parentHref : undefined)
+
+              return label && href ? { label, labelVi: link?.labelVi || undefined, href } : null
+            })
+            .filter(Boolean) as Array<{ label: string; labelVi?: string; href: string }>
+        : []
+
       return {
         heading: value.heading || '',
         headingVi: value.headingVi || undefined,
-        headingHref: value.headingHref || undefined,
-        links: Array.isArray(value.links)
-          ? value.links
-              .map((link) => {
-                const collection =
-                  link?.collection && typeof link.collection === 'object'
-                    ? link.collection
-                    : undefined
-                const label = link?.label || collection?.menuLabel || collection?.title
-                const href =
-                  link?.href || (collection?.handle ? `/collections/${collection.handle}` : undefined)
-
-                return label && href ? { label, labelVi: link?.labelVi || undefined, href } : null
-              })
-              .filter(Boolean) as Array<{ label: string; href: string }>
-          : [],
+        headingHref: value.headingHref || normalizedLinks[0]?.href || parentHref || undefined,
+        links: normalizedLinks,
       }
     })
     .filter((column) => column.heading || column.links.length > 0)
@@ -147,7 +156,7 @@ function normalizeNavigation(navigation: unknown): HeaderNavItem[] {
             ]
           : []
 
-      const columns = normalizeMegaColumns(value.megaMenu?.columns)
+      const columns = normalizeMegaColumns(value.megaMenu?.columns, href)
       const imageCards = normalizeMegaImageCards(value.megaMenu?.imageCards || value.megaMenu?.images)
 
       return {

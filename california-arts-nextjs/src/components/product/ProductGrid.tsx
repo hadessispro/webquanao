@@ -8,24 +8,49 @@ interface ProductGridProps {
   products: Product[];
   sectionTitle?: string;
   sectionSubtitle?: string;
+  barLabel?: string;
+  productLimit?: number;
+  showSectionTitle?: boolean;
 }
 
 export default function ProductGrid({
+  barLabel,
   products,
+  productLimit,
   sectionTitle,
   sectionSubtitle,
+  showSectionTitle = true,
 }: ProductGridProps) {
+  const visibleProducts =
+    typeof productLimit === "number" && productLimit > 0
+      ? products.slice(0, productLimit)
+      : products;
+  const desktopSpan =
+    visibleProducts.length <= 1 ? 12 : visibleProducts.length === 2 ? 6 : visibleProducts.length === 3 ? 4 : 3;
+
   return (
     <>
-      {/* Section Header */}
-      {sectionTitle && (
+      {barLabel && (
         <div className="c_text-columns-section">
           <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
             <div className="px-8 lg:px-88 section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
-                <div className="rte px-4 text-sm">
-                  <p>{sectionTitle}</p>
-                </div>
+                <h2 className="px-4 font-body text-base">{barLabel}</h2>
+                <div className="rte px-4 text-sm" />
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* Section Header */}
+      {showSectionTitle && sectionTitle && (
+        <div className="c_text-columns-section">
+          <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
+            <div className="px-8 lg:px-88 section-x-padding py-2">
+              <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
+                <h2 className="px-4 font-body text-base">{sectionTitle}</h2>
+                <div className="rte px-4 text-sm" />
               </div>
             </div>
           </section>
@@ -52,8 +77,8 @@ export default function ProductGrid({
         <div className="py-8">
           <div className="bg-primary-background section-x-padding px-88 py-8">
             <ul className="grid grid-cols-2 lg:grid-cols-12 gap-gutter">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              {visibleProducts.map((product) => (
+                <ProductCard desktopSpan={desktopSpan} key={product.id} product={product} />
               ))}
             </ul>
           </div>

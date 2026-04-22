@@ -229,8 +229,8 @@ function makeCollectionHandleMap(collections: PayloadCollectionDoc[]) {
   )
 }
 
-function defaultCollectionDescription(title: string) {
-  return `<p><br/><br/><br/>${title}</p>`
+function defaultCollectionDescription() {
+  return ''
 }
 
 const COLLECTION_ALIASES: Record<
@@ -243,13 +243,13 @@ const COLLECTION_ALIASES: Record<
   }
 > = {
   'shop-all': {
-    title: 'view all',
+    title: 'View All',
     match: () => true,
     descriptionHtml:
-      '<p><br/><br/><br/>our product philosophy:<br/><em>"less and more."</em></p><p>we re-imagine one garment at a time, combining<br/>intentional proportions with superior craftsmanship.</p>',
+      '<p><br/><br/><br/><br/></p><p><br/><br/><br/>Our Product Philosophy:<br/><em>"Less and More."</em></p><p>We re-imagine one garment at a time, combining<br/>intentional proportions with superior craftsmanship.<br/>We advocate for sustainability by producing less,<br/>building better &amp; simplifying the way we get dressed.</p>',
   },
   'coats-jackets': {
-    title: 'outerwear',
+    title: 'Outerwear',
     match: (product) => {
       const text = productText(product)
       return (
@@ -264,14 +264,14 @@ const COLLECTION_ALIASES: Record<
     },
   },
   'category-tailoring': {
-    title: 'tailoring',
+    title: 'Tailoring',
     match: (product) => {
       const text = productText(product)
       return text.includes('blazer') || text.includes('tailored') || text.includes('trouser')
     },
   },
   'collection-sweater': {
-    title: 'sweatshirts & sweatpants',
+    title: 'Sweatshirts & Sweatpants',
     sourceHandles: ['t-shirts', 'fw25-sale-shirts-copy'],
     match: (product) => {
       const text = productText(product)
@@ -279,16 +279,16 @@ const COLLECTION_ALIASES: Record<
     },
   },
   knitwear: {
-    title: 'knitwear',
+    title: 'Knitwear',
     sourceHandles: ['fw25-sale-knitwear-copy', 'fw25-sale-accessories-copy', 'hammer-v-neck', 'hauser-crewneck'],
     match: (product) => productText(product).includes('knitwear'),
   },
   'category-polos': {
-    title: 'polos',
+    title: 'Polos',
     match: (product) => productText(product).includes('polo'),
   },
   'shirts-all-navigation': {
-    title: 'shirts',
+    title: 'Shirts',
     sourceHandles: ['na-button-up-shirts', 'na-long-sleeve-shirts'],
     match: (product) => {
       const text = productText(product)
@@ -296,14 +296,14 @@ const COLLECTION_ALIASES: Record<
     },
   },
   'collection-t-shirts-tanks': {
-    title: 'tees & henleys',
+    title: 'Tees & Henleys',
     match: (product) => {
       const text = productText(product)
       return text.includes('tee') || text.includes('t-shirt') || text.includes('henley') || text.includes('tank')
     },
   },
   'category-vests': {
-    title: 'tanks & vests',
+    title: 'Tanks & Vests',
     sourceHandles: ['fw25-sale-vests-copy'],
     match: (product) => {
       const text = productText(product)
@@ -311,7 +311,7 @@ const COLLECTION_ALIASES: Record<
     },
   },
   'trousers-shorts': {
-    title: 'pants & shorts',
+    title: 'Pants & Shorts',
     sourceHandles: ['fw25-sale-shirts-copy', 'fw25-sale-shorts-copy'],
     match: (product) => {
       const text = productText(product)
@@ -324,7 +324,7 @@ const COLLECTION_ALIASES: Record<
     },
   },
   'category-nav-denim': {
-    title: 'denim',
+    title: 'Denim',
     sourceHandles: ['fw23-denim', 'fw25-sale-denim-copy'],
     match: (product) => {
       const text = productText(product)
@@ -332,7 +332,7 @@ const COLLECTION_ALIASES: Record<
     },
   },
   accessories: {
-    title: 'accessories',
+    title: 'Accessories',
     sourceHandles: ['na-accessories', 'fw25-sale-all-products-copy'],
     match: (product) => {
       const text = productText(product)
@@ -644,7 +644,7 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
     collection?.descriptionHtml ||
     richTextToHtml(collection?.description) ||
     alias?.descriptionHtml ||
-    defaultCollectionDescription(title)
+    defaultCollectionDescription()
 
   return {
     handle,
@@ -652,7 +652,9 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
     descriptionHtml,
     seoTitle: collection?.seo?.title || `${title} | california arts`,
     seoDescription:
-      collection?.seo?.description || descriptionHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160),
+      collection?.seo?.description ||
+      descriptionHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160) ||
+      `${title} | california arts`,
     products,
   }
 }

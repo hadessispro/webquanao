@@ -920,17 +920,23 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 .brand-currency-code {
   align-items: baseline;
   display: inline-flex;
-  gap: 0.22em;
+  gap: 0.12em;
   white-space: nowrap;
 }
 
 .brand-currency-mark {
-  background: center / contain no-repeat url('/media/dien-mark-black.png');
+  background: center / contain no-repeat url('/media/d-brandmark.png');
   display: inline-block;
   flex: 0 0 auto;
-  height: 1.08em;
-  transform: translateY(0.1em);
+  height: 0.98em;
+  transform: translateY(0.08em);
   width: 0.72em;
+}
+
+.brand-price .brand-currency-mark {
+  height: 1.34em;
+  transform: translateY(0.12em);
+  width: 1.08em;
 }
 
 .dien-footer__brand p {
@@ -1040,10 +1046,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   background: #fff;
 }
 
-.shop-all-collection {
-  position: relative;
-}
-
+.collection-category-bar,
 .shop-all-collection__bar {
   background: #fff;
   border-bottom: 1px solid rgba(19, 24, 24, 0.18);
@@ -1053,6 +1056,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   z-index: 14;
 }
 
+.collection-category-bar__inner,
 .shop-all-collection__bar-inner {
   align-items: center;
   display: flex;
@@ -1062,6 +1066,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   padding-top: 8px;
 }
 
+.collection-category-bar__inner h2,
 .shop-all-collection__bar-inner h2 {
   font-size: 16px;
   font-weight: 400;
@@ -1069,18 +1074,26 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   margin: 0;
 }
 
+.collection-category-bar__index,
 .shop-all-collection__index {
   flex: 0 0 28px;
   font-size: 15px;
   line-height: 1;
 }
 
+.shop-all-page__intro .rte p {
+  margin-bottom: 0;
+}
+
 @media (max-width: 767px) {
+  .collection-category-bar__inner,
   .shop-all-collection__bar-inner {
     gap: 10px;
     min-height: 28px;
   }
 
+  .collection-category-bar__inner h2,
+  .collection-category-bar__index,
   .shop-all-collection__bar-inner h2,
   .shop-all-collection__index {
     font-size: 14px;
@@ -1175,6 +1188,11 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   max-width: 126px;
   object-fit: contain;
   width: auto;
+}
+
+.newsletter-popup__mark {
+  max-height: 58px !important;
+  max-width: 36px !important;
 }
 
 .newsletter-popup__dots {
@@ -1511,9 +1529,9 @@ body.art-menu-lock {
 .c_megamenu-inner-images {
   opacity: 1;
   transition:
-    color 0.18s ease,
-    opacity 0.18s ease,
-    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    color 0.08s ease,
+    opacity 0.08s ease,
+    transform 0.12s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .c_header-menu-ul:hover > li .ca_menu-1st-button,
@@ -1522,7 +1540,8 @@ body.art-menu-lock {
 }
 
 .c_header-menu-ul > li:hover .ca_menu-1st-button,
-.c_header-menu-ul > li:focus-within .ca_menu-1st-button {
+.c_header-menu-ul > li:focus-within .ca_menu-1st-button,
+.c_header-menu-ul > li.ca_menu-1st-c--open .ca_menu-1st-button {
   opacity: 1;
 }
 
@@ -1601,11 +1620,11 @@ body.art-menu-lock {
   color: #131818 !important;
   opacity: 0 !important;
   pointer-events: none !important;
-  transform: translateY(calc(100% - 6px)) !important;
+  transform: translateY(calc(100% - 2px)) !important;
   transition:
-    opacity 0.22s ease,
-    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.22s ease;
+    opacity 0.08s ease,
+    transform 0.12s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.08s ease;
   visibility: hidden !important;
 }
 
@@ -1618,7 +1637,8 @@ body.art-menu-lock {
 }
 
 .c_header-menu-ul > li:hover .c_megamenu-upper,
-.c_header-menu-ul > li:focus-within .c_megamenu-upper {
+.c_header-menu-ul > li:focus-within .c_megamenu-upper,
+.c_header-menu-ul > li.ca_menu-1st-c--open .c_megamenu-upper {
   opacity: 1 !important;
   pointer-events: auto !important;
   transform: translateY(100%) !important;

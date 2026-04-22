@@ -34,9 +34,11 @@ export default async function CollectionPage({
 
   return (
     <ProductGrid
+      barLabel={collection.title}
+      productLimit={2}
       products={collection.products}
-      sectionTitle={collection.title}
       sectionSubtitle={collection.descriptionHtml}
+      showSectionTitle={false}
     />
   );
 }

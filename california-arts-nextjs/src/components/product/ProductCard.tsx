@@ -17,9 +17,17 @@ import { BrandPrice } from "@/components/ui/BrandCurrency";
 
 interface ProductCardProps {
   product: Product;
+  desktopSpan?: 3 | 4 | 6 | 12;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+const DESKTOP_SPAN_CLASS: Record<NonNullable<ProductCardProps["desktopSpan"]>, string> = {
+  3: "lg:col-span-3",
+  4: "lg:col-span-4",
+  6: "lg:col-span-6",
+  12: "lg:col-span-12",
+};
+
+export default function ProductCard({ product, desktopSpan = 3 }: ProductCardProps) {
   const router = useRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
   const mainImage = getMainImageUrl(product);
@@ -39,7 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <li
-      className={`ca_pro-item col-span-1 lg:col-span-3 bg-primary-background text-primary-text px-4${soldOut ? " ca_pro-item__soldout" : ""}`}
+      className={`ca_pro-item col-span-1 ${DESKTOP_SPAN_CLASS[desktopSpan]} bg-primary-background text-primary-text px-4${soldOut ? " ca_pro-item__soldout" : ""}`}
     >
       <div className="c_grid-inner c_grid-inner-available group block h-full relative text-center text-sm type-product-grid-item hover:text-primary-accent">
         {/* Clickable overlay link */}
