@@ -1061,7 +1061,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 .product-grid__bar--sticky {
   left: 0;
   position: sticky;
-  top: calc(var(--header-stack-height, 88px) - 2px);
+  top: calc(var(--header-stack-height, 88px) - var(--border-width, 1px));
   transition: opacity 180ms ease, transform 180ms ease;
   z-index: 9;
 }
@@ -1071,7 +1071,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   background: #fff;
   left: 0;
   position: sticky;
-  top: calc(var(--header-stack-height, 88px) - 2px);
+  top: calc(var(--header-stack-height, 88px) - var(--border-width, 1px));
   transition: opacity 180ms ease, transform 180ms ease;
   z-index: 9;
 }
