@@ -1,5 +1,6 @@
 import React from "react";
 import ProductGrid from "./ProductGrid";
+import { DEMO_COLLECTION_BAR_DESCRIPTION_HTML } from "@/lib/collection-bar-content";
 import type { StorefrontCollection } from "@/lib/product-data";
 import type { Product } from "@/lib/products";
 
@@ -8,15 +9,6 @@ function productSectionTitle(product: Product, index: number) {
   const title = product.title.replace(/\s*\|\s*.*$/, "").trim();
 
   return `${number} ${title}`;
-}
-
-function productSectionDescription(product: Product) {
-  if (!product.body_html) return undefined;
-
-  return product.body_html
-    .replace(/<meta[^>]*>/gi, "")
-    .replace(/<\/?span[^>]*>/gi, "")
-    .trim();
 }
 
 function IntroFeaturedSpacer() {
@@ -72,7 +64,7 @@ export default function CollectionProductSections({
         {collection.products.map((product, index) => (
           <section className="collection-product-section" id={`product-${product.handle}`} key={product.handle}>
             <ProductGrid
-              barDescriptionHtml={productSectionDescription(product)}
+              barDescriptionHtml={DEMO_COLLECTION_BAR_DESCRIPTION_HTML}
               barLabel={productSectionTitle(product, index)}
               cardDesktopSpan={3}
               products={[product]}

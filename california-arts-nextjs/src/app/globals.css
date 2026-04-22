@@ -1108,6 +1108,17 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   margin: 0;
 }
 
+.product-grid__bar .rte {
+  max-width: min(420px, 100%);
+}
+
+.product-grid__bar .rte p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .product-grid__bar h2 {
   font-weight: 400;
   line-height: 1.2;

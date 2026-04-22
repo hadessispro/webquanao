@@ -3,6 +3,7 @@
 import React from 'react'
 import ProductGrid from './ProductGrid'
 import { useLayout } from '@/context/LayoutContext'
+import { DEMO_COLLECTION_BAR_DESCRIPTION_HTML } from '@/lib/collection-bar-content'
 import type { StorefrontCollection } from '@/lib/product-data'
 import type { StorefrontShopAllSection } from '@/lib/shop-all-data'
 
@@ -71,6 +72,7 @@ export default function ShopAllCollectionSections({
               key={section.handle}
             >
               <ProductGrid
+                barDescriptionHtml={DEMO_COLLECTION_BAR_DESCRIPTION_HTML}
                 barLabel={label}
                 cardDesktopSpan={3}
                 products={section.products}
