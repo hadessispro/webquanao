@@ -937,7 +937,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   background-image: url('/media/d-brandmark-currency.png');
   background-position: center bottom;
   background-size: contain;
-  height: 1.08em;
+  height: 0.78em;
   margin-left: 0;
   transform: translateY(0.06em);
   width: 0.96em;
