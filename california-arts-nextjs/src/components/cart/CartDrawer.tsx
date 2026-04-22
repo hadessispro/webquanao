@@ -121,17 +121,6 @@ export default function CartDrawer() {
                   <span>{t('subtotal')}</span>
                   <BrandPrice amount={formatMoney(cartSubtotal)} />
                 </div>
-                <div className="cart-drawer__payment-info">
-                  <div className="cart-drawer__payment-logos" aria-label="logo thanh toán">
-                    <span className="cart-drawer__payment-logo cart-drawer__payment-logo--vnpay">
-                      VNPay
-                    </span>
-                    <span className="cart-drawer__payment-logo">ATM</span>
-                    <span className="cart-drawer__payment-logo">COD</span>
-                    <span className="cart-drawer__payment-logo">Bank</span>
-                  </div>
-                  <p>Thanh toán an toàn, xác nhận đơn trước khi xử lý giao hàng tại Việt Nam.</p>
-                </div>
                 <Link
                   className="cart-drawer__checkout"
                   href="/checkout"
@@ -140,6 +129,25 @@ export default function CartDrawer() {
                 >
                   {t('checkout')}
                 </Link>
+                <div className="cart-drawer__payment-info">
+                  <div className="cart-drawer__payment-head">
+                    <span>thanh toán an toàn</span>
+                    <small>xác nhận trước khi giao</small>
+                  </div>
+                  <div className="cart-drawer__payment-logos" aria-label="logo thanh toán">
+                    <span className="cart-drawer__payment-logo cart-drawer__payment-logo--vnpay">
+                      VNPay
+                    </span>
+                    <span className="cart-drawer__payment-logo">ATM</span>
+                    <span className="cart-drawer__payment-logo">COD</span>
+                    <span className="cart-drawer__payment-logo">Bank</span>
+                  </div>
+                  <div className="cart-drawer__policy-list">
+                    <p>Đơn hàng được giữ sau khi bấm checkout.</p>
+                    <p>Hỗ trợ VNPay, chuyển khoản hoặc thanh toán khi nhận hàng.</p>
+                    <p>Phí vận chuyển và ưu đãi được kiểm tra lại trước khi xác nhận.</p>
+                  </div>
+                </div>
               </footer>
             </>
           )}
