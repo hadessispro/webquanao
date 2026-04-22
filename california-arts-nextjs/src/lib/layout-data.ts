@@ -50,6 +50,11 @@ function isViewAllLabel(label?: string) {
   return value === 'view all' || value === 'xem tất cả' || value === 'xem tat ca'
 }
 
+function isShopAllLabel(label?: string) {
+  const value = (label || '').trim().toLowerCase().replace(/^\d+\s*/, '')
+  return value === 'shop all' || value === 'mua sắm' || value === 'mua sam'
+}
+
 function normalizeMegaColumns(columns: unknown, parentHref?: string): HeaderMegaColumn[] {
   if (!Array.isArray(columns)) return []
 
@@ -76,9 +81,10 @@ function normalizeMegaColumns(columns: unknown, parentHref?: string): HeaderMega
                   : undefined
               const label = link?.label || collection?.menuLabel || collection?.title
               const href =
+                isViewAllLabel(label) ? parentHref || value.headingHref || link?.href :
                 link?.href ||
                 (collection?.handle ? `/collections/${collection.handle}` : undefined) ||
-                (isViewAllLabel(label) ? value.headingHref || parentHref : undefined)
+                undefined
 
               return label && href ? { label, labelVi: link?.labelVi || undefined, href } : null
             })
@@ -140,7 +146,9 @@ function normalizeNavigation(navigation: unknown): HeaderNavItem[] {
       const collection =
         value.collection && typeof value.collection === 'object' ? value.collection : undefined
       const label = value.label || collection?.menuLabel || collection?.title
-      const href = value.href || value.url || (collection?.handle ? `/collections/${collection.handle}` : undefined)
+      const href = isShopAllLabel(label)
+        ? '/collections/shop-all'
+        : value.href || value.url || (collection?.handle ? `/collections/${collection.handle}` : undefined)
 
       if (!label || !href) return null
 

@@ -84,7 +84,7 @@ function OurStoryFallback() {
           <br />
           today, design in menswear is either
           <br />
-          produced by small brands with the same
+          produced by mall brands with the same
           <br />
           un-inspired styles or by luxury fashion
           <br />

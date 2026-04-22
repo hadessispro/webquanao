@@ -16,6 +16,8 @@ type ShopAllSectionDefinition = {
   match: (product: Product, text: string) => boolean
 }
 
+const SHOP_ALL_SECTION_PRODUCT_TARGET = 12
+
 const SHOP_ALL_SECTION_DEFINITIONS: ShopAllSectionDefinition[] = [
   {
     handle: 'coats',
@@ -225,53 +227,65 @@ function uniqueProducts(products: Product[]) {
   })
 }
 
-function pickSectionProducts(allProducts: Product[], definition: ShopAllSectionDefinition, usedHandles: Set<string>) {
-  const matchesDefinition = (product: Product) => definition.match(product, productText(product))
-  const availablePrimary = uniqueProducts(
-    allProducts.filter(
-      (product) => !usedHandles.has(product.handle) && hasCollectionHandle(product, definition.baseHandles) && matchesDefinition(product),
-    ),
-  )
-  const availableCollectionFallback = uniqueProducts(
-    allProducts.filter((product) => !usedHandles.has(product.handle) && hasCollectionHandle(product, definition.baseHandles)),
-  )
-  const availableFallback = uniqueProducts(
-    allProducts.filter((product) => !usedHandles.has(product.handle) && matchesDefinition(product)),
-  )
-  const collectionFallbackWithReuse = uniqueProducts(
-    allProducts.filter((product) => hasCollectionHandle(product, definition.baseHandles)),
-  )
-  const fallbackWithReuse = uniqueProducts(
-    allProducts.filter((product) => matchesDefinition(product)),
-  )
+function combineUniqueProductLists(...lists: Product[][]) {
+  const seen = new Set<string>()
+  const combined: Product[] = []
 
-  const selected = (
-    availablePrimary.length > 0
-      ? availablePrimary
-      : availableFallback.length > 0
-        ? availableFallback
-        : availableCollectionFallback.length > 0
-          ? availableCollectionFallback
-          : collectionFallbackWithReuse.length > 0
-            ? collectionFallbackWithReuse
-            : fallbackWithReuse
-  )
-
-  selected.forEach((product) => {
-    usedHandles.add(product.handle)
+  lists.forEach((list) => {
+    list.forEach((product) => {
+      if (!product.handle || seen.has(product.handle)) return
+      seen.add(product.handle)
+      combined.push(product)
+    })
   })
 
-  return selected
+  return combined
+}
+
+function pickSectionProducts(allProducts: Product[], definition: ShopAllSectionDefinition) {
+  const matchesDefinition = (product: Product) => definition.match(product, productText(product))
+  const primaryMatches = uniqueProducts(
+    allProducts.filter((product) => hasCollectionHandle(product, definition.baseHandles) && matchesDefinition(product)),
+  )
+  const broadMatches = uniqueProducts(
+    allProducts.filter((product) => matchesDefinition(product)),
+  )
+  const collectionFallback = uniqueProducts(
+    allProducts.filter((product) => hasCollectionHandle(product, definition.baseHandles)),
+  )
+  const nearestTypeFallback = uniqueProducts(
+    allProducts.filter((product) => {
+      const text = productText(product)
+
+      if (definition.handle.includes('sweater') || definition.handle.includes('cardigan') || definition.handle.includes('turtleneck')) {
+        return text.includes('sweater') || text.includes('knit') || text.includes('cardigan') || text.includes('turtleneck')
+      }
+
+      if (definition.handle.includes('shirt') || definition.handle.includes('tees') || definition.handle.includes('t-shirts')) {
+        return text.includes('shirt') || text.includes('tee') || text.includes('t-shirt') || text.includes('henley')
+      }
+
+      if (definition.handle.includes('pants') || definition.handle.includes('jeans') || definition.handle.includes('shorts')) {
+        return text.includes('pant') || text.includes('trouser') || text.includes('jean') || text.includes('short')
+      }
+
+      return false
+    }),
+  )
+
+  return combineUniqueProductLists(primaryMatches, broadMatches, collectionFallback, nearestTypeFallback).slice(
+    0,
+    SHOP_ALL_SECTION_PRODUCT_TARGET,
+  )
 }
 
 export async function getStorefrontShopAllSections(): Promise<StorefrontShopAllSection[]> {
   const allProducts = await getAllStorefrontProducts()
-  const usedHandles = new Set<string>()
 
   return SHOP_ALL_SECTION_DEFINITIONS.map((definition) => ({
     handle: definition.handle,
     title: definition.title,
     titleVi: definition.titleVi,
-    products: pickSectionProducts(allProducts, definition, usedHandles),
+    products: pickSectionProducts(allProducts, definition),
   })).filter((section) => section.products.length > 0)
 }

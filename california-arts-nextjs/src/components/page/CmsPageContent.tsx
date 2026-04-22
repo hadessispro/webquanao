@@ -10,6 +10,10 @@ export default function CmsPageContent({
 }) {
   if (!page) return fallback
 
+  if (fallback && page.template && page.template !== 'standard') {
+    return fallback
+  }
+
   if (!page.contentHtml) {
     return (
       <article className={`cms-page cms-page--${page.template || 'standard'}`}>

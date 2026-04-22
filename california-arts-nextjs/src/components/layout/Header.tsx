@@ -204,15 +204,26 @@ function DesktopNavItem({
         onBlurCapture={hasMegaMenu ? handleBlurCapture : undefined}
         onFocusCapture={hasMegaMenu ? onOpen : undefined}
       >
-        <SmartLink
-          className={`ca_menu-1st-button inline-flex items-center ${hasMegaMenu ? '' : 'relative'}`}
-          href={item.href}
-          openInNewTab={item.openInNewTab}
-          onClick={hasMegaMenu ? () => onClose() : undefined}
-        >
-          <span className="inline-block pr-1">{localizedText(locale, item.label, item.labelVi)}</span>
-          {hasMegaMenu && <Chevron />}
-        </SmartLink>
+        {hasMegaMenu ? (
+          <button
+            aria-expanded={isOpen}
+            aria-haspopup="true"
+            className="ca_menu-1st-button inline-flex items-center"
+            onClick={() => (isOpen ? onClose() : onOpen())}
+            type="button"
+          >
+            <span className="inline-block pr-1">{localizedText(locale, item.label, item.labelVi)}</span>
+            <Chevron />
+          </button>
+        ) : (
+          <SmartLink
+            className="ca_menu-1st-button inline-flex items-center relative"
+            href={item.href}
+            openInNewTab={item.openInNewTab}
+          >
+            <span className="inline-block pr-1">{localizedText(locale, item.label, item.labelVi)}</span>
+          </SmartLink>
+        )}
         {item.megaMenu && <MegaMenu fallbackHref={item.href} locale={locale} megaMenu={item.megaMenu} onNavigate={onClose} />}
       </div>
     </li>
@@ -237,6 +248,10 @@ export default function Header({ header }: HeaderProps) {
       frameId = 0
       setScrolled(window.scrollY > 18)
 
+      const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
+      const headerHeight = headerEl?.getBoundingClientRect().height || 90
+      document.documentElement.style.setProperty('--header-stack-height', `${Math.round(headerHeight)}px`)
+
       const footer = document.getElementById('shopify-section-footer')
       if (!footer) {
         setNearFooter(false)
@@ -244,8 +259,6 @@ export default function Header({ header }: HeaderProps) {
       }
 
       const footerRect = footer.getBoundingClientRect()
-      const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
-      const headerHeight = headerEl?.getBoundingClientRect().height || 90
       const footerRevealPoint = Math.max(headerHeight + 44, window.innerHeight * 0.72)
 
       setNearFooter(footerRect.top <= footerRevealPoint && footerRect.bottom > headerHeight)
@@ -264,6 +277,7 @@ export default function Header({ header }: HeaderProps) {
       if (frameId) window.cancelAnimationFrame(frameId)
       window.removeEventListener('scroll', queueUpdate)
       window.removeEventListener('resize', queueUpdate)
+      document.documentElement.style.removeProperty('--header-stack-height')
     }
   }, [pathname])
 
@@ -331,9 +345,9 @@ export default function Header({ header }: HeaderProps) {
               --color-header-background-hex: var(--color-primary-background-hex);
               --color-header-background-0: var(--color-primary-background-0);
               --color-header-meta: var(--color-primary-meta);
-              --sticky-header-height: 66px;
+              --sticky-header-height: 58px;
             }
-            .logo-image { display: block; max-width: 120px; }
+            .logo-image { display: block; max-width: 128px; }
           `,
             }}
           />

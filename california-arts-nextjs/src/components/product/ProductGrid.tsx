@@ -9,34 +9,45 @@ interface ProductGridProps {
   sectionTitle?: string;
   sectionSubtitle?: string;
   barLabel?: string;
+  barDescriptionHtml?: string;
+  cardDesktopSpan?: 3 | 4 | 6 | 12;
   productLimit?: number;
   showSectionTitle?: boolean;
+  stickyBar?: boolean;
 }
 
 export default function ProductGrid({
+  barDescriptionHtml,
   barLabel,
+  cardDesktopSpan,
   products,
   productLimit,
   sectionTitle,
   sectionSubtitle,
   showSectionTitle = true,
+  stickyBar = false,
 }: ProductGridProps) {
   const visibleProducts =
     typeof productLimit === "number" && productLimit > 0
       ? products.slice(0, productLimit)
       : products;
   const desktopSpan =
-    visibleProducts.length <= 1 ? 12 : visibleProducts.length === 2 ? 6 : visibleProducts.length === 3 ? 4 : 3;
+    cardDesktopSpan ??
+    (visibleProducts.length <= 1 ? 12 : visibleProducts.length === 2 ? 6 : visibleProducts.length === 3 ? 4 : 3);
 
   return (
     <>
       {barLabel && (
-        <div className="c_text-columns-section product-grid__bar">
+        <div className={`c_text-columns-section product-grid__bar${stickyBar ? " product-grid__bar--sticky" : ""}`}>
           <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
             <div className="px-8 lg:px-88 section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
                 <h2 className="px-4 font-body text-base">{barLabel}</h2>
-                <div className="rte px-4 text-sm" />
+                {barDescriptionHtml ? (
+                  <div className="rte px-4 text-sm" dangerouslySetInnerHTML={{ __html: barDescriptionHtml }} />
+                ) : (
+                  <div className="rte px-4 text-sm" />
+                )}
               </div>
             </div>
           </section>
@@ -76,7 +87,7 @@ export default function ProductGrid({
       <section className="featured-collection border-grid-color">
         <div className="py-8">
           <div className="bg-primary-background section-x-padding px-88 py-8">
-            <ul className="grid grid-cols-2 lg:grid-cols-12 gap-gutter">
+            <ul className="product-grid__items grid grid-cols-2 lg:grid-cols-12 gap-gutter">
               {visibleProducts.map((product) => (
                 <ProductCard desktopSpan={desktopSpan} key={product.id} product={product} />
               ))}

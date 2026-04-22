@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React from 'react'
 import ProductGrid from './ProductGrid'
 import { useLayout } from '@/context/LayoutContext'
 import type { StorefrontCollection } from '@/lib/product-data'
@@ -15,46 +15,6 @@ export default function ShopAllCollectionSections({
 }) {
   const { locale } = useLayout()
   const introLabel = locale === 'vi' ? 'Xem Tất Cả' : 'View All'
-  const [activeSection, setActiveSection] = useState<string>(sections[0]?.handle || '')
-  const navigationItems = useMemo(
-    () =>
-      sections.map((section) => ({
-        handle: section.handle,
-        label: locale === 'vi' && section.titleVi ? section.titleVi : section.title,
-      })),
-    [locale, sections],
-  )
-
-  useEffect(() => {
-    if (!sections.length) return undefined
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-
-        if (visibleEntries[0]?.target instanceof HTMLElement) {
-          setActiveSection(visibleEntries[0].target.dataset.sectionHandle || visibleEntries[0].target.id.replace('shop-all-', ''))
-        }
-      },
-      {
-        rootMargin: '-120px 0px -55% 0px',
-        threshold: [0.05, 0.2, 0.45],
-      },
-    )
-
-    const sectionElements = sections
-      .map((section) => document.getElementById(`shop-all-${section.handle}`))
-      .filter(Boolean) as HTMLElement[]
-
-    sectionElements.forEach((element) => observer.observe(element))
-
-    return () => {
-      sectionElements.forEach((element) => observer.unobserve(element))
-      observer.disconnect()
-    }
-  }, [sections])
 
   return (
     <>
@@ -73,7 +33,7 @@ export default function ShopAllCollectionSections({
 
         {collection.descriptionHtml && (
           <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-            <div className="px-8 lg:px-8 pb-4 pt-6">
+            <div className="px-8 lg:px-8 pb-4">
               <div className="flex text-sm default text-left">
                 <div className="w-full">
                   <div className="rte font-body break-words px-4">
@@ -85,21 +45,6 @@ export default function ShopAllCollectionSections({
           </section>
         )}
       </div>
-
-      <nav aria-label="Shop all categories" className="shop-all-category-nav">
-        <div className="shop-all-category-nav__inner section-x-padding">
-          {navigationItems.map((item) => (
-            <a
-              className={`shop-all-category-nav__link${activeSection === item.handle ? ' shop-all-category-nav__link--active' : ''}`}
-              href={`#shop-all-${item.handle}`}
-              key={item.handle}
-              onClick={() => setActiveSection(item.handle)}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-      </nav>
 
       <div className="shop-all-page__sections">
         {sections.map((section) => {
@@ -113,8 +58,10 @@ export default function ShopAllCollectionSections({
             >
               <ProductGrid
                 barLabel={label}
+                cardDesktopSpan={3}
                 products={section.products}
                 showSectionTitle={false}
+                stickyBar
               />
             </section>
           )

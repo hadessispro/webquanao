@@ -1,6 +1,6 @@
 import React from "react";
 import { getStorefrontCollectionByHandle } from "@/lib/product-data";
-import ProductGrid from "@/components/product/ProductGrid";
+import CollectionProductSections from "@/components/product/CollectionProductSections";
 import ShopAllCollectionSections from "@/components/product/ShopAllCollectionSections";
 import { getStorefrontShopAllSections } from "@/lib/shop-all-data";
 
@@ -32,12 +32,5 @@ export default async function CollectionPage({
     return <ShopAllCollectionSections collection={collection} sections={sections} />;
   }
 
-  return (
-    <ProductGrid
-      barLabel={collection.title}
-      products={collection.products}
-      sectionSubtitle={collection.descriptionHtml}
-      showSectionTitle={false}
-    />
-  );
+  return <CollectionProductSections collection={collection} />;
 }
