@@ -1,11 +1,31 @@
 import { getAllStorefrontProducts } from './product-data'
+import { getPayloadClient } from './payload-client'
 import type { Product } from './products'
 
 export type StorefrontShopAllSection = {
+  descriptionHtml?: string
   handle: string
   title: string
   titleVi?: string
   products: Product[]
+}
+
+type PayloadViewAllSection = {
+  barDescription?: string
+  barDescriptionHtml?: string
+  handle?: string
+  title?: string
+  titleVi?: string
+}
+
+type PayloadViewAllCollection = {
+  viewAllSections?: PayloadViewAllSection[]
+}
+
+type ViewAllSectionOverride = {
+  descriptionHtml?: string
+  title?: string
+  titleVi?: string
 }
 
 type ShopAllSectionDefinition = {
@@ -242,6 +262,56 @@ function combineUniqueProductLists(...lists: Product[][]) {
   return combined
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function plainTextToParagraphHtml(value?: string) {
+  const trimmed = value?.trim()
+  return trimmed ? `<p>${escapeHtml(trimmed)}</p>` : undefined
+}
+
+async function getViewAllSectionOverrides() {
+  const overrides = new Map<string, ViewAllSectionOverride>()
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.find({
+      collection: 'product-collections',
+      depth: 0,
+      limit: 1,
+      where: {
+        handle: {
+          equals: 'shop-all',
+        },
+      },
+    })
+    const collection = result.docs[0] as PayloadViewAllCollection | undefined
+
+    if (!Array.isArray(collection?.viewAllSections)) return overrides
+
+    collection.viewAllSections.forEach((section) => {
+      const handle = section.handle?.trim()
+      if (!handle) return
+
+      overrides.set(handle, {
+        descriptionHtml: section.barDescriptionHtml?.trim() || plainTextToParagraphHtml(section.barDescription),
+        title: section.title?.trim(),
+        titleVi: section.titleVi?.trim(),
+      })
+    })
+  } catch {
+    // Keep shop-all usable until the Payload schema has this optional field.
+  }
+
+  return overrides
+}
+
 function pickSectionProducts(allProducts: Product[], definition: ShopAllSectionDefinition) {
   const matchesDefinition = (product: Product) => definition.match(product, productText(product))
   const primaryMatches = uniqueProducts(
@@ -280,12 +350,16 @@ function pickSectionProducts(allProducts: Product[], definition: ShopAllSectionD
 }
 
 export async function getStorefrontShopAllSections(): Promise<StorefrontShopAllSection[]> {
-  const allProducts = await getAllStorefrontProducts()
+  const [allProducts, overrides] = await Promise.all([
+    getAllStorefrontProducts(),
+    getViewAllSectionOverrides(),
+  ])
 
   return SHOP_ALL_SECTION_DEFINITIONS.map((definition) => ({
+    descriptionHtml: overrides.get(definition.handle)?.descriptionHtml,
     handle: definition.handle,
-    title: definition.title,
-    titleVi: definition.titleVi,
+    title: overrides.get(definition.handle)?.title || definition.title,
+    titleVi: overrides.get(definition.handle)?.titleVi || definition.titleVi,
     products: pickSectionProducts(allProducts, definition),
   })).filter((section) => section.products.length > 0)
 }

@@ -74,7 +74,7 @@ export default function ShopAllCollectionSections({
               key={section.handle}
             >
               <ProductGrid
-                barDescriptionHtml={DEMO_COLLECTION_BAR_DESCRIPTION_HTML}
+                barDescriptionHtml={section.descriptionHtml || DEMO_COLLECTION_BAR_DESCRIPTION_HTML}
                 barLabel={label}
                 cardDesktopSpan={3}
                 products={section.products}

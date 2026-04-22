@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { VIEW_ALL_SECTION_BAR_DEFAULTS } from '../../lib/collection-bar-content'
 
 export const ProductCollections: CollectionConfig = {
   slug: 'product-collections',
@@ -44,6 +45,51 @@ export const ProductCollections: CollectionConfig = {
       admin: {
         description: 'Legacy Shopify HTML description.',
       },
+    },
+    {
+      name: 'viewAllSections',
+      type: 'array',
+      label: 'View All sections',
+      defaultValue: VIEW_ALL_SECTION_BAR_DEFAULTS,
+      admin: {
+        condition: (_, siblingData) => siblingData?.handle === 'shop-all',
+        description: 'Controls the sticky category bars on /collections/shop-all. Handles must match the built-in section handles.',
+      },
+      fields: [
+        {
+          name: 'handle',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Example: jeans, coats, jackets.',
+          },
+        },
+        {
+          name: 'title',
+          type: 'text',
+        },
+        {
+          name: 'titleVi',
+          type: 'text',
+          label: 'Vietnamese title',
+        },
+        {
+          name: 'barDescription',
+          type: 'textarea',
+          label: 'Bar description',
+          admin: {
+            description: 'Plain text rendered in the sticky bar at 10px.',
+          },
+        },
+        {
+          name: 'barDescriptionHtml',
+          type: 'textarea',
+          label: 'Bar description HTML',
+          admin: {
+            description: 'Optional HTML override. Leave blank unless this bar needs markup.',
+          },
+        },
+      ],
     },
     {
       name: 'image',

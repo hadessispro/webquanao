@@ -44,9 +44,12 @@ export default function ProductGrid({
               <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
                 <h2 className="px-4 font-body text-base">{barLabel}</h2>
                 {barDescriptionHtml ? (
-                  <div className="rte px-4 text-sm" dangerouslySetInnerHTML={{ __html: barDescriptionHtml }} />
+                  <div
+                    className="rte px-4 text-sm product-grid__bar-copy"
+                    dangerouslySetInnerHTML={{ __html: barDescriptionHtml }}
+                  />
                 ) : (
-                  <div className="rte px-4 text-sm" />
+                  <div className="rte px-4 text-sm product-grid__bar-copy" />
                 )}
               </div>
             </div>

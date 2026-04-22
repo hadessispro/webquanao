@@ -1112,11 +1112,30 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   max-width: min(420px, 100%);
 }
 
+.product-grid__bar .product-grid__bar-copy {
+  font-size: 10px !important;
+  grid-column: 2 / -1;
+  line-height: 1.2;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .product-grid__bar .rte p {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.product-grid__bar .product-grid__bar-copy p {
+  display: block;
+  font-size: inherit !important;
+  line-height: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-box-orient: initial;
+  -webkit-line-clamp: initial;
 }
 
 .product-grid__bar h2 {
@@ -1182,6 +1201,10 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   .shop-all-collection__bar-inner {
     gap: 10px;
     min-height: 28px;
+  }
+
+  .product-grid__bar .product-grid__bar-copy {
+    grid-column: 1;
   }
 
   .collection-category-bar__inner h2,
