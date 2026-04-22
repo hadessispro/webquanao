@@ -33,8 +33,12 @@ function RichTextSection({
   return (
     <div className={`shopify-section our-story-page__copy-section ${sectionClassName}`.trim()}>
       <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-        <div className={`our-story-page__copy-wrap ${textSize} default text-left`}>
-          <div className={`our-story-page__copy-slot our-story-page__copy-slot--${placement}`}>
+        <div
+          className={`our-story-page__copy-wrap our-story-page__copy-wrap--${placement} ${textSize} default text-left`}
+        >
+          <div
+            className={`our-story-page__copy-slot our-story-page__copy-slot--${placement}`}
+          >
             <div className="rte font-body break-words our-story-page__copy">{children}</div>
           </div>
         </div>
