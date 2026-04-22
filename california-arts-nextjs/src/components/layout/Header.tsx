@@ -255,13 +255,16 @@ export default function Header({ header }: HeaderProps) {
       const footer = document.getElementById('shopify-section-footer')
       if (!footer) {
         setNearFooter(false)
+        document.documentElement.classList.remove('site-footer-near')
         return
       }
 
       const footerRect = footer.getBoundingClientRect()
       const footerRevealPoint = Math.max(headerHeight + 44, window.innerHeight * 0.72)
+      const isNearFooter = footerRect.top <= footerRevealPoint && footerRect.bottom > headerHeight
 
-      setNearFooter(footerRect.top <= footerRevealPoint && footerRect.bottom > headerHeight)
+      setNearFooter(isNearFooter)
+      document.documentElement.classList.toggle('site-footer-near', isNearFooter)
     }
 
     const queueUpdate = () => {
@@ -278,6 +281,7 @@ export default function Header({ header }: HeaderProps) {
       window.removeEventListener('scroll', queueUpdate)
       window.removeEventListener('resize', queueUpdate)
       document.documentElement.style.removeProperty('--header-stack-height')
+      document.documentElement.classList.remove('site-footer-near')
     }
   }, [pathname])
 

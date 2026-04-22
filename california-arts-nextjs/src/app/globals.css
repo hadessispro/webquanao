@@ -1062,6 +1062,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   left: 0;
   position: sticky;
   top: calc(var(--header-stack-height, 88px) - 2px);
+  transition: opacity 180ms ease, transform 180ms ease;
   z-index: 9;
 }
 
@@ -1071,7 +1072,16 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   left: 0;
   position: sticky;
   top: calc(var(--header-stack-height, 88px) - 2px);
+  transition: opacity 180ms ease, transform 180ms ease;
   z-index: 9;
+}
+
+.site-footer-near .product-grid__bar--sticky,
+.site-footer-near .shop-all-page__intro > .c_text-columns-section,
+.site-footer-near .collection-product-page__intro > .c_text-columns-section {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
 }
 
 .product-grid__bar .multi-column,
