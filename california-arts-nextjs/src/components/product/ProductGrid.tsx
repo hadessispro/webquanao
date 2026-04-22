@@ -36,6 +36,13 @@ export default function ProductGrid({
   const desktopSpan =
     cardDesktopSpan ??
     (visibleProducts.length <= 1 ? 12 : visibleProducts.length === 2 ? 6 : visibleProducts.length === 3 ? 4 : 3);
+  const barSectionClass = [
+    "bg-primary-background text-primary-text overflow-hidden",
+    stickyBar && barStuck ? "" : "border-t-grid",
+    "border-b-grid border-grid-color",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   React.useEffect(() => {
     if (!stickyBar || !barLabel) {
@@ -79,7 +86,7 @@ export default function ProductGrid({
           className={`c_text-columns-section product-grid__bar${stickyBar ? " product-grid__bar--sticky" : ""}${stickyBar && barStuck ? " product-grid__bar--stuck" : ""}`}
           ref={barRef}
         >
-          <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
+          <section className={barSectionClass}>
             <div className="px-8 lg:px-88 section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
                 <h2 className="px-4 font-body text-base">{barLabel}</h2>

@@ -532,9 +532,9 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   column-gap: 18px;
   display: grid !important;
   grid-template-columns: 34px minmax(0, 1fr) auto;
-  min-height: 38px;
-  padding-bottom: 4px !important;
-  padding-top: 4px !important;
+  min-height: 34px;
+  padding-bottom: 2px !important;
+  padding-top: 2px !important;
   position: relative;
 }
 
@@ -596,9 +596,9 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   align-items: center;
   display: grid;
   grid-template-columns: 34px minmax(72px, 1fr) auto;
-  min-height: 42px;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  min-height: 38px;
+  padding-bottom: 3px;
+  padding-top: 3px;
   position: relative;
 }
 
@@ -1061,7 +1061,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 .product-grid__bar--sticky {
   left: 0;
   position: sticky;
-  top: calc(var(--header-stack-height, 88px) - var(--border-width, 1px));
+  top: var(--header-stack-height, 88px);
   transition: opacity 180ms ease, transform 180ms ease;
   z-index: 9;
 }
@@ -1069,7 +1069,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
 .product-grid__bar--stuck > section,
 .shop-all-page__intro > .c_text-columns-section > section,
 .collection-product-page__intro > .c_text-columns-section > section {
-  border-top-width: 0;
+  border-top-width: 0 !important;
 }
 
 .shop-all-page__intro > .c_text-columns-section,
@@ -1077,7 +1077,7 @@ body::-webkit-scrollbar-button:single-button:horizontal:increment {
   background: #fff;
   left: 0;
   position: sticky;
-  top: calc(var(--header-stack-height, 88px) - var(--border-width, 1px));
+  top: var(--header-stack-height, 88px);
   transition: opacity 180ms ease, transform 180ms ease;
   z-index: 9;
 }
