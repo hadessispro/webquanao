@@ -4,7 +4,6 @@ import React from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
-import PaymentLogoStrip from '@/components/ui/PaymentLogos'
 
 function formatMoney(value: number) {
   return value
@@ -119,7 +118,7 @@ export default function CartDrawer() {
 
               <footer className="cart-drawer__footer">
                 <div className="cart-drawer__subtotal">
-                  <span>{t('subtotal')}</span>
+                  <span>Subtotal</span>
                   <BrandPrice amount={formatMoney(cartSubtotal)} />
                 </div>
                 <Link
@@ -128,19 +127,47 @@ export default function CartDrawer() {
                   onClick={() => setIsCartOpen(false)}
                   prefetch={false}
                 >
-                  {t('checkout')}
+                  Proceed to Checkout
                 </Link>
-                <div className="cart-drawer__payment-info">
-                  <div className="cart-drawer__payment-head">
-                    <span>thanh toán an toàn</span>
-                    <small>xác nhận trước khi giao</small>
-                  </div>
-                  <PaymentLogoStrip compact className="cart-drawer__payment-logos" />
-                  <div className="cart-drawer__policy-list">
-                    <p>Đơn hàng được giữ sau khi bấm checkout.</p>
-                    <p>Hỗ trợ thẻ quốc tế, Napas, VNPay, chuyển khoản hoặc COD.</p>
-                    <p>Phí vận chuyển và ưu đãi được kiểm tra lại trước khi xác nhận.</p>
-                  </div>
+
+                <div className="cart-drawer__assistant-min">
+                  <section className="cart-drawer__assistant">
+                    <h2>Shipping &amp; Returns</h2>
+                    <p>
+                      Complimentary shipping on US orders over $150 USD. Refund within 14 days and
+                      exchange within 30 days of delivery. See our return policy{' '}
+                      <Link
+                        href="/pages/returns-exchanges"
+                        onClick={() => setIsCartOpen(false)}
+                        prefetch={false}
+                      >
+                        here
+                      </Link>
+                      .
+                    </p>
+                  </section>
+
+                  <section className="cart-drawer__assistant">
+                    <h2>Secure Payment</h2>
+                    <div className="cart-drawer__secure-logos" aria-label="Secure payment methods">
+                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--visa">
+                        Visa
+                      </span>
+                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--amex">
+                        American Express
+                      </span>
+                      <span
+                        aria-label="Mastercard"
+                        className="cart-drawer__secure-logo cart-drawer__secure-logo--mastercard"
+                      />
+                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--apple">
+                        Apple Pay
+                      </span>
+                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--paypal">
+                        PayPal
+                      </span>
+                    </div>
+                  </section>
                 </div>
               </footer>
             </>
