@@ -2180,62 +2180,8 @@ body.art-menu-lock {
 }
 
 .cart-drawer__secure-logos {
-  align-items: center;
-  color: rgba(19, 24, 24, 0.5);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 16px;
-  min-height: 26px;
-}
-
-.cart-drawer__secure-logo {
-  align-items: center;
-  display: inline-flex;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-  min-height: 16px;
-  text-transform: none;
-  white-space: nowrap;
-}
-
-.cart-drawer__secure-logo--visa {
-  font-size: 14px;
-  font-style: italic;
-  letter-spacing: -0.2px;
-  text-transform: uppercase;
-}
-
-.cart-drawer__secure-logo--amex {
-  max-width: 46px;
-  text-transform: uppercase;
-}
-
-.cart-drawer__secure-logo--mastercard::before,
-.cart-drawer__secure-logo--mastercard::after {
-  border-radius: 50%;
-  content: "";
-  height: 14px;
-  width: 14px;
-}
-
-.cart-drawer__secure-logo--mastercard::before {
-  background: rgba(19, 24, 24, 0.42);
-}
-
-.cart-drawer__secure-logo--mastercard::after {
-  background: rgba(19, 24, 24, 0.26);
-  margin-left: -5px;
-}
-
-.cart-drawer__secure-logo--apple::before {
-  content: "\25cf";
-  font-size: 10px;
-  margin-right: 4px;
-}
-
-.cart-drawer__secure-logo--paypal {
-  font-style: italic;
+  gap: 8px 14px;
+  margin-top: 2px;
 }
 
 /* === PRODUCT GRID (Next.js overrides) === */
@@ -3171,116 +3117,67 @@ body.art-menu-lock {
 }
 
 .payment-logo-strip {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
 }
 
 .payment-logo-strip--compact {
-  gap: 6px;
+  gap: 8px 16px;
 }
 
-.payment-mark {
+.payment-logo-item {
   align-items: center;
-  background: #fff;
-  border: 1px solid rgba(19, 24, 24, 0.2);
-  border-radius: 4px;
-  color: var(--color-primary-text);
   display: inline-flex;
-  font-size: 10px;
-  font-weight: 700;
-  height: 32px;
   justify-content: center;
-  letter-spacing: 0;
-  min-width: 0;
-  overflow: hidden;
-  padding: 0 8px;
-  position: relative;
-  text-transform: none;
-  width: 100%;
-}
-
-.payment-logo-strip--compact .payment-mark {
-  font-size: 9px;
-  height: 26px;
-  padding: 0 6px;
-}
-
-.payment-mark span {
-  position: relative;
-  z-index: 1;
-}
-
-.payment-mark--vnpay {
-  background: #0f4c9a;
-  border-color: #0f4c9a;
-  color: #fff;
-}
-
-.payment-mark--visa {
-  color: #1a1f71;
-  font-size: 13px;
-}
-
-.payment-mark--mastercard {
-  color: #111;
-  justify-content: flex-start;
-  padding-left: 8px;
-}
-
-.payment-mark--mastercard::before,
-.payment-mark--mastercard::after {
-  border-radius: 50%;
-  content: "";
   flex: 0 0 auto;
-  height: 16px;
-  width: 16px;
+  line-height: 1;
 }
 
-.payment-mark--mastercard::before {
-  background: #eb001b;
+.payment-logo-image {
+  display: block;
+  height: 24px;
+  object-fit: contain;
+  width: auto;
 }
 
-.payment-mark--mastercard::after {
-  background: #f79e1b;
-  margin-left: -6px;
-  margin-right: 4px;
+.payment-logo-item--visa .payment-logo-image {
+  height: 22px;
+  width: 68px;
 }
 
-.payment-mark--mastercard span {
-  font-size: 8px;
+.payment-logo-item--vnpay .payment-logo-image {
+  height: 24px;
+  width: 79px;
 }
 
-.payment-mark--jcb {
-  background: linear-gradient(90deg, #0b6fbd 0 33%, #fff 33% 66%, #0c8a43 66% 100%);
-  color: #111;
+.payment-logo-item--amex .payment-logo-image,
+.payment-logo-item--mastercard .payment-logo-image,
+.payment-logo-item--jcb .payment-logo-image {
+  height: 30px;
+  width: 30px;
 }
 
-.payment-mark--amex {
-  background: #2e77bc;
-  border-color: #2e77bc;
-  color: #fff;
+.payment-logo-strip--compact .payment-logo-item--visa .payment-logo-image {
+  height: 19px;
+  width: 60px;
 }
 
-.payment-mark--napas {
-  color: #0b4c8c;
+.payment-logo-strip--compact .payment-logo-item--vnpay .payment-logo-image {
+  height: 20px;
+  width: 66px;
 }
 
-.payment-mark--napas::after {
-  background: #ef7f1a;
-  border-radius: 999px;
-  content: "";
-  height: 4px;
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  width: 14px;
+.payment-logo-strip--compact .payment-logo-item--amex .payment-logo-image,
+.payment-logo-strip--compact .payment-logo-item--mastercard .payment-logo-image,
+.payment-logo-strip--compact .payment-logo-item--jcb .payment-logo-image {
+  height: 24px;
+  width: 24px;
 }
 
-.payment-mark--atm,
-.payment-mark--bank,
-.payment-mark--cod {
-  background: #f7f7f2;
+.checkout-page__payment-logos {
+  gap: 10px 20px;
 }
 
 .checkout-page__submit {
@@ -3408,11 +3305,7 @@ body.art-menu-lock {
   }
 
   .payment-logo-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .cart-drawer__payment-logos {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px 15px;
   }
 }
 

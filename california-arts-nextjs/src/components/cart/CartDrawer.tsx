@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
+import PaymentLogoStrip from '@/components/ui/PaymentLogos'
 
 function formatMoney(value: number) {
   return value
@@ -149,24 +150,11 @@ export default function CartDrawer() {
 
                   <section className="cart-drawer__assistant">
                     <h2>Secure Payment</h2>
-                    <div className="cart-drawer__secure-logos" aria-label="Secure payment methods">
-                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--visa">
-                        Visa
-                      </span>
-                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--amex">
-                        American Express
-                      </span>
-                      <span
-                        aria-label="Mastercard"
-                        className="cart-drawer__secure-logo cart-drawer__secure-logo--mastercard"
-                      />
-                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--apple">
-                        Apple Pay
-                      </span>
-                      <span className="cart-drawer__secure-logo cart-drawer__secure-logo--paypal">
-                        PayPal
-                      </span>
-                    </div>
+                    <PaymentLogoStrip
+                      className="cart-drawer__secure-logos"
+                      compact
+                      logos={['visa', 'amex', 'mastercard', 'jcb', 'vnpay']}
+                    />
                   </section>
                 </div>
               </footer>
