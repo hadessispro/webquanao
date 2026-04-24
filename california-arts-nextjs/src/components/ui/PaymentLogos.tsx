@@ -2,12 +2,13 @@ import Image from 'next/image'
 
 const PAYMENT_LOGOS = ['visa', 'amex', 'mastercard', 'jcb', 'vnpay'] as const
 
-type PaymentLogo = (typeof PAYMENT_LOGOS)[number]
+export type PaymentLogo = (typeof PAYMENT_LOGOS)[number]
 
 type PaymentLogoStripProps = {
   className?: string
   compact?: boolean
   logos?: PaymentLogo[]
+  tone?: 'brand' | 'mono'
 }
 
 const PAYMENT_LOGO_META: Record<
@@ -55,13 +56,14 @@ export default function PaymentLogoStrip({
   compact = false,
   className = '',
   logos = [...PAYMENT_LOGOS],
+  tone = 'brand',
 }: PaymentLogoStripProps) {
   return (
     <div
       aria-label="logo thanh toán"
       className={`payment-logo-strip${compact ? ' payment-logo-strip--compact' : ''}${
-        className ? ` ${className}` : ''
-      }`}
+        tone === 'mono' ? ' payment-logo-strip--mono' : ''
+      }${className ? ` ${className}` : ''}`}
     >
       {logos.map((logo) => {
         const logoMeta = PAYMENT_LOGO_META[logo]

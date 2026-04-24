@@ -2202,22 +2202,6 @@ body.art-menu-lock {
   position: relative;
 }
 
-.ca_pro-item .c_grid-inner::after {
-  border: 1px solid transparent;
-  content: "";
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
-  transition: border-color 140ms ease;
-  z-index: 6;
-}
-
-.ca_pro-item:hover .c_grid-inner::after,
-.ca_pro-item:focus-within .c_grid-inner::after,
-.ca_pro-item .c_grid-inner:has(.increase-target:active)::after {
-  border-color: rgba(19, 24, 24, 0.45);
-}
-
 .ca_pro-item .increase-target:focus,
 .ca_pro-item .increase-target:focus-visible {
   outline: 0 !important;
@@ -2834,41 +2818,56 @@ body.art-menu-lock {
 }
 
 .checkout-page__payment-method {
-  align-content: start;
+  align-content: center;
   background: #fff;
   border: 1px solid rgba(19, 24, 24, 0.2);
   border-radius: 6px;
   color: var(--color-primary-text);
   display: grid;
-  gap: 4px 10px;
-  grid-template-columns: auto minmax(0, 1fr);
-  min-height: 72px;
-  padding: 10px 12px;
+  gap: 4px 12px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  min-height: 82px;
+  padding: 12px 14px;
   text-align: left;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
-.checkout-page__payment-method b {
+.checkout-page__payment-method-mark {
   align-items: center;
-  background: #f7f7f2;
-  border: 1px solid rgba(19, 24, 24, 0.18);
-  border-radius: 4px;
   display: inline-flex;
-  font-size: 10px;
-  font-weight: 700;
   grid-row: 1 / span 2;
-  height: 26px;
+  height: 100%;
   justify-content: center;
-  min-width: 44px;
-  padding: 0 7px;
+  min-height: 40px;
+  width: 58px;
 }
 
-.checkout-page__payment-method span,
+.checkout-page__payment-method-icon {
+  color: var(--color-primary-text);
+  display: block;
+  height: 28px;
+  width: 28px;
+}
+
+.checkout-page__payment-method-logo {
+  display: block;
+  height: auto;
+  max-width: 58px;
+  object-fit: contain;
+  width: auto;
+}
+
+.checkout-page__payment-method-title,
 .checkout-page__payment-method small {
   display: block;
 }
 
-.checkout-page__payment-method span {
+.checkout-page__payment-method-title {
   font-size: 13px;
+  line-height: 1.2;
 }
 
 .checkout-page__payment-method small {
@@ -2879,17 +2878,17 @@ body.art-menu-lock {
 }
 
 .checkout-page__payment-method:hover {
-  border-color: rgba(19, 24, 24, 0.42);
+  border-color: rgba(19, 24, 24, 0.36);
 }
 
 .checkout-page__payment-method:focus-visible {
-  box-shadow: 0 0 0 2px rgba(19, 24, 24, 0.12);
+  box-shadow: 0 0 0 2px rgba(19, 24, 24, 0.08);
 }
 
 .checkout-page__payment-method--active {
   background: #f7f7f2;
-  border-color: rgba(19, 24, 24, 0.74);
-  box-shadow: inset 0 0 0 1px rgba(19, 24, 24, 0.74);
+  border-color: rgba(19, 24, 24, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(19, 24, 24, 0.22);
 }
 
 .checkout-page__summary {
@@ -2897,7 +2896,8 @@ body.art-menu-lock {
   align-self: start;
   background: #f8f8f6;
   border-left: 1px solid var(--checkout-border);
-  box-shadow: 50vw 0 0 #f8f8f6;
+  box-shadow: 100vw 0 0 100vw #f8f8f6;
+  clip-path: inset(0 -100vw 0 0);
   display: grid;
   gap: 18px;
   grid-auto-rows: max-content;
@@ -3062,8 +3062,8 @@ body.art-menu-lock {
   border: 1px solid rgba(19, 24, 24, 0.14);
   border-radius: 6px;
   display: grid;
-  gap: 12px;
-  padding: 14px;
+  gap: 14px;
+  padding: 16px;
 }
 
 .checkout-page__payment-head {
@@ -3127,6 +3127,11 @@ body.art-menu-lock {
   gap: 8px 16px;
 }
 
+.payment-logo-strip--mono .payment-logo-image {
+  filter: grayscale(1) brightness(0);
+  opacity: 0.9;
+}
+
 .payment-logo-item {
   align-items: center;
   display: inline-flex;
@@ -3177,7 +3182,7 @@ body.art-menu-lock {
 }
 
 .checkout-page__payment-logos {
-  gap: 10px 20px;
+  gap: 12px 20px;
 }
 
 .checkout-page__submit {
@@ -3230,7 +3235,8 @@ body.art-menu-lock {
     border-left: 0;
     border-top: 1px solid var(--checkout-border);
     border-bottom: 1px solid var(--checkout-border);
-    box-shadow: none;
+    box-shadow: 0 0 0 100vw #f8f8f6;
+    clip-path: inset(0 -100vw);
     height: auto;
     min-height: 0;
     position: static;

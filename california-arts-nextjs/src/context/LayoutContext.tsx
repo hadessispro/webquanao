@@ -78,7 +78,7 @@ export function LayoutProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [cartItems, setCartItems] = useState<CartLineItem[]>([])
-  const [locale, setLocale] = useState<Locale>('en')
+  const [locale, setLocale] = useState<Locale>('vi')
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

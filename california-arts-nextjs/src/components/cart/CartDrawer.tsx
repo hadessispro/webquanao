@@ -119,7 +119,7 @@ export default function CartDrawer() {
 
               <footer className="cart-drawer__footer">
                 <div className="cart-drawer__subtotal">
-                  <span>Subtotal</span>
+                  <span>{t('subtotal')}</span>
                   <BrandPrice amount={formatMoney(cartSubtotal)} />
                 </div>
                 <Link
@@ -128,32 +128,33 @@ export default function CartDrawer() {
                   onClick={() => setIsCartOpen(false)}
                   prefetch={false}
                 >
-                  Proceed to Checkout
+                  {t('checkout')}
                 </Link>
 
                 <div className="cart-drawer__assistant-min">
                   <section className="cart-drawer__assistant">
-                    <h2>Shipping &amp; Returns</h2>
+                    <h2>{t('shippingReturns')}</h2>
                     <p>
-                      Complimentary shipping on US orders over $150 USD. Refund within 14 days and
-                      exchange within 30 days of delivery. See our return policy{' '}
+                      Miễn phí vận chuyển với đơn nội địa đủ điều kiện. Hỗ trợ hoàn trả trong 14
+                      ngày và đổi sản phẩm trong 30 ngày kể từ khi giao thành công. Xem chính sách{' '}
                       <Link
                         href="/pages/returns-exchanges"
                         onClick={() => setIsCartOpen(false)}
                         prefetch={false}
                       >
-                        here
+                        tại đây
                       </Link>
                       .
                     </p>
                   </section>
 
                   <section className="cart-drawer__assistant">
-                    <h2>Secure Payment</h2>
+                    <h2>Thanh toán bảo mật</h2>
                     <PaymentLogoStrip
                       className="cart-drawer__secure-logos"
                       compact
-                      logos={['visa', 'amex', 'mastercard', 'jcb', 'vnpay']}
+                      logos={['vnpay', 'visa', 'mastercard', 'jcb', 'amex']}
+                      tone="mono"
                     />
                   </section>
                 </div>

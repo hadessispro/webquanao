@@ -228,9 +228,7 @@ const DICTIONARY: Record<Locale, Record<TranslationKey, string>> = {
 }
 
 export function readStoredLocale(): Locale {
-  if (typeof window === 'undefined') return 'en'
-
-  return window.localStorage.getItem(LOCALE_STORAGE_KEY) === 'vi' ? 'vi' : 'en'
+  return 'vi'
 }
 
 export function translate(locale: Locale, key: TranslationKey) {

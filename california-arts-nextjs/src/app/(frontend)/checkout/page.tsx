@@ -1,6 +1,7 @@
 'use client'
 
 import React, { FormEvent, useEffect, useMemo, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
@@ -43,6 +44,77 @@ const emptyProfile: CheckoutProfile = {
   phone: '',
   street: '',
   zipCode: '',
+}
+
+type PaymentMethodOption = {
+  description: string
+  label: string
+  value: string
+  visual: 'cod' | 'bank' | 'vnpay'
+}
+
+function PaymentMethodVisual({ type }: { type: PaymentMethodOption['visual'] }) {
+  if (type === 'vnpay') {
+    return (
+      <Image
+        alt="VNPay"
+        className="checkout-page__payment-method-logo"
+        height={20}
+        src="/media/payment/vnpay.svg"
+        unoptimized
+        width={66}
+      />
+    )
+  }
+
+  if (type === 'bank') {
+    return (
+      <svg
+        aria-hidden="true"
+        className="checkout-page__payment-method-icon"
+        viewBox="0 0 32 32"
+      >
+        <path
+          d="M16 5 5 10v2h22v-2L16 5Zm-9 9h3v9H7v-9Zm7 0h4v9h-4v-9Zm8 0h3v9h-3v-9ZM5 25h22"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
+          strokeWidth="1.8"
+        />
+      </svg>
+    )
+  }
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="checkout-page__payment-method-icon"
+      viewBox="0 0 32 32"
+    >
+      <path
+        d="M6 10h20v12H6z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M10 19h7M10 15h11"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M21 8v4"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  )
 }
 
 function formatMoney(value: number) {
@@ -117,24 +189,24 @@ export default function CheckoutPage() {
     () => Math.max(cartSubtotal - discountAmount, 0),
     [cartSubtotal, discountAmount],
   )
-  const paymentMethods = [
+  const paymentMethods: PaymentMethodOption[] = [
     {
-      badge: 'COD',
       description: 'trả tiền khi nhận hàng',
       label: t('cashOnDelivery'),
       value: 'cod',
+      visual: 'cod',
     },
     {
-      badge: 'BANK',
       description: 'xác nhận qua tài khoản',
       label: t('bankTransfer'),
       value: 'bank_transfer',
+      visual: 'bank',
     },
     {
-      badge: 'VNPay',
       description: 'ví, thẻ ATM, QR',
       label: 'VNPay',
       value: 'vnpay',
+      visual: 'vnpay',
     },
   ]
 
@@ -465,8 +537,10 @@ export default function CheckoutPage() {
                         role="radio"
                         type="button"
                       >
-                        <b>{method.badge}</b>
-                        <span>{method.label}</span>
+                        <span className="checkout-page__payment-method-mark">
+                          <PaymentMethodVisual type={method.visual} />
+                        </span>
+                        <span className="checkout-page__payment-method-title">{method.label}</span>
                         <small>{method.description}</small>
                       </button>
                     )
@@ -565,7 +639,10 @@ export default function CheckoutPage() {
                 <p>phương thức thanh toán được hỗ trợ</p>
                 <span>bảo mật & xác nhận</span>
               </div>
-              <PaymentLogoStrip className="checkout-page__payment-logos" />
+              <PaymentLogoStrip
+                className="checkout-page__payment-logos"
+                logos={['vnpay', 'visa', 'mastercard', 'jcb', 'amex']}
+              />
               <ul className="checkout-page__payment-policy">
                 <li>Hỗ trợ VNPay, Visa, Mastercard, JCB, American Express, Napas và ATM nội địa.</li>
                 <li>Đơn hàng được giữ và chỉ xử lý sau khi thông tin thanh toán được xác nhận.</li>
