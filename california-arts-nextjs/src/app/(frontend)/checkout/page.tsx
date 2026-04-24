@@ -352,21 +352,36 @@ export default function CheckoutPage() {
 
   return (
     <section className="checkout-page bg-primary-background text-primary-text">
-      {status === 'success' ? (
-        <section className="checkout-page__success">
-          <p>{t('orderReceived')}</p>
-          <h1>{orderNumber}</h1>
-          <span>{t('savedDetailsNextVisit')}</span>
-          <Link href="/collections/shop-all">{t('continueShopping')}</Link>
-        </section>
-      ) : cartItems.length === 0 ? (
-        <section className="checkout-page__empty">
-          <p>{t('emptyCart')}.</p>
-          <Link href="/collections/shop-all">{t('shopAll')}</Link>
-        </section>
-      ) : (
-        <form className="checkout-page__layout" onSubmit={submitOrder}>
-          <main className="checkout-page__form">
+      <div className="checkout-page__shell">
+        <header className="checkout-page__brand">
+          <Link className="checkout-page__brand-link" href="/" prefetch={false}>
+            <Image
+              alt="điển"
+              className="checkout-page__brand-logo"
+              height={66}
+              priority
+              src="/media/dien-logo-black.png"
+              unoptimized
+              width={198}
+            />
+          </Link>
+        </header>
+
+        {status === 'success' ? (
+          <section className="checkout-page__success">
+            <p>{t('orderReceived')}</p>
+            <h1>{orderNumber}</h1>
+            <span>{t('savedDetailsNextVisit')}</span>
+            <Link href="/collections/shop-all">{t('continueShopping')}</Link>
+          </section>
+        ) : cartItems.length === 0 ? (
+          <section className="checkout-page__empty">
+            <p>{t('emptyCart')}.</p>
+            <Link href="/collections/shop-all">{t('shopAll')}</Link>
+          </section>
+        ) : (
+          <form className="checkout-page__layout" onSubmit={submitOrder}>
+            <main className="checkout-page__form">
             <section className="checkout-page__intro">
               <p>{t('secureCheckout')}</p>
               <h1>{t('completeYourOrder')}</h1>
@@ -559,117 +574,118 @@ export default function CheckoutPage() {
             </section>
 
             {message && <p className="checkout-page__message">{message}</p>}
-          </main>
+            </main>
 
-          <aside className="checkout-page__summary" aria-label={t('orderSummary')}>
-            <h2>{t('orderSummary')}</h2>
-            <div className="checkout-page__items">
-              {cartItems.map((item) => (
-                <article className="checkout-page__item" key={item.id}>
-                  <div className="checkout-page__thumb">
-                    {item.image ? <img src={item.image} alt={item.title} /> : <span />}
-                    <b>{item.quantity}</b>
-                  </div>
-                  <div className="checkout-page__item-copy">
-                    <p>{item.title}</p>
-                    <span>
-                      {[item.color, item.size].filter(Boolean).join(' / ') ||
-                        item.variantTitle ||
-                        t('itemDefault')}
-                    </span>
-                  </div>
-                  <strong>
-                    <BrandPrice amount={formatMoney(item.price * item.quantity)} />
-                  </strong>
-                </article>
-              ))}
-            </div>
+            <aside className="checkout-page__summary" aria-label={t('orderSummary')}>
+              <h2>{t('orderSummary')}</h2>
+              <div className="checkout-page__items">
+                {cartItems.map((item) => (
+                  <article className="checkout-page__item" key={item.id}>
+                    <div className="checkout-page__thumb">
+                      {item.image ? <img src={item.image} alt={item.title} /> : <span />}
+                      <b>{item.quantity}</b>
+                    </div>
+                    <div className="checkout-page__item-copy">
+                      <p>{item.title}</p>
+                      <span>
+                        {[item.color, item.size].filter(Boolean).join(' / ') ||
+                          item.variantTitle ||
+                          t('itemDefault')}
+                      </span>
+                    </div>
+                    <strong>
+                      <BrandPrice amount={formatMoney(item.price * item.quantity)} />
+                    </strong>
+                  </article>
+                ))}
+              </div>
 
-            <div className="checkout-page__discount">
-              <input
-                aria-label={t('discountPlaceholder')}
-                onChange={(event) => setDiscountInput(event.target.value)}
-                placeholder={t('discountPlaceholder')}
-                type="text"
-                value={discountInput}
-              />
-              <button
-                disabled={discountStatus === 'checking' || !discountInput.trim()}
-                onClick={applyDiscount}
-                type="button"
-              >
-                {discountStatus === 'checking' ? t('checking') : t('apply')}
-              </button>
-            </div>
-            {discountMessage && (
-              <p
-                className={
-                  discountStatus === 'error'
-                    ? 'checkout-page__discount-message checkout-page__discount-message--error'
-                    : 'checkout-page__discount-message'
-                }
-              >
-                {discountMessage}
-              </p>
-            )}
-
-            <div className="checkout-page__totals">
-              <p>
-                <span>{t('subtotal')}</span>
-                <BrandPrice amount={formatMoney(cartSubtotal)} />
-              </p>
-              {appliedDiscount && (
-                <p>
-                  <span>{appliedDiscount.code}</span>
-                  <BrandPrice amount={formatMoney(discountAmount)} prefix="-" />
+              <div className="checkout-page__discount">
+                <input
+                  aria-label={t('discountPlaceholder')}
+                  onChange={(event) => setDiscountInput(event.target.value)}
+                  placeholder={t('discountPlaceholder')}
+                  type="text"
+                  value={discountInput}
+                />
+                <button
+                  disabled={discountStatus === 'checking' || !discountInput.trim()}
+                  onClick={applyDiscount}
+                  type="button"
+                >
+                  {discountStatus === 'checking' ? t('checking') : t('apply')}
+                </button>
+              </div>
+              {discountMessage && (
+                <p
+                  className={
+                    discountStatus === 'error'
+                      ? 'checkout-page__discount-message checkout-page__discount-message--error'
+                      : 'checkout-page__discount-message'
+                  }
+                >
+                  {discountMessage}
                 </p>
               )}
-              <p>
-                <span>{t('shipping')}</span>
-                <span>{t('shippingCalculated')}</span>
-              </p>
-              <p className="checkout-page__total">
-                <span>{t('total')}</span>
-                <BrandPrice amount={formatMoney(total)} />
-              </p>
-            </div>
 
-            <div className="checkout-page__payment-info">
-              <div className="checkout-page__payment-head">
-                <p>phương thức thanh toán được hỗ trợ</p>
-                <span>bảo mật & xác nhận</span>
+              <div className="checkout-page__totals">
+                <p>
+                  <span>{t('subtotal')}</span>
+                  <BrandPrice amount={formatMoney(cartSubtotal)} />
+                </p>
+                {appliedDiscount && (
+                  <p>
+                    <span>{appliedDiscount.code}</span>
+                    <BrandPrice amount={formatMoney(discountAmount)} prefix="-" />
+                  </p>
+                )}
+                <p>
+                  <span>{t('shipping')}</span>
+                  <span>{t('shippingCalculated')}</span>
+                </p>
+                <p className="checkout-page__total">
+                  <span>{t('total')}</span>
+                  <BrandPrice amount={formatMoney(total)} />
+                </p>
               </div>
-              <PaymentLogoStrip
-                className="checkout-page__payment-logos"
-                logos={['vnpay', 'visa', 'mastercard', 'jcb', 'amex']}
-              />
-              <ul className="checkout-page__payment-policy">
-                <li>Hỗ trợ VNPay, Visa, Mastercard, JCB, American Express, Napas và ATM nội địa.</li>
-                <li>Đơn hàng được giữ và chỉ xử lý sau khi thông tin thanh toán được xác nhận.</li>
-                <li>Chuyển khoản và thanh toán khi nhận hàng vẫn khả dụng trong giai đoạn chưa kết nối API.</li>
-              </ul>
+
+              <div className="checkout-page__payment-info">
+                <div className="checkout-page__payment-head">
+                  <p>phương thức thanh toán được hỗ trợ</p>
+                  <span>bảo mật & xác nhận</span>
+                </div>
+                <PaymentLogoStrip
+                  className="checkout-page__payment-logos"
+                  logos={['vnpay', 'visa', 'mastercard', 'jcb', 'amex']}
+                />
+                <ul className="checkout-page__payment-policy">
+                  <li>Hỗ trợ VNPay, Visa, Mastercard, JCB, American Express, Napas và ATM nội địa.</li>
+                  <li>Đơn hàng được giữ và chỉ xử lý sau khi thông tin thanh toán được xác nhận.</li>
+                  <li>Chuyển khoản và thanh toán khi nhận hàng vẫn khả dụng trong giai đoạn chưa kết nối API.</li>
+                </ul>
+              </div>
+              <button
+                className="checkout-page__submit"
+                disabled={status === 'submitting'}
+                type="submit"
+              >
+                {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
+              </button>
+            </aside>
+            <div className="checkout-page__sticky-total">
+              <span>
+                <small>{t('total')}</small>
+                <strong>
+                  <BrandPrice amount={formatMoney(total)} />
+                </strong>
+              </span>
+              <button disabled={status === 'submitting'} type="submit">
+                {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
+              </button>
             </div>
-            <button
-              className="checkout-page__submit"
-              disabled={status === 'submitting'}
-              type="submit"
-            >
-              {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
-            </button>
-          </aside>
-          <div className="checkout-page__sticky-total">
-            <span>
-              <small>{t('total')}</small>
-              <strong>
-                <BrandPrice amount={formatMoney(total)} />
-              </strong>
-            </span>
-            <button disabled={status === 'submitting'} type="submit">
-              {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
-            </button>
-          </div>
-        </form>
-      )}
+          </form>
+        )}
+      </div>
     </section>
   )
 }

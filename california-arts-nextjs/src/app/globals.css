@@ -2736,12 +2736,13 @@ body.art-menu-lock {
 
 /* === CHECKOUT === */
 .checkout-page {
+  --checkout-brand-height: 108px;
   --checkout-border: rgba(19, 24, 24, 0.18);
   --checkout-muted: rgba(19, 24, 24, 0.62);
   background: #fff;
   font-size: 14px;
   line-height: 1.45;
-  min-height: calc(100svh - var(--sticky-header-height, 66px));
+  min-height: 100svh;
   overflow-x: hidden;
 }
 
@@ -2749,14 +2750,38 @@ body.art-menu-lock {
   box-sizing: border-box;
 }
 
+.checkout-page__shell {
+  margin: 0 auto;
+  width: min(100%, 1120px);
+}
+
+.checkout-page__brand {
+  align-items: center;
+  border-bottom: 1px solid var(--checkout-border);
+  display: flex;
+  justify-content: center;
+  min-height: var(--checkout-brand-height);
+  padding: 24px 20px 18px;
+}
+
+.checkout-page__brand-link {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.checkout-page__brand-logo {
+  display: block;
+  height: auto;
+  width: min(198px, 34vw);
+}
+
 .checkout-page__layout {
   align-items: stretch;
   display: grid;
   grid-template-columns: minmax(0, 640px) minmax(360px, 460px);
   justify-content: center;
-  margin: 0 auto;
-  min-height: calc(100svh - var(--sticky-header-height, 66px));
-  width: min(100%, 1120px);
+  min-height: calc(100svh - var(--checkout-brand-height));
+  width: 100%;
 }
 
 .checkout-page__form {
@@ -2971,14 +2996,14 @@ body.art-menu-lock {
   display: grid;
   gap: 18px;
   grid-auto-rows: max-content;
-  height: calc(100svh - var(--sticky-header-height, 66px));
+  height: calc(100svh - var(--checkout-brand-height));
   justify-self: stretch;
-  min-height: calc(100svh - var(--sticky-header-height, 66px));
+  min-height: calc(100svh - var(--checkout-brand-height));
   overscroll-behavior: contain;
   overflow-y: auto;
   padding: 28px 32px max(32px, env(safe-area-inset-bottom));
   position: sticky;
-  top: var(--sticky-header-height, 66px);
+  top: 0;
   width: 100%;
 }
 
@@ -3282,7 +3307,7 @@ body.art-menu-lock {
   align-content: center;
   display: grid;
   gap: 12px;
-  min-height: calc(100svh - var(--sticky-header-height, 66px));
+  min-height: calc(100svh - var(--checkout-brand-height));
   padding: 56px 32px;
   text-align: center;
 }
@@ -3299,9 +3324,22 @@ body.art-menu-lock {
 }
 
 @media (max-width: 899px) {
+  .checkout-page {
+    --checkout-brand-height: 84px;
+  }
+
   .checkout-page__layout {
     display: flex;
     flex-direction: column;
+  }
+
+  .checkout-page__shell {
+    width: 100%;
+  }
+
+  .checkout-page__brand {
+    min-height: var(--checkout-brand-height);
+    padding: 18px 16px 14px;
   }
 
   .checkout-page__form,
