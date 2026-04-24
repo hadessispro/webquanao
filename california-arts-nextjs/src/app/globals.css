@@ -2139,6 +2139,36 @@ body.art-menu-lock {
   padding: 14px 0 10px;
 }
 
+.cart-drawer__style-with {
+  border-top: 1px solid rgba(19, 24, 24, 0.2);
+  display: grid;
+  gap: 12px;
+  padding: 16px 0 18px;
+}
+
+.cart-drawer__style-head h2 {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.cart-drawer__style-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cart-drawer__style-card,
+.cart-drawer__style-card img {
+  aspect-ratio: 3 / 4;
+  background: #f7f7f2;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
 .cart-drawer__assistant-min {
   display: grid;
 }

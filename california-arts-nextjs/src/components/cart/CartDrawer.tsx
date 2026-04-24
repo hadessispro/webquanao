@@ -1,10 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
 import PaymentLogoStrip from '@/components/ui/PaymentLogos'
+import { getAllProducts, getMainImageUrl } from '@/lib/products'
 
 function formatMoney(value: number) {
   return value
@@ -21,6 +22,19 @@ export default function CartDrawer() {
     t,
     updateCartQuantity,
   } = useLayout()
+
+  const styleWithProducts = useMemo(() => {
+    const cartHandles = new Set(cartItems.map((item) => item.handle))
+
+    return getAllProducts()
+      .filter((product) => !cartHandles.has(product.handle))
+      .slice(0, 3)
+      .map((product) => ({
+        handle: product.handle,
+        image: getMainImageUrl(product),
+        title: product.title,
+      }))
+  }, [cartItems])
 
   if (!isCartOpen) return null
 
@@ -130,6 +144,27 @@ export default function CartDrawer() {
                 >
                   {t('checkout')}
                 </Link>
+
+                {styleWithProducts.length > 0 && (
+                  <section className="cart-drawer__style-with">
+                    <div className="cart-drawer__style-head">
+                      <h2>{t('styleWith')}</h2>
+                    </div>
+                    <div className="cart-drawer__style-grid">
+                      {styleWithProducts.map((product) => (
+                        <Link
+                          className="cart-drawer__style-card"
+                          href={`/products/${product.handle}`}
+                          key={product.handle}
+                          onClick={() => setIsCartOpen(false)}
+                          prefetch={false}
+                        >
+                          <img alt={product.title} loading="lazy" src={product.image} />
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                )}
 
                 <div className="cart-drawer__assistant-min">
                   <section className="cart-drawer__assistant">
