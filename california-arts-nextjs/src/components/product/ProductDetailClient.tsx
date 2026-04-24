@@ -262,7 +262,7 @@ function ProductMiniCard({ product }: { product: ProductPreview }) {
             loading="lazy"
           />
         ) : (
-          <span className="product-detail-card__empty">No image</span>
+          <span className="product-detail-card__empty">Không có ảnh</span>
         )}
         <span className="product-detail-card__meta">
           <span>{product.title}</span>
@@ -300,15 +300,15 @@ function ProductRail({
 
 const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
   Details:
-    "<p>- 100% wool exterior<br />- Oversized fit<br />- Oversized military collar<br />- Stand-up collar with button closure<br />- Double breasted<br />- Color matched button closures<br />- Front welt pockets<br />- Below the knee, long length<br />- Center-back vented hem<br />- Interior chest pocket<br />- Matching removable belt<br />- Back belt loops</p><p>Materials & Care<br />- Outer: 100% wool<br />- Care: Dry clean only</p>",
+    "<p>- Bề mặt ngoài 100% len<br />- Phom oversized<br />- Cổ quân đội bản lớn<br />- Cổ đứng với nút cài<br />- Thiết kế hai hàng khuy<br />- Khuy đồng màu<br />- Túi viền phía trước<br />- Dáng dài qua gối<br />- Xẻ tà giữa thân sau<br />- Túi ngực bên trong<br />- Đai rời cùng chất liệu<br />- Đỉa đai phía sau</p><p>Chất liệu &amp; bảo quản<br />- Vỏ ngoài: 100% len<br />- Bảo quản: Chỉ giặt khô</p>",
   "Size & Fit":
-    '<p>Fit: Oversized with generous proportions. Take your regular size for the intended aesthetic. Jude is 6\'1" and wears a size L.</p><p><a href="#size-guide">Size Guide</a></p>',
+    '<p>Phom dáng oversized với tỷ lệ rộng rãi. Hãy chọn size thường mặc để giữ đúng tinh thần thiết kế. Jude cao 1m85 và mặc size L.</p><p><a href="#size-guide">Hướng dẫn chọn size</a></p>',
   Sustainability:
-    "<p>Constructed in 100% responsibly sourced, biodegradable wool. Intentionally made without wool blends containing polyester and other micro-plastics.</p>",
+    "<p>Được hoàn thiện từ 100% len có nguồn gốc có trách nhiệm và có khả năng phân hủy sinh học. Chủ ý không pha polyester hay các sợi vi nhựa khác.</p>",
   "Shipping & Returns":
-    '<p>Free shipping on all US orders over $150 USD and to all other countries over $250 USD. See <a href="/pages/returns-exchanges">Shipping and Returns</a> for additional shipping options and rates.</p><p>Refunds accepted within 14 days of product delivery for all orders. There are no surprise duties or fees upon delivery. Duties are covered by California Arts.</p>',
+    '<p>Miễn phí vận chuyển cho đơn tại Mỹ từ 150 USD và các thị trường khác từ 250 USD. Xem <a href="/pages/returns-exchanges">Vận chuyển &amp; đổi trả</a> để biết thêm lựa chọn và mức phí.</p><p>Chấp nhận hoàn tiền trong vòng 14 ngày kể từ khi giao hàng. Không phát sinh thuế hay phụ phí bất ngờ khi nhận hàng. California Arts sẽ chi trả phần thuế nhập khẩu phát sinh.</p>',
   "Need Assistance?":
-    '<p>Contact us at <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>',
+    '<p>Liên hệ với chúng tôi qua <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>',
 };
 
 function getFallbackAccordionHtml(product: Product, title: string) {
@@ -320,15 +320,15 @@ function getFallbackAccordionHtml(product: Product, title: string) {
     case "Details":
       return product.material
         ? `<p>${product.material}</p>`
-        : "<p>Made with considered proportions and everyday wear in mind.</p>";
+        : "<p>Được hoàn thiện với tỷ lệ cân nhắc kỹ và hướng đến nhu cầu mặc hằng ngày.</p>";
     case "Size & Fit":
-      return "<p>Designed for a relaxed California Arts fit. Select your usual size for the intended silhouette.</p>";
+      return "<p>Thiết kế theo phom relaxed của California Arts. Hãy chọn size thường mặc để có đúng dáng mong muốn.</p>";
     case "Sustainability":
-      return "<p>We advocate for sustainability by producing less and building better.</p>";
+      return "<p>Chúng tôi theo đuổi cách làm ít hơn nhưng tốt hơn, ưu tiên độ bền và tính sử dụng lâu dài.</p>";
     case "Shipping & Returns":
-      return '<p>Complimentary shipping is available on qualifying orders. Returns are accepted within 14 days of delivery.</p>';
+      return '<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Hỗ trợ hoàn trả trong vòng 14 ngày kể từ khi giao thành công.</p>';
     case "Need Assistance?":
-      return '<p>Contact us at <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>';
+      return '<p>Liên hệ với chúng tôi qua <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>';
     default:
       return "";
   }
@@ -562,7 +562,7 @@ export default function ProductDetailClient({
               </figure>
             ))
           ) : (
-            <div className="product-detail__empty-media">No images available</div>
+            <div className="product-detail__empty-media">Chưa có hình ảnh</div>
           )}
         </div>
 
@@ -582,7 +582,7 @@ export default function ProductDetailClient({
               {mediaItems.length > 1 && (
                 <>
                   <button
-                    aria-label="Previous product image"
+                    aria-label="Ảnh sản phẩm trước"
                     className="product-detail__carousel-button product-detail__carousel-button--prev"
                     onClick={prevMobileImage}
                     type="button"
@@ -590,7 +590,7 @@ export default function ProductDetailClient({
                     {"<"}
                   </button>
                   <button
-                    aria-label="Next product image"
+                    aria-label="Ảnh sản phẩm kế tiếp"
                     className="product-detail__carousel-button product-detail__carousel-button--next"
                     onClick={nextMobileImage}
                     type="button"
@@ -617,7 +617,7 @@ export default function ProductDetailClient({
             </div>
           ) : (
             <div className="product-detail__empty-media product-detail__empty-media--mobile">
-              No images available
+              Chưa có hình ảnh
             </div>
           )}
         </div>
@@ -781,7 +781,7 @@ export default function ProductDetailClient({
                           loading="lazy"
                         />
                       ) : (
-                        <span>No image</span>
+                        <span>Không có ảnh</span>
                       )}
                     </Link>
                   ))}

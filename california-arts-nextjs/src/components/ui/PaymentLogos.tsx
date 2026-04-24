@@ -28,21 +28,21 @@ const PAYMENT_LOGO_META: Record<
   },
   amex: {
     alt: 'American Express',
-    height: 30,
+    height: 28,
     src: '/media/payment/american-express.svg',
-    width: 30,
+    width: 46,
   },
   mastercard: {
     alt: 'Mastercard',
-    height: 30,
+    height: 28,
     src: '/media/payment/mastercard.svg',
-    width: 30,
+    width: 46,
   },
   jcb: {
     alt: 'JCB',
-    height: 30,
+    height: 28,
     src: '/media/payment/jcb.svg',
-    width: 30,
+    width: 46,
   },
   vnpay: {
     alt: 'VNPay',

@@ -4,7 +4,6 @@ import React, { useMemo } from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
-import PaymentLogoStrip from '@/components/ui/PaymentLogos'
 import { getAllProducts, getMainImageUrl } from '@/lib/products'
 
 function formatMoney(value: number) {
@@ -185,12 +184,13 @@ export default function CartDrawer() {
 
                   <section className="cart-drawer__assistant">
                     <h2>Thanh toán bảo mật</h2>
-                    <PaymentLogoStrip
-                      className="cart-drawer__secure-logos"
-                      compact
-                      logos={['vnpay', 'visa', 'mastercard', 'jcb', 'amex']}
-                      tone="mono"
-                    />
+                    <p className="cart-drawer__secure-logos">
+                      <img
+                        alt="Visa, American Express, Mastercard, Apple Pay, PayPal"
+                        loading="lazy"
+                        src="/media/payment/black-and-white.png"
+                      />
+                    </p>
                   </section>
                 </div>
               </footer>

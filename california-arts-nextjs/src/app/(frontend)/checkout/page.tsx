@@ -415,10 +415,10 @@ export default function CheckoutPage() {
                   required
                   value={profile.country}
                 >
-                  <option value="Vietnam">Vietnam</option>
-                  <option value="United States">United States</option>
-                  <option value="Japan">Japan</option>
-                  <option value="South Korea">South Korea</option>
+                  <option value="Vietnam">Việt Nam</option>
+                  <option value="United States">Hoa Kỳ</option>
+                  <option value="Japan">Nhật Bản</option>
+                  <option value="South Korea">Hàn Quốc</option>
                 </select>
               </label>
               <div className="checkout-page__grid">
