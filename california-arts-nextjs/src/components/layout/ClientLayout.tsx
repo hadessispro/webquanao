@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { usePathname } from 'next/navigation'
 import { LayoutProvider } from '@/context/LayoutContext'
 import CartDrawer from '@/components/cart/CartDrawer'
 import MobileMenuDrawer from '@/components/layout/MobileMenuDrawer'
@@ -18,17 +17,14 @@ interface ClientLayoutProps {
 }
 
 export default function ClientLayout({ children, footer, header, newsletterPopup }: ClientLayoutProps) {
-  const pathname = usePathname()
-  const isCheckout = pathname === '/checkout'
-
   return (
     <LayoutProvider>
       {children}
       <SmoothScroll />
       <BrandLoader />
-      {!isCheckout && <NewsletterPopup settings={newsletterPopup} />}
-      {!isCheckout && <CartDrawer />}
-      {!isCheckout && <MobileMenuDrawer footer={footer} navigation={header.navigation} />}
+      <NewsletterPopup settings={newsletterPopup} />
+      <CartDrawer />
+      <MobileMenuDrawer footer={footer} navigation={header.navigation} />
     </LayoutProvider>
   )
 }

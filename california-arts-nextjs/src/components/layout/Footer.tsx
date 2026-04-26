@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import type { FooterData } from '@/lib/storefront-types'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandCurrencyText } from '@/components/ui/BrandCurrency'
@@ -12,9 +11,7 @@ function isExternalHref(href: string) {
 }
 
 export default function Footer({ footer }: { footer: FooterData }) {
-  const pathname = usePathname()
   const { locale } = useLayout()
-  const isCheckout = pathname === '/checkout'
   const logo = footer.desktopLogo || footer.mobileLogo
   const shippingLabel = locale === 'vi' ? 'giao đến' : 'shipping to'
   const shippingCountry = locale === 'vi' ? 'việt nam | vnd ₫' : 'vietnam | vnd ₫'
@@ -29,8 +26,6 @@ export default function Footer({ footer }: { footer: FooterData }) {
     { label: locale === 'vi' ? 'account' : 'account', href: '/admin' },
     { label: 'ig', href: 'https://www.instagram.com/california.arts/' },
   ]
-
-  if (isCheckout) return null
 
   return (
     <div id="shopify-section-footer" className="shopify-section">

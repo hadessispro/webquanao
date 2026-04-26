@@ -352,36 +352,21 @@ export default function CheckoutPage() {
 
   return (
     <section className="checkout-page bg-primary-background text-primary-text">
-      <div className="checkout-page__shell">
-        <header className="checkout-page__brand">
-          <Link className="checkout-page__brand-link" href="/" prefetch={false}>
-            <Image
-              alt="điển"
-              className="checkout-page__brand-logo"
-              height={66}
-              priority
-              src="/media/dien-logo-black.png"
-              unoptimized
-              width={198}
-            />
-          </Link>
-        </header>
-
-        {status === 'success' ? (
-          <section className="checkout-page__success">
-            <p>{t('orderReceived')}</p>
-            <h1>{orderNumber}</h1>
-            <span>{t('savedDetailsNextVisit')}</span>
-            <Link href="/collections/shop-all">{t('continueShopping')}</Link>
-          </section>
-        ) : cartItems.length === 0 ? (
-          <section className="checkout-page__empty">
-            <p>{t('emptyCart')}.</p>
-            <Link href="/collections/shop-all">{t('shopAll')}</Link>
-          </section>
-        ) : (
-          <form className="checkout-page__layout" onSubmit={submitOrder}>
-            <main className="checkout-page__form">
+      {status === 'success' ? (
+        <section className="checkout-page__success">
+          <p>{t('orderReceived')}</p>
+          <h1>{orderNumber}</h1>
+          <span>{t('savedDetailsNextVisit')}</span>
+          <Link href="/collections/shop-all">{t('continueShopping')}</Link>
+        </section>
+      ) : cartItems.length === 0 ? (
+        <section className="checkout-page__empty">
+          <p>{t('emptyCart')}.</p>
+          <Link href="/collections/shop-all">{t('shopAll')}</Link>
+        </section>
+      ) : (
+        <form className="checkout-page__layout" onSubmit={submitOrder}>
+          <main className="checkout-page__form">
             <section className="checkout-page__intro">
               <p>{t('secureCheckout')}</p>
               <h1>{t('completeYourOrder')}</h1>
@@ -574,9 +559,10 @@ export default function CheckoutPage() {
             </section>
 
             {message && <p className="checkout-page__message">{message}</p>}
-            </main>
+          </main>
 
-            <aside className="checkout-page__summary" aria-label={t('orderSummary')}>
+          <aside className="checkout-page__summary" aria-label={t('orderSummary')}>
+            <div className="checkout-page__summary-inner">
               <h2>{t('orderSummary')}</h2>
               <div className="checkout-page__items">
                 {cartItems.map((item) => (
@@ -661,7 +647,9 @@ export default function CheckoutPage() {
                 <ul className="checkout-page__payment-policy">
                   <li>Hỗ trợ VNPay, Visa, Mastercard, JCB, American Express, Napas và ATM nội địa.</li>
                   <li>Đơn hàng được giữ và chỉ xử lý sau khi thông tin thanh toán được xác nhận.</li>
-                  <li>Chuyển khoản và thanh toán khi nhận hàng vẫn khả dụng trong giai đoạn chưa kết nối API.</li>
+                  <li>
+                    Chuyển khoản và thanh toán khi nhận hàng vẫn khả dụng trong giai đoạn chưa kết nối API.
+                  </li>
                 </ul>
               </div>
               <button
@@ -671,21 +659,21 @@ export default function CheckoutPage() {
               >
                 {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
               </button>
-            </aside>
-            <div className="checkout-page__sticky-total">
-              <span>
-                <small>{t('total')}</small>
-                <strong>
-                  <BrandPrice amount={formatMoney(total)} />
-                </strong>
-              </span>
-              <button disabled={status === 'submitting'} type="submit">
-                {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
-              </button>
             </div>
-          </form>
-        )}
-      </div>
+          </aside>
+          <div className="checkout-page__sticky-total">
+            <span>
+              <small>{t('total')}</small>
+              <strong>
+                <BrandPrice amount={formatMoney(total)} />
+              </strong>
+            </span>
+            <button disabled={status === 'submitting'} type="submit">
+              {status === 'submitting' ? t('placingOrder') : t('placeOrder')}
+            </button>
+          </div>
+        </form>
+      )}
     </section>
   )
 }

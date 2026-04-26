@@ -749,7 +749,7 @@ export default function ProductDetailClient({
                     type="button"
                   >
                     <span>{accordion.label}</span>
-                    <span aria-hidden="true">
+                    <span aria-hidden="true" className="product-detail__accordion-indicator">
                       {openAcc === index ? "-" : "+"}
                     </span>
                   </button>

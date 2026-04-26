@@ -233,7 +233,6 @@ function DesktopNavItem({
 export default function Header({ header }: HeaderProps) {
   const { cartCount, locale, setIsCartOpen, setIsMobileMenuOpen, t, toggleLocale } = useLayout()
   const pathname = usePathname()
-  const isCheckout = pathname === '/checkout'
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -243,12 +242,6 @@ export default function Header({ header }: HeaderProps) {
   const isHome = pathname === '/'
 
   useEffect(() => {
-    if (isCheckout) {
-      document.documentElement.style.removeProperty('--header-stack-height')
-      document.documentElement.classList.remove('site-footer-near')
-      return undefined
-    }
-
     let frameId = 0
 
     const updateHeaderState = () => {
@@ -290,7 +283,7 @@ export default function Header({ header }: HeaderProps) {
       document.documentElement.style.removeProperty('--header-stack-height')
       document.documentElement.classList.remove('site-footer-near')
     }
-  }, [isCheckout, pathname])
+  }, [pathname])
 
   useEffect(() => {
     if (!openMegaMenuHref) return undefined
@@ -325,8 +318,6 @@ export default function Header({ header }: HeaderProps) {
   ]
     .filter(Boolean)
     .join(' ')
-
-  if (isCheckout) return null
 
   return (
     <div className={headerStackClass}>
