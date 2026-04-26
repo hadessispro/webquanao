@@ -2080,6 +2080,7 @@ body.art-menu-lock {
 }
 
 .cart-drawer__item {
+  align-items: start;
   display: grid;
   gap: 14px;
   grid-template-columns: 86px minmax(0, 1fr);
@@ -2095,6 +2096,7 @@ body.art-menu-lock {
 }
 
 .cart-drawer__item-main {
+  align-content: start;
   display: grid;
   gap: 12px;
   min-width: 0;
