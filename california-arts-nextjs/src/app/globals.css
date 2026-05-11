@@ -571,6 +571,28 @@ body#california-arts .mobile-menu-drawer {
   filter: none !important;
 }
 
+@media (min-width: 1024px) {
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):hover header,
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):focus-within header {
+    backdrop-filter: blur(18px) saturate(128%);
+    background: rgba(255, 255, 255, 0.96) !important;
+    color: #131818 !important;
+  }
+
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):hover header a,
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):hover header button,
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):focus-within header a,
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):focus-within header button {
+    color: #131818 !important;
+    text-shadow: none !important;
+  }
+
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):hover .logo-image img,
+  .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):focus-within .logo-image img {
+    filter: none !important;
+  }
+}
+
 .site-header-stack--scrolled header,
 .site-header-stack--search-open header {
   backdrop-filter: blur(18px) saturate(128%);
