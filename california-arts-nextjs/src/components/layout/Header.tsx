@@ -111,7 +111,7 @@ function MegaMenu({
   if (!megaMenu.enabled) return null
 
   return (
-    <div className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-t-grid border-b-grid border-grid-color">
+    <div className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color">
       <div className="c_megamenu-main section-x-padding text-center">
         <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center -ml-16">
           {megaMenu.columns.length > 0 && (
@@ -314,6 +314,7 @@ export default function Header({ header }: HeaderProps) {
     isHome ? 'site-header-stack--home' : '',
     scrolled ? 'site-header-stack--scrolled' : '',
     nearFooter ? 'site-header-stack--footer-near' : '',
+    openMegaMenuHref ? 'site-header-stack--menu-open' : '',
     searchOpen ? 'site-header-stack--search-open' : '',
   ]
     .filter(Boolean)
@@ -357,7 +358,7 @@ export default function Header({ header }: HeaderProps) {
           />
 
           <section data-section-type="header" data-sticky="true">
-            <header className="bg-header-background text-header-text border-b-grid relative z-10 border-theme-color">
+            <header className="bg-header-background text-header-text relative z-10">
               <nav className="relative hidden lg:block" aria-label="Primary">
                 <div className="c_header-main site-header__inner section-x-padding text-sm">
                   <div className="site-header__left">

@@ -538,21 +538,37 @@ body#california-arts .mobile-menu-drawer {
   pointer-events: none;
 }
 
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open) header {
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header {
   backdrop-filter: blur(0);
   background: linear-gradient(180deg, rgba(9, 11, 10, 0.18), rgba(9, 11, 10, 0)) !important;
   border-color: transparent !important;
   color: #fbfbf6 !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open) header a,
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open) header button {
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header a,
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header button {
   color: #fbfbf6 !important;
   text-shadow: 0 1px 16px rgba(0, 0, 0, 0.32);
 }
 
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open) .logo-image img {
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .logo-image img {
   filter: invert(1);
+}
+
+.site-header-stack--menu-open header {
+  backdrop-filter: blur(18px) saturate(128%);
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #131818 !important;
+}
+
+.site-header-stack--menu-open header a,
+.site-header-stack--menu-open header button {
+  color: #131818 !important;
+  text-shadow: none !important;
+}
+
+.site-header-stack--menu-open .logo-image img {
+  filter: none !important;
 }
 
 .site-header-stack--scrolled header,
@@ -1820,6 +1836,7 @@ body.art-menu-lock {
   background: rgba(251, 251, 246, 0.94) !important;
   backdrop-filter: blur(18px) saturate(118%);
   border-color: rgba(19, 24, 24, 0.18) !important;
+  border-top: 0 !important;
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
   color: #131818 !important;
   opacity: 0 !important;
