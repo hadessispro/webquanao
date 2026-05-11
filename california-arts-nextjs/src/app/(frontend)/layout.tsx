@@ -13,7 +13,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   ])
 
   return (
-    <html className="js" data-scroll-behavior="smooth" lang="en" suppressHydrationWarning>
+    <html className="js" data-scroll-behavior="auto" lang="en" suppressHydrationWarning>
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/pck3rmu.css" />
         <link rel="stylesheet" href="/css/theme.min.css" />

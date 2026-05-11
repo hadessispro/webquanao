@@ -4,7 +4,6 @@ import React from 'react'
 import { LayoutProvider } from '@/context/LayoutContext'
 import CartDrawer from '@/components/cart/CartDrawer'
 import MobileMenuDrawer from '@/components/layout/MobileMenuDrawer'
-import SmoothScroll from '@/components/layout/SmoothScroll'
 import BrandLoader from '@/components/layout/BrandLoader'
 import NewsletterPopup from '@/components/layout/NewsletterPopup'
 import { FooterData, HeaderData, NewsletterPopupData } from '@/lib/storefront-types'
@@ -20,7 +19,6 @@ export default function ClientLayout({ children, footer, header, newsletterPopup
   return (
     <LayoutProvider>
       {children}
-      <SmoothScroll />
       <BrandLoader />
       <NewsletterPopup settings={newsletterPopup} />
       <CartDrawer />
