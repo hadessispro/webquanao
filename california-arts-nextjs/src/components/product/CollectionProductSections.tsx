@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import ProductGrid from "./ProductGrid";
 import {
   DEFAULT_COLLECTION_INTRO_HTML,
@@ -6,6 +7,24 @@ import {
 } from "@/lib/collection-bar-content";
 import type { StorefrontCollection } from "@/lib/product-data";
 import type { Product } from "@/lib/products";
+
+const COLLECTION_SEQUENCE = [
+  { handle: "coats-jackets", title: "áo khoác" },
+  { handle: "category-tailoring", title: "may đo" },
+  { handle: "knitwear", title: "đồ dệt kim" },
+  { handle: "collection-sweater", title: "áo nỉ & quần nỉ" },
+  { handle: "shirts-all-navigation", title: "áo sơ mi" },
+  { handle: "category-polos", title: "áo polo" },
+  { handle: "collection-t-shirts-tanks", title: "áo thun & henley" },
+  { handle: "category-vests", title: "áo tank & vest" },
+  { handle: "trousers-shorts", title: "quần dài & short" },
+  { handle: "category-nav-denim", title: "đồ denim" },
+  { handle: "accessories", title: "phụ kiện" },
+] as const;
+
+const COLLECTION_TITLE_VI: Record<string, string> = Object.fromEntries(
+  COLLECTION_SEQUENCE.map((item) => [item.handle, item.title]),
+);
 
 function productSectionTitle(product: Product, index: number) {
   const number = String(index + 1).padStart(3, "0");
@@ -26,12 +45,45 @@ function IntroFeaturedSpacer() {
   );
 }
 
+function getLocalizedCollectionTitle(collection: StorefrontCollection) {
+  return COLLECTION_TITLE_VI[collection.handle] || collection.title;
+}
+
+function getNextCollectionCta(handle: string) {
+  const currentIndex = COLLECTION_SEQUENCE.findIndex((item) => item.handle === handle);
+
+  if (currentIndex === -1) {
+    return {
+      eyebrow: "xem toàn bộ sản phẩm",
+      buttonLabel: "khám phá ngay",
+      href: "/collections/shop-all",
+    };
+  }
+
+  const nextItem = COLLECTION_SEQUENCE[currentIndex + 1];
+
+  if (!nextItem) {
+    return {
+      eyebrow: "xem toàn bộ sản phẩm",
+      buttonLabel: "khám phá ngay",
+      href: "/collections/shop-all",
+    };
+  }
+
+  return {
+    eyebrow: `xem thêm về ${nextItem.title}`,
+    buttonLabel: "khám phá ngay",
+    href: `/collections/${nextItem.handle}`,
+  };
+}
+
 export default function CollectionProductSections({
   collection,
 }: {
   collection: StorefrontCollection;
 }) {
   const introHtml = collection.descriptionHtml?.trim() || DEFAULT_COLLECTION_INTRO_HTML;
+  const nextCollectionCta = getNextCollectionCta(collection.handle);
 
   return (
     <>
@@ -41,7 +93,7 @@ export default function CollectionProductSections({
             <div className="px-8 lg:px-88 section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
                 <div className="rte px-4 text-sm">
-                  <p>{collection.title}</p>
+                  <p>{getLocalizedCollectionTitle(collection)}</p>
                 </div>
               </div>
             </div>
@@ -77,6 +129,15 @@ export default function CollectionProductSections({
           </section>
         ))}
       </div>
+
+      <section className="collection-product-page__next-cta">
+        <div className="collection-product-page__next-cta-inner">
+          <p>{nextCollectionCta.eyebrow}</p>
+          <Link className="collection-product-page__next-cta-button" href={nextCollectionCta.href}>
+            {nextCollectionCta.buttonLabel}
+          </Link>
+        </div>
+      </section>
     </>
   );
 }
