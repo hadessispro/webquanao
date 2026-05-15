@@ -6,6 +6,10 @@ export default async function HomePage() {
   const hero = await getHomeHeroData()
   const desktopImage = hero.desktopImage
   const mobileImage = hero.mobileImage || desktopImage
+  const eyebrow = hero.eyebrowVi || hero.eyebrow
+  const title = hero.titleVi || hero.title
+  const body = hero.bodyVi || hero.body
+  const ctaLabel = hero.ctaLabelVi || hero.ctaLabel
 
   if (!hero.enabled || !desktopImage) {
     return <div className="home-page home-page--empty" />
@@ -20,11 +24,11 @@ export default async function HomePage() {
           `home-hero--text-${hero.textTheme}`,
         ].join(' ')}
       >
-        <Link aria-label={hero.ctaLabel || hero.title || 'shop all'} className="home-hero__link" href={hero.href}>
+        <Link aria-label={ctaLabel || title || 'xem tất cả'} className="home-hero__link" href={hero.href}>
           <picture className="home-hero__picture">
             {mobileImage && <source media="(max-width: 767px)" srcSet={mobileImage.src} />}
             <img
-              alt={desktopImage.alt || hero.title || 'california arts'}
+              alt={desktopImage.alt || title || 'điển'}
               className="home-hero__image"
               src={desktopImage.src}
             />
@@ -34,12 +38,12 @@ export default async function HomePage() {
             className="home-hero__overlay"
             style={{ opacity: hero.overlayOpacity }}
           />
-          {(hero.eyebrow || hero.title || hero.body || hero.ctaLabel) && (
+          {(eyebrow || title || body || ctaLabel) && (
             <span className="home-hero__content">
-              {hero.eyebrow && <span className="home-hero__eyebrow">{hero.eyebrow}</span>}
-              {hero.title && <span className="home-hero__title">{hero.title}</span>}
-              {hero.body && <span className="home-hero__body">{hero.body}</span>}
-              {hero.ctaLabel && <span className="home-hero__cta">{hero.ctaLabel}</span>}
+              {eyebrow && <span className="home-hero__eyebrow">{eyebrow}</span>}
+              {title && <span className="home-hero__title">{title}</span>}
+              {body && <span className="home-hero__body">{body}</span>}
+              {ctaLabel && <span className="home-hero__cta">{ctaLabel}</span>}
             </span>
           )}
         </Link>

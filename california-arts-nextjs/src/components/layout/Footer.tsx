@@ -16,14 +16,24 @@ export default function Footer({ footer }: { footer: FooterData }) {
   const shippingLabel = locale === 'vi' ? 'giao đến' : 'shipping to'
   const shippingCountry = locale === 'vi' ? 'việt nam | vnd ₫' : 'vietnam | vnd ₫'
   const newsletterPlaceholder =
-    locale === 'vi' ? 'đăng ký nhận newsletter' : 'sign up for our newsletter'
+    locale === 'vi'
+      ? footer.newsletter.placeholderVi || footer.newsletter.placeholder || 'đăng ký nhận bản tin'
+      : footer.newsletter.placeholder || 'sign up for our newsletter'
+  const newsletterButtonLabel =
+    locale === 'vi'
+      ? footer.newsletter.buttonLabelVi || footer.newsletter.buttonLabel || 'đăng ký'
+      : footer.newsletter.buttonLabel || 'subscribe'
+  const brandTagline =
+    locale === 'vi'
+      ? 'thương hiệu di sản mỹ đương đại.'
+      : 'the next great american heritage brand.'
   const footerLinks = [
     { label: locale === 'vi' ? 'giới thiệu' : 'about us', href: '/pages/our-story' },
-    { label: locale === 'vi' ? 'sustainability report' : 'sustainability report', href: '/pages/about' },
+    { label: locale === 'vi' ? 'báo cáo bền vững' : 'sustainability report', href: '/pages/about' },
     { label: locale === 'vi' ? 'chăm sóc khách hàng' : 'customer care', href: '/pages/about' },
-    { label: locale === 'vi' ? 'legal / t&c' : 'legal / t&c', href: '/pages/privacy-policy' },
-    { label: locale === 'vi' ? 'privacy' : 'privacy', href: '/pages/privacy-policy' },
-    { label: locale === 'vi' ? 'account' : 'account', href: '/admin' },
+    { label: locale === 'vi' ? 'pháp lý / điều khoản' : 'legal / t&c', href: '/pages/privacy-policy' },
+    { label: locale === 'vi' ? 'bảo mật' : 'privacy', href: '/pages/privacy-policy' },
+    { label: locale === 'vi' ? 'tài khoản' : 'account', href: '/admin' },
     { label: 'ig', href: 'https://www.instagram.com/california.arts/' },
   ]
 
@@ -45,7 +55,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
                 <img src={logo.src} alt={logo.alt || 'điển'} />
               </div>
             )}
-            <p>{locale === 'vi' ? 'the next great american heritage brand.' : 'the next great american heritage brand.'}</p>
+            <p>{brandTagline}</p>
           </div>
 
           <div className="dien-footer__bottom">
@@ -60,7 +70,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
                 placeholder={newsletterPlaceholder}
                 type="email"
               />
-              <button type="submit">send</button>
+              <button type="submit">{newsletterButtonLabel}</button>
             </form>
 
             <nav aria-label="footer" className="dien-footer__links">

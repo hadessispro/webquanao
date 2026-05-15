@@ -45,6 +45,73 @@ function mediaToImage(media: MediaLike, fallbackAlt?: string): StorefrontImage |
   }
 }
 
+const VI_TEXT_MAP: Record<string, string> = {
+  '01 shop all': '01 mua sắm',
+  '02 about the brand': '02 về thương hiệu',
+  '03 creative campaign': '03 chiến dịch sáng tạo',
+  'shop by category': 'mua theo danh mục',
+  'view all': 'xem tất cả',
+  outerwear: 'áo khoác',
+  tailoring: 'may đo',
+  knitwear: 'đồ dệt kim',
+  'sweatshirts & sweatpants': 'áo nỉ & quần nỉ',
+  shirts: 'áo sơ mi',
+  polos: 'áo polo',
+  'tees & henleys': 'áo thun & henley',
+  'tanks & vests': 'áo tank & vest',
+  'pants & shorts': 'quần dài & short',
+  denim: 'đồ denim',
+  accessories: 'phụ kiện',
+  'gift card': 'thẻ quà tặng',
+  'in focus': 'nổi bật',
+  'new arrivals': 'hàng mới',
+  campaign: 'chiến dịch',
+  'about us': 'giới thiệu',
+  'sustainability report': 'báo cáo bền vững',
+  'customer care': 'chăm sóc khách hàng',
+  'legal / t&c': 'pháp lý / điều khoản',
+  privacy: 'bảo mật',
+  account: 'tài khoản',
+  shipping: 'vận chuyển',
+  returns: 'đổi trả',
+  contact: 'liên hệ',
+  accessibility: 'khả năng truy cập',
+  'shipping to': 'giao đến',
+  'vietnam | vnd ₫': 'việt nam | vnd ₫',
+  'complimentary shipping to vietnam on all orders over ₫6,578,950. no additional duties and fees upon delivery.':
+    'miễn phí vận chuyển đến việt nam cho đơn hàng trên ₫6,578,950. không phát sinh thuế và phí khi giao hàng.',
+  'california minimalism': 'tối giản california',
+  'accessible design by producing less & building better.':
+    'thiết kế dễ tiếp cận bằng cách sản xuất ít hơn và làm tốt hơn.',
+  'from the palm-fringed western edge of the american dream.':
+    'từ rìa phía tây phủ bóng cọ của giấc mơ mỹ.',
+  'shop all': 'xem tất cả',
+  'join us, at điển': 'tham gia cùng điển',
+  'get early access to new product launches & events':
+    'nhận quyền truy cập sớm cho các đợt ra mắt sản phẩm và sự kiện',
+  'email address': 'địa chỉ email',
+  subscribe: 'đăng ký',
+  'by subscribing, you agree to the privacy policy':
+    'khi đăng ký, bạn đồng ý với chính sách bảo mật',
+  'subscribe to west coast living': 'đăng ký west coast living',
+  'stay connected for product launches, restocks and events from southern california.':
+    'theo dõi các đợt ra mắt sản phẩm, mở bán lại và sự kiện từ southern california.',
+  company: 'công ty',
+  community: 'cộng đồng',
+  'client services': 'dịch vụ khách hàng',
+  legal: 'pháp lý',
+  about: 'giới thiệu',
+  'privacy policy': 'chính sách bảo mật',
+  'the next great american heritage brand.': 'thương hiệu di sản mỹ đương đại.',
+  send: 'gửi',
+  'sign up for our newsletter': 'đăng ký nhận bản tin',
+}
+
+function translateSourceTextToVi(text?: string) {
+  if (!text) return undefined
+  return VI_TEXT_MAP[text.trim().toLowerCase()]
+}
+
 function isViewAllLabel(label?: string) {
   const value = (label || '').trim().toLowerCase()
   return value === 'view all' || value === 'xem tất cả' || value === 'xem tat ca'
@@ -86,14 +153,20 @@ function normalizeMegaColumns(columns: unknown, parentHref?: string): HeaderMega
                 (collection?.handle ? `/collections/${collection.handle}` : undefined) ||
                 undefined
 
-              return label && href ? { label, labelVi: link?.labelVi || undefined, href } : null
+              return label && href
+                ? {
+                    label,
+                    labelVi: link?.labelVi || translateSourceTextToVi(label) || undefined,
+                    href,
+                  }
+                : null
             })
             .filter(Boolean) as Array<{ label: string; labelVi?: string; href: string }>
         : []
 
       return {
         heading: value.heading || '',
-        headingVi: value.headingVi || undefined,
+        headingVi: value.headingVi || translateSourceTextToVi(value.heading) || undefined,
         headingHref: value.headingHref || normalizedLinks[0]?.href || parentHref || undefined,
         links: normalizedLinks,
       }
@@ -115,7 +188,7 @@ function normalizeMegaImageCards(cards: unknown): HeaderMegaImageCard[] {
 
     return {
       caption: value.caption,
-      captionVi: value.captionVi,
+      captionVi: value.captionVi || translateSourceTextToVi(value.caption),
       href: value.href,
       image: mediaToImage(value.image, value.caption) || (value.sourceUrl ? { src: ensureAbsoluteUrl(value.sourceUrl) || value.sourceUrl, alt: value.caption } : undefined),
     }
@@ -169,7 +242,7 @@ function normalizeNavigation(navigation: unknown): HeaderNavItem[] {
 
       return {
         label,
-        labelVi: value.labelVi || undefined,
+        labelVi: value.labelVi || translateSourceTextToVi(label) || undefined,
         href,
         openInNewTab: Boolean(value.openInNewTab),
         megaMenu: {
@@ -203,7 +276,7 @@ function normalizeFooterColumns(columns: unknown): FooterColumn[] {
 
       return {
         title: value.title || '',
-        titleVi: value.titleVi || undefined,
+        titleVi: value.titleVi || translateSourceTextToVi(value.title) || undefined,
         links: Array.isArray(value.links)
           ? value.links
               .map((link) => {
@@ -211,7 +284,7 @@ function normalizeFooterColumns(columns: unknown): FooterColumn[] {
                 return link?.label && href
                   ? {
                       label: link.label,
-                      labelVi: link.labelVi,
+                      labelVi: link.labelVi || translateSourceTextToVi(link.label) || undefined,
                       href,
                       openInNewTab: Boolean(link.openInNewTab || href.startsWith('http')),
                     }
@@ -261,13 +334,19 @@ export async function getHeaderData(): Promise<HeaderData> {
       shippingBar: {
         enabled: header.shippingBar?.enabled ?? DEFAULT_HEADER.shippingBar.enabled,
         text: header.shippingBar?.text || DEFAULT_HEADER.shippingBar.text,
-        textVi: header.shippingBar?.textVi || DEFAULT_HEADER.shippingBar.textVi,
+        textVi:
+          header.shippingBar?.textVi ||
+          translateSourceTextToVi(header.shippingBar?.text) ||
+          DEFAULT_HEADER.shippingBar.textVi,
         href: header.shippingBar?.href || DEFAULT_HEADER.shippingBar.href,
       },
       countrySelector: {
         enabled: header.countrySelector?.enabled ?? DEFAULT_HEADER.countrySelector.enabled,
         label: header.countrySelector?.label || DEFAULT_HEADER.countrySelector.label,
-        labelVi: header.countrySelector?.labelVi || DEFAULT_HEADER.countrySelector.labelVi,
+        labelVi:
+          header.countrySelector?.labelVi ||
+          translateSourceTextToVi(header.countrySelector?.label) ||
+          DEFAULT_HEADER.countrySelector.labelVi,
       },
       navigation,
     }
@@ -299,23 +378,34 @@ export async function getFooterData(): Promise<FooterData> {
       columns: normalizeFooterColumns(footer.columns),
       newsletter: {
         title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
-        titleVi: footer.newsletter?.titleVi || DEFAULT_FOOTER.newsletter.titleVi,
+        titleVi:
+          footer.newsletter?.titleVi ||
+          translateSourceTextToVi(footer.newsletter?.title) ||
+          DEFAULT_FOOTER.newsletter.titleVi,
         description:
           footer.newsletter?.description || DEFAULT_FOOTER.newsletter.description,
         descriptionVi:
-          footer.newsletter?.descriptionVi || DEFAULT_FOOTER.newsletter.descriptionVi,
+          footer.newsletter?.descriptionVi ||
+          translateSourceTextToVi(footer.newsletter?.description) ||
+          DEFAULT_FOOTER.newsletter.descriptionVi,
         placeholder:
           footer.newsletter?.placeholder || DEFAULT_FOOTER.newsletter.placeholder,
         placeholderVi:
-          footer.newsletter?.placeholderVi || DEFAULT_FOOTER.newsletter.placeholderVi,
+          footer.newsletter?.placeholderVi ||
+          translateSourceTextToVi(footer.newsletter?.placeholder) ||
+          DEFAULT_FOOTER.newsletter.placeholderVi,
         buttonLabel:
           footer.newsletter?.buttonLabel || DEFAULT_FOOTER.newsletter.buttonLabel,
         buttonLabelVi:
-          footer.newsletter?.buttonLabelVi || DEFAULT_FOOTER.newsletter.buttonLabelVi,
+          footer.newsletter?.buttonLabelVi ||
+          translateSourceTextToVi(footer.newsletter?.buttonLabel) ||
+          DEFAULT_FOOTER.newsletter.buttonLabelVi,
         privacyText:
           footer.newsletter?.privacyText || DEFAULT_FOOTER.newsletter.privacyText,
         privacyTextVi:
-          footer.newsletter?.privacyTextVi || DEFAULT_FOOTER.newsletter.privacyTextVi,
+          footer.newsletter?.privacyTextVi ||
+          translateSourceTextToVi(footer.newsletter?.privacyText) ||
+          DEFAULT_FOOTER.newsletter.privacyTextVi,
         privacyHref:
           footer.newsletter?.privacyHref || DEFAULT_FOOTER.newsletter.privacyHref,
       },
@@ -378,13 +468,17 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
             }
           : DEFAULT_HOME_HERO.mobileImage),
       eyebrow: hero.eyebrow || DEFAULT_HOME_HERO.eyebrow,
-      eyebrowVi: hero.eyebrowVi || DEFAULT_HOME_HERO.eyebrowVi,
+      eyebrowVi:
+        hero.eyebrowVi || translateSourceTextToVi(hero.eyebrow) || DEFAULT_HOME_HERO.eyebrowVi,
       title: hero.title || DEFAULT_HOME_HERO.title,
-      titleVi: hero.titleVi || DEFAULT_HOME_HERO.titleVi,
+      titleVi: hero.titleVi || translateSourceTextToVi(hero.title) || DEFAULT_HOME_HERO.titleVi,
       body: hero.body || DEFAULT_HOME_HERO.body,
-      bodyVi: hero.bodyVi || DEFAULT_HOME_HERO.bodyVi,
+      bodyVi: hero.bodyVi || translateSourceTextToVi(hero.body) || DEFAULT_HOME_HERO.bodyVi,
       ctaLabel: hero.ctaLabel || DEFAULT_HOME_HERO.ctaLabel,
-      ctaLabelVi: hero.ctaLabelVi || DEFAULT_HOME_HERO.ctaLabelVi,
+      ctaLabelVi:
+        hero.ctaLabelVi ||
+        translateSourceTextToVi(hero.ctaLabel) ||
+        DEFAULT_HOME_HERO.ctaLabelVi,
       textPosition: hero.textPosition || DEFAULT_HOME_HERO.textPosition,
       textTheme: hero.textTheme || DEFAULT_HOME_HERO.textTheme,
       overlayOpacity: hero.overlayOpacity ?? DEFAULT_HOME_HERO.overlayOpacity,
@@ -443,15 +537,27 @@ export async function getNewsletterPopupData(): Promise<NewsletterPopupData> {
             }
           : DEFAULT_NEWSLETTER_POPUP.logo),
       title: popup.title || DEFAULT_NEWSLETTER_POPUP.title,
-      titleVi: popup.titleVi || DEFAULT_NEWSLETTER_POPUP.titleVi,
+      titleVi: popup.titleVi || translateSourceTextToVi(popup.title) || DEFAULT_NEWSLETTER_POPUP.titleVi,
       description: popup.description || DEFAULT_NEWSLETTER_POPUP.description,
-      descriptionVi: popup.descriptionVi || DEFAULT_NEWSLETTER_POPUP.descriptionVi,
+      descriptionVi:
+        popup.descriptionVi ||
+        translateSourceTextToVi(popup.description) ||
+        DEFAULT_NEWSLETTER_POPUP.descriptionVi,
       placeholder: popup.placeholder || DEFAULT_NEWSLETTER_POPUP.placeholder,
-      placeholderVi: popup.placeholderVi || DEFAULT_NEWSLETTER_POPUP.placeholderVi,
+      placeholderVi:
+        popup.placeholderVi ||
+        translateSourceTextToVi(popup.placeholder) ||
+        DEFAULT_NEWSLETTER_POPUP.placeholderVi,
       buttonLabel: popup.buttonLabel || DEFAULT_NEWSLETTER_POPUP.buttonLabel,
-      buttonLabelVi: popup.buttonLabelVi || DEFAULT_NEWSLETTER_POPUP.buttonLabelVi,
+      buttonLabelVi:
+        popup.buttonLabelVi ||
+        translateSourceTextToVi(popup.buttonLabel) ||
+        DEFAULT_NEWSLETTER_POPUP.buttonLabelVi,
       privacyText: popup.privacyText || DEFAULT_NEWSLETTER_POPUP.privacyText,
-      privacyTextVi: popup.privacyTextVi || DEFAULT_NEWSLETTER_POPUP.privacyTextVi,
+      privacyTextVi:
+        popup.privacyTextVi ||
+        translateSourceTextToVi(popup.privacyText) ||
+        DEFAULT_NEWSLETTER_POPUP.privacyTextVi,
       privacyHref: popup.privacyHref || DEFAULT_NEWSLETTER_POPUP.privacyHref,
     }
   } catch {

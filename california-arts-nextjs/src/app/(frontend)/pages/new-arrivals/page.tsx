@@ -3,8 +3,8 @@ import { getPageBySlug } from '@/lib/pages-data'
 import { getAllStorefrontProducts } from '@/lib/product-data'
 
 export const metadata = {
-  title: 'new arrivals | california arts',
-  description: 'the newest california arts pieces.',
+  title: 'hàng mới | điển',
+  description: 'những thiết kế mới nhất của điển.',
 }
 
 export default async function NewArrivalsPage() {
@@ -20,8 +20,8 @@ export default async function NewArrivalsPage() {
   return (
     <ProductGrid
       products={sortedProducts}
-      sectionTitle={page?.title || 'new arrivals'}
-      sectionSubtitle={page?.contentHtml || '<p><br/><br/><br/>the newest california arts pieces.</p>'}
+      sectionTitle={page?.title || 'hàng mới'}
+      sectionSubtitle={page?.contentHtml || '<p><br/><br/><br/>những thiết kế mới nhất của điển.</p>'}
     />
   )
 }
