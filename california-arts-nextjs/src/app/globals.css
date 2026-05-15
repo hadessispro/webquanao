@@ -1,6 +1,6 @@
 /* === STICKY FOOTER === */
 :root {
-  --body-font-stack: Arial, Helvetica, sans-serif;
+  --body-font-stack: "Times New Roman", Times, serif;
   --serif-font-stack: "Times New Roman", Times, serif;
   --heading-font-stack: var(--serif-font-stack);
 }
@@ -566,6 +566,7 @@ body#california-arts .mobile-menu-drawer {
 .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header {
   backdrop-filter: blur(0);
   background: linear-gradient(180deg, rgba(9, 11, 10, 0.18), rgba(9, 11, 10, 0)) !important;
+  border-bottom: 0 !important;
   border-color: transparent !important;
   color: #fbfbf6 !important;
 }
@@ -583,6 +584,7 @@ body#california-arts .mobile-menu-drawer {
 .site-header-stack--menu-open header {
   backdrop-filter: blur(18px) saturate(128%);
   background: rgba(253, 252, 249, 0.96) !important;
+  border-bottom: 1px solid rgba(19, 24, 24, 0.18) !important;
   color: #131818 !important;
 }
 
@@ -601,6 +603,7 @@ body#california-arts .mobile-menu-drawer {
   .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):focus-within header {
     backdrop-filter: blur(18px) saturate(128%);
     background: rgba(253, 252, 249, 0.96) !important;
+    border-bottom: 1px solid rgba(19, 24, 24, 0.18) !important;
     color: #131818 !important;
   }
 
@@ -622,6 +625,7 @@ body#california-arts .mobile-menu-drawer {
 .site-header-stack--search-open header {
   backdrop-filter: blur(18px) saturate(128%);
   background: rgba(253, 252, 249, 0.94) !important;
+  border-bottom: 1px solid rgba(19, 24, 24, 0.18) !important;
   color: var(--color-primary-text) !important;
 }
 
@@ -3513,6 +3517,7 @@ body.art-menu-lock {
 .checkout-page__sticky-total button,
 .newsletter-popup__form button {
   border-radius: 0 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 
 @media (max-width: 520px) {
