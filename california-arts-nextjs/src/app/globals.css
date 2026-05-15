@@ -1240,6 +1240,10 @@ body#california-arts .mobile-menu-drawer {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.product-grid__bar .multi-column {
+  align-items: center;
+}
+
 .product-grid__bar h2,
 .product-grid__bar .rte,
 .shop-all-page__intro .rte,
@@ -1260,11 +1264,16 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .product-grid__bar .product-grid__bar-copy {
+  align-self: center;
+  display: flex;
   font-size: 14px !important;
   grid-column: 2 / -1;
+  justify-content: flex-end;
+  justify-self: end;
   line-height: 1.25;
   max-width: 100%;
   min-width: 0;
+  text-align: right;
 }
 
 .product-grid__bar .rte p {
@@ -1279,6 +1288,7 @@ body#california-arts .mobile-menu-drawer {
   font-size: inherit !important;
   line-height: inherit;
   overflow: hidden;
+  text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-box-orient: initial;
@@ -1286,8 +1296,13 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .product-grid__bar h2 {
+  align-items: center;
+  align-self: center;
+  display: flex;
+  font-size: 14px !important;
   font-weight: 400;
   line-height: 1.25;
+  min-height: 100%;
 }
 
 .shop-all-page__intro-spacer,
