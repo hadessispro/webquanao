@@ -611,7 +611,7 @@ body#california-arts .mobile-menu-drawer {
 .contact-intake-form {
   border: 1px solid rgba(19, 24, 24, 0.14);
   display: grid;
-  gap: 22px;
+  gap: 20px;
   padding: 24px;
 }
 
@@ -628,15 +628,16 @@ body#california-arts .mobile-menu-drawer {
 
 .contact-intake-form__head p {
   color: rgba(19, 24, 24, 0.56);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: none;
 }
 
 .contact-intake-form__head h2 {
-  font-size: clamp(20px, 2.2vw, 34px);
+  font-size: clamp(20px, 2vw, 32px);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.14;
   max-width: 620px;
 }
 
@@ -657,50 +658,68 @@ body#california-arts .mobile-menu-drawer {
 
 .contact-intake-form__field span {
   color: rgba(19, 24, 24, 0.56);
+  font-family: Arial, Helvetica, sans-serif !important;
   font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
-.contact-intake-form input,
+.contact-intake-form input:not([type='checkbox']),
 .contact-intake-form select,
 .contact-intake-form textarea {
   background: #fff;
   border: 1px solid rgba(19, 24, 24, 0.22);
   border-radius: 0;
   color: #131818;
-  font: inherit;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 13px;
+  line-height: 1.35;
   min-height: 46px;
   padding: 12px 14px;
   width: 100%;
 }
 
 .contact-intake-form textarea {
-  min-height: 150px;
+  min-height: 148px;
   resize: vertical;
 }
 
-.contact-intake-form input:focus,
+.contact-intake-form input:not([type='checkbox']):focus,
 .contact-intake-form select:focus,
 .contact-intake-form textarea:focus {
   border-color: rgba(19, 24, 24, 0.54);
   outline: none;
 }
 
+.contact-intake-form__actions {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+}
+
 .contact-intake-form__checkbox {
   align-items: center;
   display: flex;
   gap: 10px;
+  max-width: 420px;
 }
 
 .contact-intake-form__checkbox span {
   color: rgba(19, 24, 24, 0.76);
-  font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 12px;
   line-height: 1.35;
 }
 
 .contact-intake-form__checkbox input {
   accent-color: #131818;
+  flex: 0 0 16px;
+  height: 16px;
+  margin: 0;
+  min-height: 16px;
+  padding: 0;
+  width: 16px;
 }
 
 .contact-intake-form__message {
@@ -723,6 +742,7 @@ body#california-arts .mobile-menu-drawer {
   font-size: 12px;
   justify-content: center;
   min-height: 46px;
+  min-width: 180px;
   padding: 0 22px;
   text-transform: uppercase;
 }
@@ -763,6 +783,20 @@ body#california-arts .mobile-menu-drawer {
 
   .contact-intake-form__grid {
     grid-template-columns: 1fr;
+  }
+
+  .contact-intake-form__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .contact-intake-form__checkbox {
+    max-width: none;
+  }
+
+  .contact-intake-form__submit {
+    min-width: 0;
+    width: 100%;
   }
 }
 

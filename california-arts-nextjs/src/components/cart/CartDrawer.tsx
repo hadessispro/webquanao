@@ -122,14 +122,15 @@ export default function CartDrawer() {
                   <span>{t('subtotal')}</span>
                   <BrandPrice amount={formatMoney(cartSubtotal)} />
                 </div>
-                <Link
+                <a
                   className="cart-drawer__checkout"
-                  href="/checkout"
+                  href={BRAND_INSTAGRAM_PROFILE_URL}
                   onClick={() => setIsCartOpen(false)}
-                  prefetch={false}
+                  rel="noreferrer"
+                  target="_blank"
                 >
-                  chốt đơn
-                </Link>
+                  order qua instagram inbox
+                </a>
 
                 <div className="cart-drawer__assistant-min">
                   <section className="cart-drawer__assistant">

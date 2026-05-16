@@ -152,14 +152,20 @@ export default function ContactIntakeForm() {
         </label>
       </div>
 
-      <label className="contact-intake-form__checkbox">
-        <input
-          checked={form.acceptsMarketing}
-          onChange={(event) => update('acceptsMarketing', event.target.checked)}
-          type="checkbox"
-        />
-        <span>nhận tin mới và đợt mở bán tiếp theo qua email</span>
-      </label>
+      <div className="contact-intake-form__actions">
+        <label className="contact-intake-form__checkbox">
+          <input
+            checked={form.acceptsMarketing}
+            onChange={(event) => update('acceptsMarketing', event.target.checked)}
+            type="checkbox"
+          />
+          <span>nhận tin mới và đợt mở bán tiếp theo qua email</span>
+        </label>
+
+        <button className="contact-intake-form__submit" disabled={status === 'loading'} type="submit">
+          {status === 'loading' ? 'đang gửi' : 'gửi thông tin'}
+        </button>
+      </div>
 
       {message && (
         <p
@@ -172,10 +178,6 @@ export default function ContactIntakeForm() {
           {message}
         </p>
       )}
-
-      <button className="contact-intake-form__submit" disabled={status === 'loading'} type="submit">
-        {status === 'loading' ? 'đang gửi' : 'gửi thông tin'}
-      </button>
     </form>
   )
 }
