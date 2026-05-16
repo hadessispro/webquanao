@@ -46,9 +46,9 @@ function mediaToImage(media: MediaLike, fallbackAlt?: string): StorefrontImage |
 }
 
 const VI_TEXT_MAP: Record<string, string> = {
-  '01 shop all': '01 mua sắm',
-  '02 about the brand': '02 về thương hiệu',
-  '03 creative campaign': '03 chiến dịch sáng tạo',
+  '01 shop all': 'sản phẩm',
+  '02 about the brand': 'về điển',
+  '03 creative campaign': 'chiến dịch sáng tạo',
   'shop by category': 'mua theo danh mục',
   'view all': 'xem tất cả',
   outerwear: 'áo khoác',
@@ -79,18 +79,24 @@ const VI_TEXT_MAP: Record<string, string> = {
   'shipping to': 'giao đến',
   'vietnam | vnd ₫': 'việt nam | vnd ₫',
   'complimentary shipping to vietnam on all orders over ₫6,578,950. no additional duties and fees upon delivery.':
-    'miễn phí vận chuyển đến việt nam cho đơn hàng trên ₫6,578,950. không phát sinh thuế và phí khi giao hàng.',
+    'miễn phí vận chuyển cho đơn hàng trên 950,000đ.',
+  'complimentary shipping on orders over ₫950,000.': 'miễn phí vận chuyển cho đơn hàng trên 950,000đ.',
   'california minimalism': 'tối giản california',
   'accessible design by producing less & building better.':
     'thiết kế dễ tiếp cận bằng cách sản xuất ít hơn và làm tốt hơn.',
   'from the palm-fringed western edge of the american dream.':
     'từ rìa phía tây phủ bóng cọ của giấc mơ mỹ.',
   'shop all': 'xem tất cả',
-  'join us, at điển': 'tham gia cùng điển',
+  'join us, at điển': 'đồng hành cùng điển',
+  'join điển': 'đồng hành cùng điển',
   'get early access to new product launches & events':
-    'nhận quyền truy cập sớm cho các đợt ra mắt sản phẩm và sự kiện',
-  'email address': 'địa chỉ email',
-  subscribe: 'đăng ký',
+    'nhận quyền truy cập sớm cho các đợt drop tiếp theo và miễn phí vận chuyển cho đơn hàng đầu tiên.',
+  'get early access to the next drops and complimentary shipping on your first order.':
+    'nhận quyền truy cập sớm cho các đợt drop tiếp theo và miễn phí vận chuyển cho đơn hàng đầu tiên.',
+  'email address': 'email của bạn',
+  'your email': 'email của bạn',
+  subscribe: 'tham gia',
+  join: 'tham gia',
   'by subscribing, you agree to the privacy policy':
     'khi đăng ký, bạn đồng ý với chính sách bảo mật',
   'subscribe to west coast living': 'đăng ký west coast living',

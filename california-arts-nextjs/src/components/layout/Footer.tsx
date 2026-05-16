@@ -4,7 +4,6 @@ import React from 'react'
 import Link from 'next/link'
 import type { FooterData } from '@/lib/storefront-types'
 import { useLayout } from '@/context/LayoutContext'
-import { BrandCurrencyText } from '@/components/ui/BrandCurrency'
 
 function isExternalHref(href: string) {
   return href.startsWith('http://') || href.startsWith('https://')
@@ -13,8 +12,6 @@ function isExternalHref(href: string) {
 export default function Footer({ footer }: { footer: FooterData }) {
   const { locale } = useLayout()
   const logo = footer.desktopLogo || footer.mobileLogo
-  const shippingLabel = locale === 'vi' ? 'giao đến' : 'shipping to'
-  const shippingCountry = locale === 'vi' ? 'việt nam | vnd ₫' : 'vietnam | vnd ₫'
   const newsletterPlaceholder =
     locale === 'vi'
       ? footer.newsletter.placeholderVi || footer.newsletter.placeholder || 'đăng ký nhận bản tin'
@@ -28,12 +25,9 @@ export default function Footer({ footer }: { footer: FooterData }) {
       ? 'thương hiệu di sản mỹ đương đại.'
       : 'the next great american heritage brand.'
   const footerLinks = [
-    { label: locale === 'vi' ? 'giới thiệu' : 'about us', href: '/pages/our-story' },
-    { label: locale === 'vi' ? 'báo cáo bền vững' : 'sustainability report', href: '/pages/about' },
-    { label: locale === 'vi' ? 'chăm sóc khách hàng' : 'customer care', href: '/pages/about' },
-    { label: locale === 'vi' ? 'pháp lý / điều khoản' : 'legal / t&c', href: '/pages/privacy-policy' },
-    { label: locale === 'vi' ? 'bảo mật' : 'privacy', href: '/pages/privacy-policy' },
-    { label: locale === 'vi' ? 'tài khoản' : 'account', href: '/admin' },
+    { label: locale === 'vi' ? 'liên hệ' : 'contact', href: '/pages/about' },
+    { label: locale === 'vi' ? 'chính sách' : 'policy', href: '/pages/privacy-policy' },
+    { label: locale === 'vi' ? 'câu hỏi thường gặp' : 'faq', href: '/pages/returns-exchanges' },
     { label: 'ig', href: 'https://www.instagram.com/california.arts/' },
   ]
 
@@ -41,14 +35,6 @@ export default function Footer({ footer }: { footer: FooterData }) {
     <div id="shopify-section-footer" className="shopify-section">
       <footer className="site-footer dien-footer" role="contentinfo">
         <div className="dien-footer__inner">
-          <div className="dien-footer__shipping">
-            <span>{shippingLabel}</span>
-            <button type="button" aria-label={shippingCountry}>
-              <BrandCurrencyText text={shippingCountry} />
-              <span aria-hidden="true">⌄</span>
-            </button>
-          </div>
-
           <div className="dien-footer__brand">
             {logo && (
               <div className="dien-footer__logo">
@@ -70,7 +56,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
                 placeholder={newsletterPlaceholder}
                 type="email"
               />
-              <button type="submit">{newsletterButtonLabel}</button>
+              <button type="submit">{locale === 'vi' ? 'gửi' : newsletterButtonLabel}</button>
             </form>
 
             <nav aria-label="footer" className="dien-footer__links">

@@ -39,11 +39,26 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
   const [message, setMessage] = useState('')
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const popupMark = settings.logo || {
-    src: '/media/dien-logo-header.png',
-    alt: 'điển',
-  }
-
+  const title =
+    locale === 'vi'
+      ? 'đồng hành cùng điển'
+      : localizedText(locale, settings.title, settings.titleVi)
+  const description =
+    locale === 'vi'
+      ? 'nhận quyền truy cập sớm cho các đợt drop tiếp theo và miễn phí vận chuyển cho đơn hàng đầu tiên.'
+      : localizedText(locale, settings.description, settings.descriptionVi)
+  const placeholder =
+    locale === 'vi'
+      ? 'email của bạn'
+      : localizedText(locale, settings.placeholder, settings.placeholderVi)
+  const submitLabel =
+    locale === 'vi'
+      ? 'tham gia'
+      : localizedText(locale, settings.buttonLabel, settings.buttonLabelVi)
+  const privacyText =
+    locale === 'vi'
+      ? 'khi đăng ký, bạn đồng ý với chính sách bảo mật'
+      : localizedText(locale, settings.privacyText, settings.privacyTextVi)
   const canShowOnPath = useMemo(
     () => pathMatches(pathname, settings.showOnPaths || []),
     [pathname, settings.showOnPaths],
@@ -122,25 +137,16 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
   }
 
   return (
-    <div className="newsletter-popup" role="dialog" aria-modal="true" aria-label={settings.title}>
+    <div className="newsletter-popup" role="dialog" aria-modal="true" aria-label={title}>
       <button className="newsletter-popup__scrim" aria-label="close popup" onClick={close} type="button" />
       <section className="newsletter-popup__panel">
         <button className="newsletter-popup__close" aria-label="close popup" onClick={close} type="button">
           <span />
         </button>
 
-        <div className="newsletter-popup__brand">
-          <img className="newsletter-popup__mark" src={popupMark.src} alt={popupMark.alt || 'điển'} />
-          <div className="newsletter-popup__dots" aria-hidden="true">
-            {Array.from({ length: 16 }).map((_, index) => (
-              <span key={index} />
-            ))}
-          </div>
-        </div>
-
         <div className="newsletter-popup__copy">
-          <h2>{localizedText(locale, settings.title, settings.titleVi)}</h2>
-          <p>{localizedText(locale, settings.description, settings.descriptionVi)}</p>
+          <h2>{title}</h2>
+          <p>{description}</p>
         </div>
 
         <form className="newsletter-popup__form" onSubmit={submit}>
@@ -148,20 +154,25 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
             autoComplete="email"
             name="email"
             onChange={(event) => setEmail(event.currentTarget.value)}
-            placeholder={localizedText(locale, settings.placeholder, settings.placeholderVi)}
+            placeholder={placeholder}
             type="email"
             value={email}
           />
-          <button disabled={submitting} type="submit">
-            {submitting ? '...' : localizedText(locale, settings.buttonLabel, settings.buttonLabelVi)}
-          </button>
+          <div className="newsletter-popup__actions">
+            <button className="newsletter-popup__dismiss" onClick={close} type="button">
+              {locale === 'vi' ? 'không, cảm ơn' : 'no, thanks'}
+            </button>
+            <button className="newsletter-popup__submit" disabled={submitting} type="submit">
+              {submitting ? '...' : submitLabel}
+            </button>
+          </div>
         </form>
 
         {message && <p className="newsletter-popup__message">{message}</p>}
 
         <p className="newsletter-popup__privacy">
           <Link href={settings.privacyHref} onClick={close}>
-            {localizedText(locale, settings.privacyText, settings.privacyTextVi)}
+            {privacyText}
           </Link>
         </p>
       </section>

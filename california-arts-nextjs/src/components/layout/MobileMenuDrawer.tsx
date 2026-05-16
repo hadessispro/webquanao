@@ -15,14 +15,17 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
 
-function flattenFooterLinks(footer: FooterData) {
-  return footer.columns.flatMap((column) => column.links).slice(0, 6)
-}
+const PRODUCT_LINKS = [
+  { label: 'áo', href: '/collections/coats-jackets' },
+  { label: 'quần', href: '/collections/trousers-shorts' },
+  { label: 'xem tất cả', href: '/collections/shop-all' },
+]
 
 export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawerProps) {
   const { isMobileMenuOpen, locale, setIsMobileMenuOpen } = useLayout()
-  const primaryMega = navigation.find((item) => item.megaMenu?.enabled)?.megaMenu
-  const footerLinks = flattenFooterLinks(footer)
+  const aboutLink = navigation.find((item) => item.href === '/pages/our-story')
+  const newsletterPlaceholder =
+    localizedText(locale, footer.newsletter.placeholder, footer.newsletter.placeholderVi) || 'đăng ký newsletter'
 
   useEffect(() => {
     if (!isMobileMenuOpen) return undefined
@@ -47,91 +50,72 @@ export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawe
         type="button"
       />
       <aside className="art-menu__panel">
-        <button
-          aria-label="close menu"
-          className="art-menu__close"
-          onClick={() => setIsMobileMenuOpen(false)}
-          type="button"
-        >
-          <span />
-        </button>
-
         <div className="art-menu__scroll">
-          <div className="art-menu__primary">
-            {navigation.map((item) => (
+          <div className="art-menu__top">
+            <button
+              aria-label="close menu"
+              className="art-menu__close"
+              onClick={() => setIsMobileMenuOpen(false)}
+              type="button"
+            >
+              <span />
+            </button>
+            <div className="art-menu__tabs">
               <Link
-                className="art-menu__primary-link"
-                href={item.href}
-                key={`${item.label}-${item.href}`}
+                className="art-menu__tab art-menu__tab--active"
+                href="/collections/shop-all"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {localizedText(locale, item.label, item.labelVi)}
+                sản phẩm
+              </Link>
+              {aboutLink && (
+                <Link
+                  className="art-menu__tab"
+                  href={aboutLink.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {localizedText(locale, aboutLink.label, aboutLink.labelVi) || 'về điển'}
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <div className="art-menu__primary">
+            {PRODUCT_LINKS.map((link) => (
+              <Link
+                className="art-menu__primary-link"
+                href={link.href}
+                key={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
               </Link>
             ))}
           </div>
 
-          {primaryMega && (
-            <div className="art-menu__mega">
-              {primaryMega.columns.map((column) => (
-                <section className="art-menu__column" key={column.heading}>
-                  <h2 className="art-menu__column-title">
-                    {column.headingHref ? (
-                      <Link href={column.headingHref} onClick={() => setIsMobileMenuOpen(false)}>
-                        {localizedText(locale, column.heading, column.headingVi)}
-                      </Link>
-                    ) : (
-                      localizedText(locale, column.heading, column.headingVi)
-                    )}
-                  </h2>
-                  <div className="art-menu__column-links">
-                    {column.links.map((link) => (
-                      <Link
-                        className="art-menu__sub-link"
-                        href={link.href}
-                        key={`${link.label}-${link.href}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {localizedText(locale, link.label, link.labelVi)}
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-          )}
+          <div className="art-menu__social">
+            <a
+              className="art-menu__footer-link"
+              href="https://www.instagram.com/california.arts/"
+              rel="noreferrer"
+              target="_blank"
+            >
+              instagram
+            </a>
+          </div>
 
           <form className="art-menu__newsletter">
             <label className="art-menu__newsletter-label" htmlFor="art-menu-email">
-              {localizedText(locale, footer.newsletter.title, footer.newsletter.titleVi)}
+              đăng ký newsletter
             </label>
             <div className="art-menu__newsletter-row">
-              <input
-                id="art-menu-email"
-                name="email"
-                placeholder={localizedText(locale, footer.newsletter.placeholder, footer.newsletter.placeholderVi)}
-                type="email"
-              />
-              <button type="submit">
-                {localizedText(locale, footer.newsletter.buttonLabel, footer.newsletter.buttonLabelVi)}
-              </button>
+              <input id="art-menu-email" name="email" placeholder={newsletterPlaceholder} type="email" />
+              <button type="submit">gửi</button>
             </div>
-            <p>{localizedText(locale, footer.newsletter.privacyText, footer.newsletter.privacyTextVi)}</p>
+            <p>*nhận thông báo về quyền truy cập website sớm hơn cho các đợt drop; miễn phí vận chuyển cho đơn hàng đầu tiên.</p>
           </form>
 
           <footer className="art-menu__footer">
-            <div className="art-menu__footer-links">
-              {footerLinks.map((link) => (
-                <Link
-                  className="art-menu__footer-link"
-                  href={link.href}
-                  key={`${link.label}-${link.href}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  target={link.openInNewTab ? '_blank' : undefined}
-                >
-                  {localizedText(locale, link.label, link.labelVi)}
-                </Link>
-              ))}
-            </div>
             <div className="art-menu__meta">
               <span>{footer.locationText}</span>
               <span>{footer.copyright}</span>

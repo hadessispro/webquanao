@@ -70,6 +70,25 @@ function BagIcon() {
   )
 }
 
+function SearchIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="header-search-icon"
+      focusable="false"
+      height="20"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="20"
+    >
+      <path
+        d="M10.5 3.5a7 7 0 1 0 4.43 12.42l4.82 4.82 1.06-1.06-4.82-4.82A7 7 0 0 0 10.5 3.5Zm0 1.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
 function MenuIcon() {
   return (
     <span aria-hidden="true" className="header-menu-toggle__mark">
@@ -79,7 +98,39 @@ function MenuIcon() {
   )
 }
 
-function CartButton({ cartCount, onClick, label }: { cartCount: number; label: string; onClick: () => void }) {
+function CartButton({
+  cartCount,
+  onClick,
+  label,
+  variant = 'icon',
+}: {
+  cartCount: number
+  label: string
+  onClick: () => void
+  variant?: 'icon' | 'text'
+}) {
+  if (variant === 'text') {
+    return (
+      <button
+        aria-label={`${label} (${cartCount})`}
+        className="header-cart-link"
+        onClick={onClick}
+        type="button"
+      >
+        <span>{label}</span>
+        <span
+          className={
+            cartCount > 0
+              ? 'header-cart-link__count header-cart-link__count--active'
+              : 'header-cart-link__count'
+          }
+        >
+          ({cartCount})
+        </span>
+      </button>
+    )
+  }
+
   return (
     <button
       aria-label={`${label} (${cartCount})`}
@@ -95,6 +146,14 @@ function CartButton({ cartCount, onClick, label }: { cartCount: number; label: s
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
+}
+
+function topNavLabel(item: HeaderNavItem, locale: Locale) {
+  if (item.href === '/collections/shop-all') return locale === 'vi' ? 'sản phẩm' : 'products'
+  if (item.href === '/pages/our-story') return locale === 'vi' ? 'về điển' : 'about điển'
+  if (item.href === '/pages/campaign') return locale === 'vi' ? 'chiến dịch' : 'campaign'
+
+  return localizedText(locale, item.label, item.labelVi) || item.label
 }
 
 function MegaMenu({
@@ -231,7 +290,7 @@ function DesktopNavItem({
 }
 
 export default function Header({ header }: HeaderProps) {
-  const { cartCount, locale, setIsCartOpen, setIsMobileMenuOpen, t, toggleLocale } = useLayout()
+  const { cartCount, locale, setIsCartOpen, setIsMobileMenuOpen, t } = useLayout()
   const pathname = usePathname()
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -240,6 +299,13 @@ export default function Header({ header }: HeaderProps) {
   const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
   const logo = header.logo
   const isHome = pathname === '/'
+  const desktopNavigation = header.navigation
+    .filter((item) => item.href !== '/pages/campaign')
+    .slice(0, 2)
+  const shippingText =
+    locale === 'vi'
+      ? 'miễn phí vận chuyển cho đơn hàng trên 950,000đ.'
+      : 'complimentary shipping on orders over ₫950,000.'
 
   useEffect(() => {
     let frameId = 0
@@ -328,10 +394,10 @@ export default function Header({ header }: HeaderProps) {
             <div className="ge-free-shipping-msg">
               {header.shippingBar.href ? (
                 <SmartLink href={header.shippingBar.href} className="section-x-padding hover:text-primary-accent">
-                  <BrandCurrencyText text={localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)} />
+                  <BrandCurrencyText text={shippingText} />
                 </SmartLink>
               ) : (
-                <BrandCurrencyText text={localizedText(locale, header.shippingBar.text, header.shippingBar.textVi)} />
+                <BrandCurrencyText text={shippingText} />
               )}
             </div>
           </div>
@@ -380,10 +446,10 @@ export default function Header({ header }: HeaderProps) {
 
                   <div className="c_header-menu site-header__menu" ref={desktopMenuRef}>
                     <ul className="c_header-menu-ul flex flex-wrap">
-                      {header.navigation.map((item) => (
+                      {desktopNavigation.map((item) => (
                         <DesktopNavItem
                           isOpen={openMegaMenuHref === item.href}
-                          item={item}
+                          item={{ ...item, label: topNavLabel(item, locale), labelVi: topNavLabel(item, 'vi') }}
                           key={`${item.label}-${item.href}`}
                           locale={locale}
                           onClose={() => setOpenMegaMenuHref((current) => (current === item.href ? null : current))}
@@ -395,25 +461,6 @@ export default function Header({ header }: HeaderProps) {
 
                   <div className="c_header-icons site-header__actions">
                     <ul className="c_header-icons-ul">
-                      {header.countrySelector.enabled && (
-                        <li>
-                          <button type="button" className="localization__list--button">
-                            <BrandCurrencyText
-                              text={localizedText(locale, header.countrySelector.label, header.countrySelector.labelVi) || t('countryLabel')}
-                            />
-                          </button>
-                        </li>
-                      )}
-                      <li>
-                        <button
-                          aria-label={t('languageToggle')}
-                          className="header-locale-toggle"
-                          onClick={toggleLocale}
-                          type="button"
-                        >
-                          {locale === 'en' ? 'VI' : 'EN'}
-                        </button>
-                      </li>
                       <li>
                         <div className="whitespace-nowrap">
                           <button
@@ -430,8 +477,9 @@ export default function Header({ header }: HeaderProps) {
                           <div className="c_header-cartCount whitespace-nowrap">
                             <CartButton
                               cartCount={cartCount}
-                              label={t('openCart')}
+                              label={t('cart')}
                               onClick={() => setIsCartOpen(true)}
+                              variant="text"
                             />
                           </div>
                         </div>
@@ -459,27 +507,19 @@ export default function Header({ header }: HeaderProps) {
                   </h1>
 
                   <div className="ca_header-icons site-header__mobile-actions">
-                    <button
-                      aria-label={t('languageToggle')}
-                      className="header-locale-toggle"
-                      onClick={toggleLocale}
-                      type="button"
-                    >
-                      {locale === 'en' ? 'VI' : 'EN'}
-                    </button>
-                    <div className="ca_header-icons__search whitespace-nowrap ml-4">
+                    <div className="ca_header-icons__search whitespace-nowrap">
                       <button
                         aria-label={t('openSearch')}
                         onClick={() => setSearchOpen((open) => !open)}
-                        className="header-search-toggle"
+                        className="header-search-toggle header-search-toggle--icon"
                       >
-                        {t('search')}
+                        <SearchIcon />
                       </button>
                     </div>
-                    <div className="c_header-cartCount ml-4 whitespace-nowrap">
+                    <div className="c_header-cartCount whitespace-nowrap">
                       <CartButton
                         cartCount={cartCount}
-                        label={t('openCart')}
+                        label={t('cart')}
                         onClick={() => setIsCartOpen(true)}
                       />
                     </div>
