@@ -172,7 +172,7 @@ function MegaMenu({
   return (
     <div className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color">
       <div className="c_megamenu-main section-x-padding text-center">
-        <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center -ml-16">
+        <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center">
           {megaMenu.columns.length > 0 && (
             <div className="c_megamenu-inner-menu">
               {megaMenu.columns.map((column, index) => (
@@ -195,31 +195,6 @@ function MegaMenu({
                       </li>
                     ))}
                   </ul>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {megaMenu.imageCards.length > 0 && (
-            <div className="c_megamenu-inner-image">
-              {megaMenu.imageCards.map((card, index) => (
-                <div className="c_megamenu-inner-a c_megamenu-inner-images ml-16" key={`${card.caption || 'image'}-${index}`}>
-                  {card.image && (
-                    <div className="c_megamenu-image">
-                      <SmartLink href={card.href || '#'} onClick={onNavigate}>
-                        <img src={card.image.src} alt={card.image.alt || card.caption || ''} />
-                      </SmartLink>
-                    </div>
-                  )}
-                  {card.caption && (
-                    <div className="c_megamenu-content">
-                      <h2>
-                        <SmartLink href={card.href || '#'} onClick={onNavigate}>
-                          {localizedText(locale, card.caption, card.captionVi)}
-                        </SmartLink>
-                      </h2>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -445,7 +420,10 @@ export default function Header({ header }: HeaderProps) {
                   </h1>
 
                   <div className="c_header-menu site-header__menu" ref={desktopMenuRef}>
-                    <ul className="c_header-menu-ul flex flex-wrap">
+                    <ul
+                      className="c_header-menu-ul flex flex-wrap"
+                      onMouseLeave={() => setOpenMegaMenuHref(null)}
+                    >
                       {desktopNavigation.map((item) => (
                         <DesktopNavItem
                           isOpen={openMegaMenuHref === item.href}

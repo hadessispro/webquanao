@@ -20,10 +20,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
     locale === 'vi'
       ? footer.newsletter.buttonLabelVi || footer.newsletter.buttonLabel || 'đăng ký'
       : footer.newsletter.buttonLabel || 'subscribe'
-  const brandTagline =
-    locale === 'vi'
-      ? 'thương hiệu di sản mỹ đương đại.'
-      : 'the next great american heritage brand.'
+  const brandTagline = 'you already know'
   const footerLinks = [
     { label: locale === 'vi' ? 'liên hệ' : 'contact', href: '/pages/about' },
     { label: locale === 'vi' ? 'chính sách' : 'policy', href: '/pages/privacy-policy' },

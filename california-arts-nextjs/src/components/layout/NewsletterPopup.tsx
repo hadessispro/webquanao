@@ -8,7 +8,6 @@ import type { NewsletterPopupData } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
 const DISMISS_UNTIL_KEY = 'dien_newsletter_popup_dismiss_until'
-const SESSION_KEY = 'dien_newsletter_popup_seen'
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
@@ -29,7 +28,6 @@ function rememberDismiss(days: number) {
   const safeDays = Number.isFinite(days) && days > 0 ? days : 7
   const expiresAt = Date.now() + safeDays * 24 * 60 * 60 * 1000
   window.localStorage.setItem(DISMISS_UNTIL_KEY, String(expiresAt))
-  window.sessionStorage.setItem(SESSION_KEY, '1')
 }
 
 export default function NewsletterPopup({ settings }: { settings: NewsletterPopupData }) {
@@ -68,7 +66,6 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     if (!settings.enabled || !canShowOnPath || isCartOpen || isMobileMenuOpen) return undefined
 
     try {
-      if (window.sessionStorage.getItem(SESSION_KEY)) return undefined
       const dismissedUntil = Number(window.localStorage.getItem(DISMISS_UNTIL_KEY) || 0)
       if (dismissedUntil > Date.now()) return undefined
     } catch {
@@ -77,8 +74,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
 
     const timer = window.setTimeout(() => {
       setOpen(true)
-      window.sessionStorage.setItem(SESSION_KEY, '1')
-    }, Math.max(0, settings.delayMs || 0))
+    }, Math.min(420, Math.max(0, settings.delayMs || 0)))
 
     return () => window.clearTimeout(timer)
   }, [
