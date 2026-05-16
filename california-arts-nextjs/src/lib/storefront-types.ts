@@ -251,8 +251,8 @@ export const DEFAULT_HOME_HERO: HomeHeroData = {
 
 export const DEFAULT_NEWSLETTER_POPUP: NewsletterPopupData = {
   enabled: true,
-  showOnPaths: ['/', '/collections/shop-all'],
-  delayMs: 1800,
+  showOnPaths: ['/*'],
+  delayMs: 320,
   dismissDays: 7,
   logo: {
     src: '/media/dien-logo-header.png',

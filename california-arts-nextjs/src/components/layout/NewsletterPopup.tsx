@@ -7,7 +7,7 @@ import { useLayout } from '@/context/LayoutContext'
 import type { NewsletterPopupData } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
-const DISMISS_UNTIL_KEY = 'dien_newsletter_popup_dismiss_until'
+const DISMISS_UNTIL_KEY = 'dien_newsletter_popup_dismiss_until_v2'
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text

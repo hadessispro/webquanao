@@ -531,7 +531,10 @@ export async function getNewsletterPopupData(): Promise<NewsletterPopupData> {
 
     return {
       enabled: popup.enabled ?? DEFAULT_NEWSLETTER_POPUP.enabled,
-      showOnPaths: showOnPaths.length > 0 ? showOnPaths : DEFAULT_NEWSLETTER_POPUP.showOnPaths,
+      showOnPaths:
+        popup.enabled === false
+          ? showOnPaths
+          : ['/*'],
       delayMs: popup.delayMs ?? DEFAULT_NEWSLETTER_POPUP.delayMs,
       dismissDays: popup.dismissDays ?? DEFAULT_NEWSLETTER_POPUP.dismissDays,
       logo:
