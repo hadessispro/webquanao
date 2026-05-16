@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import React, { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLayout } from "@/context/LayoutContext";
 import { BrandPrice } from "@/components/ui/BrandCurrency";
@@ -244,60 +243,6 @@ function formatPrice(value?: string) {
   return formatVndAmount(value);
 }
 
-function productPrice(product: Pick<Product, "variants">) {
-  return formatPrice(product.variants[0]?.price);
-}
-
-function ProductMiniCard({ product }: { product: ProductPreview }) {
-  const image = product.images[0];
-
-  return (
-    <article className="product-detail-card">
-      <Link className="product-detail-card__link" href={`/products/${product.handle}`} prefetch={false}>
-        {image ? (
-          <img
-            className="product-detail-card__image"
-            src={image.src}
-            alt={image.alt || product.title}
-            loading="lazy"
-          />
-        ) : (
-          <span className="product-detail-card__empty">Không có ảnh</span>
-        )}
-        <span className="product-detail-card__meta">
-          <span>{product.title}</span>
-          <BrandPrice amount={productPrice(product)} />
-        </span>
-      </Link>
-    </article>
-  );
-}
-
-function ProductRail({
-  emptyText,
-  products,
-  title,
-}: {
-  emptyText?: string;
-  products: ProductPreview[];
-  title: string;
-}) {
-  return (
-    <section className="product-detail-rail">
-      <h2 className="product-detail-rail__title">{title}</h2>
-      {products.length > 0 ? (
-        <div className="product-detail-rail__grid">
-          {products.map((item) => (
-            <ProductMiniCard key={item.handle} product={item} />
-          ))}
-        </div>
-      ) : (
-        <p className="product-detail-rail__empty">{emptyText}</p>
-      )}
-    </section>
-  );
-}
-
 const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
   Details:
     "<p>- Bề mặt ngoài 100% len<br />- Phom oversized<br />- Cổ quân đội bản lớn<br />- Cổ đứng với nút cài<br />- Thiết kế hai hàng khuy<br />- Khuy đồng màu<br />- Túi viền phía trước<br />- Dáng dài qua gối<br />- Xẻ tà giữa thân sau<br />- Túi ngực bên trong<br />- Đai rời cùng chất liệu<br />- Đỉa đai phía sau</p><p>Chất liệu &amp; bảo quản<br />- Vỏ ngoài: 100% len<br />- Bảo quản: Chỉ giặt khô</p>",
@@ -335,10 +280,10 @@ function getFallbackAccordionHtml(product: Product, title: string) {
 }
 
 export default function ProductDetailClient({
-  allProducts,
+  allProducts: _allProducts,
   product,
-  suggestedProducts,
-  styleWithProducts,
+  suggestedProducts: _suggestedProducts,
+  styleWithProducts: _styleWithProducts,
 }: {
   allProducts: ProductPreview[];
   product: Product;
@@ -377,7 +322,6 @@ export default function ProductDetailClient({
   const [selSize, setSelSize] = useState(initialSize);
   const [mobileIdx, setMobileIdx] = useState(0);
   const [openAcc, setOpenAcc] = useState<number | null>(null);
-  const [recentlyViewedHandles, setRecentlyViewedHandles] = useState<string[]>([]);
 
   const imgs = useMemo(
     () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
@@ -503,35 +447,6 @@ export default function ProductDetailClient({
     setIsCartOpen(true);
   };
 
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      const raw = window.localStorage.getItem("ca_recently_viewed_products");
-      let stored: string[] = [];
-
-      try {
-        stored = raw ? (JSON.parse(raw) as string[]) : [];
-      } catch {
-        stored = [];
-      }
-
-      const previous = stored
-        .filter((handle) => handle && handle !== product.handle)
-        .slice(0, 8);
-
-      setRecentlyViewedHandles(previous);
-      window.localStorage.setItem(
-        "ca_recently_viewed_products",
-        JSON.stringify([product.handle, ...previous].slice(0, 12)),
-      );
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
-  }, [product.handle]);
-
-  const recentlyViewedProducts = recentlyViewedHandles
-    .map((handle) => allProducts.find((item) => item.handle === handle))
-    .filter(Boolean)
-    .slice(0, 4) as ProductPreview[];
   const safeMobileIdx =
     mediaItems.length > 0 ? Math.min(mobileIdx, mediaItems.length - 1) : 0;
   const currentMobileMedia = mediaItems[safeMobileIdx];
@@ -763,42 +678,8 @@ export default function ProductDetailClient({
               ))}
             </div>
 
-            {styleWithProducts.length > 0 && (
-              <section className="product-detail__style-with">
-                <h2 className="product-detail__style-title">{t("styleWith")}</h2>
-                <div className="product-detail__style-grid">
-                  {styleWithProducts.slice(0, 3).map((item) => (
-                    <Link
-                      className="product-detail__style-card"
-                      href={`/products/${item.handle}`}
-                      key={item.handle}
-                      prefetch={false}
-                    >
-                      {item.images[0] ? (
-                        <img
-                          src={item.images[0].src}
-                          alt={item.images[0].alt || item.title}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span>Không có ảnh</span>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
           </div>
         </aside>
-      </div>
-
-      <div className="product-detail__after">
-        <ProductRail products={suggestedProducts} title={t("suggestedForYou")} />
-        <ProductRail
-          emptyText={t("recentlyViewedEmpty")}
-          products={recentlyViewedProducts}
-          title={t("recentlyViewed")}
-        />
       </div>
     </section>
   );
