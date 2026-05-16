@@ -58,7 +58,7 @@ export const Products: CollectionConfig = {
     {
       name: 'vendor',
       type: 'text',
-      defaultValue: 'California Arts',
+      defaultValue: 'điển',
     },
     {
       name: 'collections',

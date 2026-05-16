@@ -6,6 +6,11 @@ import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
 import PaymentLogoStrip from '@/components/ui/PaymentLogos'
+import {
+  BRAND_INSTAGRAM_HANDLE,
+  BRAND_INSTAGRAM_ORDER_URL,
+  BRAND_INSTAGRAM_PROFILE_URL,
+} from '@/lib/brand'
 
 const CHECKOUT_PROFILE_KEY = 'california_arts_checkout_profile'
 
@@ -48,6 +53,7 @@ const emptyProfile: CheckoutProfile = {
 
 type PaymentMethodOption = {
   description: string
+  helper: string
   label: string
   value: string
   visual: 'cod' | 'bank' | 'vnpay'
@@ -183,6 +189,12 @@ export default function CheckoutPage() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [orderNumber, setOrderNumber] = useState('')
+  const [cardDetails, setCardDetails] = useState({
+    cardholder: '',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+  })
 
   const discountAmount = appliedDiscount?.discountAmount || 0
   const total = useMemo(
@@ -191,24 +203,29 @@ export default function CheckoutPage() {
   )
   const paymentMethods: PaymentMethodOption[] = [
     {
-      description: 'trả tiền khi nhận hàng',
+      description: 'thanh toán khi nhận hàng',
+      helper: 'đơn sẽ được xác nhận trước khi giao',
       label: t('cashOnDelivery'),
       value: 'cod',
       visual: 'cod',
     },
     {
-      description: 'xác nhận qua tài khoản',
+      description: 'chuyển khoản',
+      helper: 'mã qr và stk sẽ gửi sau khi xác nhận',
       label: t('bankTransfer'),
       value: 'bank_transfer',
       visual: 'bank',
     },
     {
-      description: 'ví, thẻ ATM, QR',
+      description: 'qr / ví / atm',
+      helper: 'mã thanh toán sẽ gửi thủ công',
       label: 'VNPay',
       value: 'vnpay',
       visual: 'vnpay',
     },
   ]
+  const activePaymentMethod =
+    paymentMethods.find((method) => method.value === profile.paymentMethod) || paymentMethods[0]
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -242,6 +259,13 @@ export default function CheckoutPage() {
   const updateProfile = (field: keyof CheckoutProfile, value: string | boolean) => {
     setProfile((currentProfile) => ({
       ...currentProfile,
+      [field]: value,
+    }))
+  }
+
+  const updateCardDetails = (field: keyof typeof cardDetails, value: string) => {
+    setCardDetails((current) => ({
+      ...current,
       [field]: value,
     }))
   }
@@ -354,10 +378,18 @@ export default function CheckoutPage() {
     <section className="checkout-page bg-primary-background text-primary-text">
       {status === 'success' ? (
         <section className="checkout-page__success">
-          <p>{t('orderReceived')}</p>
-          <h1>{orderNumber}</h1>
-          <span>{t('savedDetailsNextVisit')}</span>
-          <Link href="/collections/shop-all">{t('continueShopping')}</Link>
+          <span className="checkout-page__success-eyebrow">yêu cầu đã được ghi nhận</span>
+          <h1>{t('orderReceived')}</h1>
+          <span>
+            Đội ngũ điển đã nhận được thông tin của bạn và sẽ liên hệ để chốt đơn qua Instagram
+            hoặc số điện thoại ngay khi kiểm tra xong.
+          </span>
+          <div className="checkout-page__success-actions">
+            <a href={BRAND_INSTAGRAM_ORDER_URL} rel="noreferrer" target="_blank">
+              mở instagram để chốt đơn
+            </a>
+            <Link href="/collections/shop-all">{t('continueShopping')}</Link>
+          </div>
         </section>
       ) : cartItems.length === 0 ? (
         <section className="checkout-page__empty">
@@ -371,9 +403,7 @@ export default function CheckoutPage() {
               <p>{t('secureCheckout')}</p>
               <h1>{t('completeYourOrder')}</h1>
               <span>
-                {hasSavedProfile
-                  ? t('savedCustomerLoaded')
-                  : t('detailsSavedNextTime')}
+                {hasSavedProfile ? t('savedCustomerLoaded') : t('detailsSavedNextTime')}
               </span>
             </section>
 
@@ -541,11 +571,98 @@ export default function CheckoutPage() {
                           <PaymentMethodVisual type={method.visual} />
                         </span>
                         <span className="checkout-page__payment-method-title">{method.label}</span>
-                        <small>{method.description}</small>
+                        <small>{method.helper}</small>
                       </button>
                     )
                   })}
                 </div>
+              </div>
+              <div className="checkout-page__payment-detail">
+                <div className="checkout-page__payment-detail-head">
+                  <strong>{activePaymentMethod.description}</strong>
+                  <span>{activePaymentMethod.label}</span>
+                </div>
+                {activePaymentMethod.value === 'cod' ? (
+                  <p>
+                    Bạn sẽ thanh toán khi nhận hàng. Sau khi gửi yêu cầu, đội ngũ điển sẽ xác nhận
+                    lại sản phẩm, số lượng và địa chỉ trước khi giao.
+                  </p>
+                ) : activePaymentMethod.value === 'bank_transfer' ? (
+                  <div className="checkout-page__payment-qr-block">
+                    <div className="checkout-page__payment-qr">
+                      <span>QR</span>
+                    </div>
+                    <div className="checkout-page__payment-detail-copy">
+                      <p>
+                        Chọn chuyển khoản để nhận mã QR và thông tin tài khoản ngay sau khi đội ngũ
+                        xác nhận đơn. Đây là bước chốt đơn thủ công, không trừ tiền tự động trên
+                        website.
+                      </p>
+                      <ul className="checkout-page__payment-detail-list">
+                        <li>ngân hàng: vietcombank</li>
+                        <li>chủ tài khoản: dien studio</li>
+                        <li>nội dung ck: {orderNumber || 'mã đơn sẽ gửi sau'}</li>
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="checkout-page__payment-card-preview">
+                    <div className="checkout-page__payment-card-grid">
+                      <label className="checkout-page__field checkout-page__field--full">
+                        <span>tên chủ thẻ</span>
+                        <input
+                          name="cardholder"
+                          onChange={(event) => updateCardDetails('cardholder', event.target.value)}
+                          placeholder="NGUYEN VAN A"
+                          type="text"
+                          value={cardDetails.cardholder}
+                        />
+                      </label>
+                      <label className="checkout-page__field checkout-page__field--full">
+                        <span>số thẻ</span>
+                        <input
+                          inputMode="numeric"
+                          name="cardNumber"
+                          onChange={(event) => updateCardDetails('cardNumber', event.target.value)}
+                          placeholder="0000 0000 0000 0000"
+                          type="text"
+                          value={cardDetails.cardNumber}
+                        />
+                      </label>
+                      <label className="checkout-page__field">
+                        <span>mm / yy</span>
+                        <input
+                          inputMode="numeric"
+                          name="expiry"
+                          onChange={(event) => updateCardDetails('expiry', event.target.value)}
+                          placeholder="08 / 28"
+                          type="text"
+                          value={cardDetails.expiry}
+                        />
+                      </label>
+                      <label className="checkout-page__field">
+                        <span>cvv</span>
+                        <input
+                          inputMode="numeric"
+                          name="cvv"
+                          onChange={(event) => updateCardDetails('cvv', event.target.value)}
+                          placeholder="123"
+                          type="text"
+                          value={cardDetails.cvv}
+                        />
+                      </label>
+                    </div>
+                    <div className="checkout-page__payment-detail-copy">
+                      <p>
+                        Website hiện chỉ ghi nhận nhu cầu thanh toán thẻ. Đội ngũ sẽ gửi link hoặc
+                        hướng dẫn thanh toán phù hợp sau khi xác nhận đơn.
+                      </p>
+                      <a href={BRAND_INSTAGRAM_PROFILE_URL} rel="noreferrer" target="_blank">
+                        ưu tiên chốt nhanh qua @{BRAND_INSTAGRAM_HANDLE}
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
               <label className="checkout-page__field checkout-page__field--full">
                 <span>{t('notesOptional')}</span>
@@ -637,19 +754,17 @@ export default function CheckoutPage() {
 
               <div className="checkout-page__payment-info">
                 <div className="checkout-page__payment-head">
-                  <p>phương thức thanh toán được hỗ trợ</p>
-                  <span>bảo mật & xác nhận</span>
+                  <p>website đang nhận đơn thủ công</p>
+                  <span>ưu tiên chốt qua instagram</span>
                 </div>
                 <PaymentLogoStrip
                   className="checkout-page__payment-logos"
                   logos={['vnpay', 'visa', 'mastercard', 'jcb', 'amex']}
                 />
                 <ul className="checkout-page__payment-policy">
-                  <li>Hỗ trợ VNPay, Visa, Mastercard, JCB, American Express, Napas và ATM nội địa.</li>
-                  <li>Đơn hàng được giữ và chỉ xử lý sau khi thông tin thanh toán được xác nhận.</li>
-                  <li>
-                    Chuyển khoản và thanh toán khi nhận hàng vẫn khả dụng trong giai đoạn chưa kết nối API.
-                  </li>
+                  <li>Đơn hàng được ghi nhận trước, sau đó đội ngũ sẽ chốt lại qua Instagram hoặc điện thoại.</li>
+                  <li>Nếu chọn chuyển khoản hoặc VNPay, mã QR hoặc hướng dẫn thanh toán sẽ được gửi sau khi xác nhận đơn.</li>
+                  <li>Trong giai đoạn chưa kết nối API, website chưa xử lý thanh toán tự động trên web.</li>
                 </ul>
               </div>
               <button

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { FooterData, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
+import { BRAND_INSTAGRAM_PROFILE_URL } from '@/lib/brand'
 
 interface MobileMenuDrawerProps {
   footer: FooterData
@@ -96,7 +97,7 @@ export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawe
           <div className="art-menu__social">
             <a
               className="art-menu__footer-link"
-              href="https://www.instagram.com/california.arts/"
+              href={BRAND_INSTAGRAM_PROFILE_URL}
               rel="noreferrer"
               target="_blank"
             >

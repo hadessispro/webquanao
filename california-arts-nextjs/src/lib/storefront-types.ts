@@ -1,3 +1,9 @@
+import {
+  BRAND_INSTAGRAM_PROFILE_URL,
+  BRAND_NAME,
+  BRAND_TAGLINE,
+} from '@/lib/brand'
+
 export interface StorefrontImage {
   src: string
   alt?: string
@@ -230,12 +236,12 @@ export const DEFAULT_HOME_HERO: HomeHeroData = {
     src: '/media/nha-trang-6h.webp',
     alt: 'coastal road campaign',
   },
-  eyebrow: 'california minimalism',
-  eyebrowVi: 'tối giản california',
-  title: 'accessible design by producing less & building better.',
-  titleVi: 'thiết kế dễ tiếp cận bằng cách sản xuất ít hơn và xây dựng tốt hơn.',
-  body: 'from the palm-fringed western edge of the american dream.',
-  bodyVi: 'từ rìa phía tây của giấc mơ mỹ.',
+  eyebrow: 'dien everyday wardrobe',
+  eyebrowVi: 'điển / thường phục hằng ngày',
+  title: 'quiet clothing for repeat wear.',
+  titleVi: 'quần áo tĩnh, mặc đi mặc lại vẫn đúng.',
+  body: 'built with fewer details, steadier proportions and a calmer pace.',
+  bodyVi: 'được làm với ít chi tiết hơn, tỉ lệ ổn định hơn và một nhịp phát triển chậm hơn.',
   ctaLabel: 'shop all',
   ctaLabelVi: 'xem tất cả',
   textPosition: 'bottom-right',
@@ -276,7 +282,7 @@ export const DEFAULT_FOOTER: FooterData = {
   },
   columns: [
     {
-      title: 'Company',
+  title: 'Company',
       titleVi: 'Công ty',
       links: [
         { label: 'About', labelVi: 'Giới thiệu', href: '/pages/our-story' },
@@ -290,12 +296,7 @@ export const DEFAULT_FOOTER: FooterData = {
       links: [
         {
           label: 'Instagram',
-          href: 'https://www.instagram.com/california.arts/',
-          openInNewTab: true,
-        },
-        {
-          label: 'Tik Tok',
-          href: 'https://www.tiktok.com/@california.arts',
+          href: BRAND_INSTAGRAM_PROFILE_URL,
           openInNewTab: true,
         },
       ],
@@ -320,20 +321,18 @@ export const DEFAULT_FOOTER: FooterData = {
     },
   ],
   newsletter: {
-    title: 'Subscribe to West Coast Living',
-    titleVi: 'Đăng ký West Coast Living',
-    description:
-      'Stay connected for product launches, restocks and events from Southern California.',
-    descriptionVi:
-      'Theo dõi các đợt ra mắt sản phẩm, restock và sự kiện từ Southern California.',
-    placeholder: 'Email',
-    placeholderVi: 'Email',
-    buttonLabel: 'Subscribe',
-    buttonLabelVi: 'Đăng ký',
-    privacyText: 'By subscribing, you agree to the privacy policy',
-    privacyTextVi: 'Khi đăng ký, bạn đồng ý với chính sách bảo mật',
+    title: 'Keep in touch with điển',
+    titleVi: 'Giữ liên hệ cùng điển',
+    description: 'Receive new drops, restocks and quiet updates from the brand.',
+    descriptionVi: 'Nhận đợt mở bán mới, restock và cập nhật vừa đủ từ thương hiệu.',
+    placeholder: 'Your email',
+    placeholderVi: 'Email của bạn',
+    buttonLabel: 'Send',
+    buttonLabelVi: 'Gửi',
+    privacyText: 'By subscribing, you agree to the privacy policy.',
+    privacyTextVi: 'Khi đăng ký, bạn đồng ý với chính sách bảo mật.',
     privacyHref: '/pages/privacy-policy',
   },
-  copyright: 'California Arts © 2024',
-  locationText: 'Southern California',
+  copyright: `${BRAND_NAME} © 2026`,
+  locationText: BRAND_TAGLINE,
 }

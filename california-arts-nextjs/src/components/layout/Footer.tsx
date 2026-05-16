@@ -3,29 +3,19 @@
 import React from 'react'
 import Link from 'next/link'
 import type { FooterData } from '@/lib/storefront-types'
-import { useLayout } from '@/context/LayoutContext'
+import { BRAND_INSTAGRAM_PROFILE_URL, BRAND_NAME, BRAND_TAGLINE } from '@/lib/brand'
 
 function isExternalHref(href: string) {
   return href.startsWith('http://') || href.startsWith('https://')
 }
 
 export default function Footer({ footer }: { footer: FooterData }) {
-  const { locale } = useLayout()
   const logo = footer.desktopLogo || footer.mobileLogo
-  const newsletterPlaceholder =
-    locale === 'vi'
-      ? footer.newsletter.placeholderVi || footer.newsletter.placeholder || 'đăng ký nhận bản tin'
-      : footer.newsletter.placeholder || 'sign up for our newsletter'
-  const newsletterButtonLabel =
-    locale === 'vi'
-      ? footer.newsletter.buttonLabelVi || footer.newsletter.buttonLabel || 'đăng ký'
-      : footer.newsletter.buttonLabel || 'subscribe'
-  const brandTagline = 'you already know'
   const footerLinks = [
-    { label: locale === 'vi' ? 'liên hệ' : 'contact', href: '/pages/about' },
-    { label: locale === 'vi' ? 'chính sách' : 'policy', href: '/pages/privacy-policy' },
-    { label: locale === 'vi' ? 'câu hỏi thường gặp' : 'faq', href: '/pages/returns-exchanges' },
-    { label: 'ig', href: 'https://www.instagram.com/california.arts/' },
+    { label: 'liên hệ', href: '/pages/about' },
+    { label: 'chính sách', href: '/pages/privacy-policy' },
+    { label: 'câu hỏi thường gặp', href: '/pages/returns-exchanges' },
+    { label: 'ig', href: BRAND_INSTAGRAM_PROFILE_URL },
   ]
 
   return (
@@ -35,25 +25,30 @@ export default function Footer({ footer }: { footer: FooterData }) {
           <div className="dien-footer__brand">
             {logo && (
               <div className="dien-footer__logo">
-                <img src={logo.src} alt={logo.alt || 'điển'} />
+                <img src={logo.src} alt={logo.alt || BRAND_NAME} />
               </div>
             )}
-            <p>{brandTagline}</p>
+            <p>{BRAND_TAGLINE}</p>
+          </div>
+
+          <div className="dien-footer__copy">
+            <h2>liên hệ cùng điển</h2>
+            <span>đăng ký để nhận đợt mở bán mới và những cập nhật cần thiết từ thương hiệu.</span>
           </div>
 
           <div className="dien-footer__bottom">
             <form className="dien-footer__newsletter">
               <label className="visually-hidden" htmlFor="dien-footer-email">
-                {newsletterPlaceholder}
+                email của bạn
               </label>
               <input
                 id="dien-footer-email"
                 autoComplete="email"
                 name="email"
-                placeholder={newsletterPlaceholder}
+                placeholder="email của bạn"
                 type="email"
               />
-              <button type="submit">{locale === 'vi' ? 'gửi' : newsletterButtonLabel}</button>
+              <button type="submit">gửi</button>
             </form>
 
             <nav aria-label="footer" className="dien-footer__links">

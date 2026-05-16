@@ -13,7 +13,7 @@ export async function generateMetadata({
   const collection = await getStorefrontCollectionByHandle(handle);
 
   return {
-    title: collection.seoTitle || `${collection.title} | california arts`,
+    title: collection.seoTitle || `${collection.title} | điển`,
     description: collection.seoDescription,
   };
 }

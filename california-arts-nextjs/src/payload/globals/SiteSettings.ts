@@ -118,12 +118,12 @@ export const SiteSettings: GlobalConfig = {
         {
           name: 'eyebrow',
           type: 'text',
-          defaultValue: 'california minimalism',
+          defaultValue: 'điển / thường phục hằng ngày',
         },
         {
           name: 'eyebrowVi',
           type: 'text',
-          defaultValue: 'california minimalism',
+          defaultValue: 'dien everyday wardrobe',
         },
         {
           name: 'title',

@@ -11,6 +11,7 @@ import {
   getProductSizes,
   isProductSoldOut,
 } from "@/lib/products";
+import { BRAND_CONTACT_EMAIL, BRAND_INSTAGRAM_PROFILE_URL, BRAND_NAME } from "@/lib/brand";
 
 type ProductPreview = Pick<Product, "handle" | "images" | "title" | "variants">;
 
@@ -251,9 +252,9 @@ const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
   Sustainability:
     "<p>Được hoàn thiện từ 100% len có nguồn gốc có trách nhiệm và có khả năng phân hủy sinh học. Chủ ý không pha polyester hay các sợi vi nhựa khác.</p>",
   "Shipping & Returns":
-    '<p>Miễn phí vận chuyển cho đơn tại Mỹ từ 150 USD và các thị trường khác từ 250 USD. Xem <a href="/pages/returns-exchanges">Vận chuyển &amp; đổi trả</a> để biết thêm lựa chọn và mức phí.</p><p>Chấp nhận hoàn tiền trong vòng 14 ngày kể từ khi giao hàng. Không phát sinh thuế hay phụ phí bất ngờ khi nhận hàng. California Arts sẽ chi trả phần thuế nhập khẩu phát sinh.</p>',
+    '<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Xem <a href="/pages/returns-exchanges">Vận chuyển &amp; đổi trả</a> để biết thêm chi tiết.</p><p>Hỗ trợ đổi trả trong vòng 14 ngày kể từ khi giao hàng thành công.</p>',
   "Need Assistance?":
-    '<p>Liên hệ với chúng tôi qua <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>',
+    `<p>Liên hệ với chúng tôi qua <a href="mailto:${BRAND_CONTACT_EMAIL}">${BRAND_CONTACT_EMAIL}</a> hoặc <a href="${BRAND_INSTAGRAM_PROFILE_URL}" rel="noreferrer" target="_blank">instagram của ${BRAND_NAME}</a>.</p>`,
 };
 
 function getFallbackAccordionHtml(product: Product, title: string) {
@@ -267,26 +268,23 @@ function getFallbackAccordionHtml(product: Product, title: string) {
         ? `<p>${product.material}</p>`
         : "<p>Được hoàn thiện với tỷ lệ cân nhắc kỹ và hướng đến nhu cầu mặc hằng ngày.</p>";
     case "Size & Fit":
-      return "<p>Thiết kế theo phom relaxed của California Arts. Hãy chọn size thường mặc để có đúng dáng mong muốn.</p>";
+      return "<p>Thiết kế theo phom relaxed của điển. Hãy chọn size thường mặc để có đúng dáng mong muốn.</p>";
     case "Sustainability":
       return "<p>Chúng tôi theo đuổi cách làm ít hơn nhưng tốt hơn, ưu tiên độ bền và tính sử dụng lâu dài.</p>";
     case "Shipping & Returns":
       return '<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Hỗ trợ hoàn trả trong vòng 14 ngày kể từ khi giao thành công.</p>';
     case "Need Assistance?":
-      return '<p>Liên hệ với chúng tôi qua <a href="mailto:clientservices@california-arts.com">clientservices@california-arts.com</a>.</p>';
+      return `<p>Liên hệ với chúng tôi qua <a href="mailto:${BRAND_CONTACT_EMAIL}">${BRAND_CONTACT_EMAIL}</a> hoặc nhắn trực tiếp qua <a href="${BRAND_INSTAGRAM_PROFILE_URL}" rel="noreferrer" target="_blank">instagram</a>.</p>`;
     default:
       return "";
   }
 }
 
 export default function ProductDetailClient({
-  allProducts: _allProducts,
   product,
-  suggestedProducts: _suggestedProducts,
-  styleWithProducts: _styleWithProducts,
 }: {
-  allProducts: ProductPreview[];
   product: Product;
+  allProducts: ProductPreview[];
   suggestedProducts: ProductPreview[];
   styleWithProducts: ProductPreview[];
 }) {

@@ -1,263 +1,76 @@
-import type { ReactNode } from 'react'
-import Link from 'next/link'
-import CmsPageContent from '@/components/page/CmsPageContent'
-import { getPageBySlug } from '@/lib/pages-data'
+import Image from 'next/image'
 
-function TextColumnHeader({ children }: { children: ReactNode }) {
+const storySections = [
+  {
+    body: [
+      'điển bắt đầu từ mong muốn đưa quần áo đẹp quay lại đúng nhịp sống hằng ngày. chúng tôi không chạy theo quá nhiều bộ sưu tập hay nhịp phát hành dồn dập, mà muốn mỗi món đồ đứng được lâu, mặc được nhiều và gợi đúng cảm giác sống cùng nó.',
+      'điều chúng tôi theo đuổi là sự rõ ràng trong phom, vật liệu và cảm xúc sử dụng. một chiếc áo, một chiếc quần hay một lớp ngoài đều cần đủ đẹp để giữ lại, nhưng cũng đủ bình tĩnh để không lỗi thời sau một mùa.',
+    ],
+    label: '01 câu chuyện điển',
+    media: {
+      alt: 'điển campaign on the coast',
+      src: '/media/nha-trang-6h.webp',
+    },
+    title: 'mỗi sản phẩm được làm ra để sống cùng đời thường, không chỉ để trưng bày trong một mùa.',
+  },
+  {
+    body: [
+      'chúng tôi làm theo hướng ít hơn nhưng chặt hơn: chọn lọc vật liệu, giữ bộ khung màu gọn, cắt giảm những chi tiết trang trí dư thừa và ưu tiên các tỉ lệ mặc được lâu. cách tiếp cận đó giúp mỗi sản phẩm dễ phối, dễ lặp lại trong tủ đồ và không bị trôi quá nhanh khỏi đời sống thực tế.',
+      'thay vì mở rộng vô hạn, điển giữ nhịp phát triển vừa phải để đội ngũ có thể nhìn kỹ từng bản fit, từng ảnh chụp và từng phản hồi của khách hàng trước khi đưa ra đợt tiếp theo.',
+    ],
+    label: '02 cách chúng tôi làm',
+    title: 'thiết kế của điển hướng tới sự mạch lạc: ít chi tiết hơn, cân đối hơn và bền hơn trong cách mặc.',
+  },
+  {
+    body: [
+      'điển không cố tạo khoảng cách với người mặc. chúng tôi muốn thương hiệu có thể nói chuyện trực tiếp, nhận góp ý nhanh, sửa những gì còn cấn và giữ mối liên hệ đủ gần để mỗi lần cập nhật đều có lý do rõ ràng.',
+      'nếu bạn cần hỗ trợ, muốn góp ý hoặc chỉ đơn giản là muốn hỏi thêm về một món đồ, cứ để lại thông tin hoặc nhắn trực tiếp qua instagram. chúng tôi sẽ trả lời như một cuộc hội thoại thực sự.',
+    ],
+    label: '03 ghi chú từ người sáng lập',
+    title: 'một thương hiệu tốt không chỉ làm ra sản phẩm đúng, mà còn phải phản hồi đúng lúc và đủ gần với người mặc.',
+  },
+]
+
+export default function OurStoryPage() {
   return (
-    <div className="shopify-section c_text-columns-section our-story-page__bar">
-      <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
-        <div className="px-8 lg:px-8 py-2">
-          <div className="multi-column col-gap-lg lg:col-count-4 space-y-2 text-left text-base lg:text-base">
-            <div className="rte px-4 text-sm">
-              <p>{children}</p>
+    <section className="story-page bg-primary-background text-primary-text">
+      <div className="story-page__sections">
+        {storySections.map((section, index) => (
+          <section className="story-page__section" key={section.label}>
+            <div className="story-page__bar">
+              <p>{section.label}</p>
             </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
 
-function RichTextSection({
-  children,
-  placement = 'start',
-  sectionClassName = '',
-  textSize = 'text-sm',
-}: {
-  children: ReactNode
-  placement?: 'start' | 'center' | 'end'
-  sectionClassName?: string
-  textSize?: string
-}) {
-  return (
-    <div className={`shopify-section our-story-page__copy-section ${sectionClassName}`.trim()}>
-      <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-        <div
-          className={`our-story-page__copy-wrap our-story-page__copy-wrap--${placement} ${textSize} default text-left`}
-        >
-          <div
-            className={`our-story-page__copy-slot our-story-page__copy-slot--${placement}`}
-          >
-            <div className="rte font-body break-words our-story-page__copy">{children}</div>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
+            {section.media && (
+              <div className="story-page__media">
+                <Image
+                  alt={section.media.alt}
+                  className="story-page__media-image"
+                  height={980}
+                  priority={index === 0}
+                  src={section.media.src}
+                  width={1800}
+                />
+              </div>
+            )}
 
-function Spacer() {
-  return (
-    <RichTextSection
-      sectionClassName="our-story-page__copy-section--spacer"
-      textSize="text-2xl lg:text-5xl"
-    >
-      <p>
-        <br />
-      </p>
-      <p>
-        <br />
-      </p>
-    </RichTextSection>
-  )
-}
-
-function OurStoryFallback() {
-  return (
-    <div className="our-story-page">
-      <TextColumnHeader>01 Our Brand Philosophy</TextColumnHeader>
-
-      <RichTextSection sectionClassName="our-story-page__copy-section--brand">
-        <p>
-          <strong>
-            The California Arts &amp;
-            <br />
-            Recreation Board
-          </strong>
-          <br />
-          <br />
-          We believe that art in our day-to-day
-          <br />
-          is a driving force for a creative life. But
-          <br />
-          today, design in menswear is either
-          <br />
-          produced by mall brands with the same
-          <br />
-          un-inspired styles or by luxury fashion
-          <br />
-          houses at exclusive prices.
-        </p>
-        <p>
-          We pursue the mission of releasing
-          <br />
-          beautiful design from exclusive pricing
-          <br />
-          so we can all enjoy the luxury of art
-          <br />
-          that inspires our everyday.
-          <br />
-          <br />
-          Live creatively.
-          <br />
-          Foster the deeper connections.
-        </p>
-      </RichTextSection>
-
-      <TextColumnHeader>02 Our Production Philosophy</TextColumnHeader>
-
-      <RichTextSection
-        placement="center"
-        sectionClassName="our-story-page__copy-section--production"
-      >
-        <p>
-          <strong>
-            California Minimalism:
-            <br />
-          </strong>
-          Accessible design by producing less &amp;
-          <br />
-          building better.
-        </p>
-        <p>
-          <br />
-        </p>
-        <p>
-          <em>West Coast Minimalism</em>
-        </p>
-        <p>
-          Capturing the laid-back, effortless cool of
-          <br />
-          California. Inspired by the past, made for living
-          <br />
-          in the present. The result is a fresh take on
-          <br />
-          American sportswear that endures season
-          <br />
-          after season.
-        </p>
-        <p>
-          <em>Modular Minimalism</em>
-        </p>
-        <p>
-          We believe that the simplest things are the most
-          <br />
-          complex. We take the time to re-imagine one
-          <br />
-          piece at a time, creating less but better modular
-          <br />
-          staples. By avoiding multi-piece collections and
-          <br />
-          seasonal fashion calendars, we minimize excess
-          <br />
-          inventory and trend-based waste.
-        </p>
-        <p>
-          <em>Sustainable Minimalism</em>
-        </p>
-        <p>
-          We are critical with our textile choices,
-          <br />
-          favouring natural and biodegradable materials
-          <br />
-          over micro-plastic blends. From the lining to
-          <br />
-          the exteriors, we find creative ways to use and
-          <br />
-          reuse fabrics and scraps.
-        </p>
-      </RichTextSection>
-
-      <Spacer />
-
-      <TextColumnHeader>03 Founder Notes</TextColumnHeader>
-
-      <RichTextSection placement="end" sectionClassName="our-story-page__copy-section--founder">
-        <p>
-          I believe that the people and the things we
-          <br />
-          surround ourselves with, have the power to
-          <br />
-          influence the way we navigate everyday life.
-          <br />
-          Whether that&apos;s unconventional thinking, a
-          <br />
-          pursuit of personal passions or a life of
-          <br />
-          meaning. For me, it was a release from a
-          <br />
-          corporate 9-5 to build a brand that has
-          <br />
-          renewed my sense of purpose.
-          <br />
-          <br />
-          But I&apos;ve always wondered why good design
-          <br />
-          was made at price points so few Americans
-          <br />
-          could afford. I created California Arts&trade;
-          <br />
-          to release forward thinking design from
-          <br />
-          inaccessible price points so we can all
-          <br />
-          realize its benefit in our everyday.
-        </p>
-        <p>
-          With gratitude &amp; a full heart,
-          <br />
-          GT
-        </p>
-        <p>
-          <br />
-          You can always reach me directly.
-          <br />
-          gary@california-arts.com
-        </p>
-      </RichTextSection>
-
-      <RichTextSection
-        sectionClassName="our-story-page__copy-section--spacer"
-        textSize="text-2xl lg:text-5xl"
-      >
-        <p />
-        <p>
-          <br />
-          <br />
-        </p>
-      </RichTextSection>
-
-      <div className="shopify-section our-story-page__cta-section">
-        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-          <div className="px-8 lg:px-8 pb-4">
-            <div className="flex text-base default text-right justify-start">
-              <div className="w-full lg:w-full">
-                <div className="rte font-body break-words px-4">
-                  <p>
-                    <br />
-                  </p>
-                  <p>Discover the Perennial Collection</p>
-                </div>
-                <div className="mt-4 text-0 px-4">
-                  <Link
-                    className="inline-flex justify-center items-center text-base px-8 py-2 rounded-full bg-transparent text-primary-text border-text border-primary-text hover:border-primary-accent hover:text-primary-accent"
-                    href="/collections/coats-jackets"
-                  >
-                    <span>Shop All</span>
-                  </Link>
-                </div>
+            <div
+              className={
+                index % 2 === 0
+                  ? 'story-page__content story-page__content--left'
+                  : 'story-page__content story-page__content--right'
+              }
+            >
+              <div className="story-page__copy">
+                <h2>{section.title}</h2>
+                {section.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ))}
       </div>
-    </div>
+    </section>
   )
-}
-
-export default async function OurStoryPage() {
-  const page = await getPageBySlug('our-story')
-
-  return <CmsPageContent page={page} fallback={<OurStoryFallback />} />
 }

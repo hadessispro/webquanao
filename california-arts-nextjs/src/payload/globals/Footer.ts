@@ -139,7 +139,7 @@ export const Footer: GlobalConfig = {
     {
       name: 'copyright',
       type: 'text',
-      defaultValue: 'California Arts © 2024. Southern California.',
+      defaultValue: 'điển © 2026.',
     },
     {
       name: 'locationText',

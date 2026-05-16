@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandPrice } from '@/components/ui/BrandCurrency'
+import { BRAND_INSTAGRAM_PROFILE_URL } from '@/lib/brand'
 
 function formatMoney(value: number) {
   return value
@@ -127,7 +128,7 @@ export default function CartDrawer() {
                   onClick={() => setIsCartOpen(false)}
                   prefetch={false}
                 >
-                  {t('checkout')}
+                  chốt đơn
                 </Link>
 
                 <div className="cart-drawer__assistant-min">
@@ -148,13 +149,13 @@ export default function CartDrawer() {
                   </section>
 
                   <section className="cart-drawer__assistant">
-                    <h2>Thanh toán bảo mật</h2>
-                    <p className="cart-drawer__secure-logos">
-                      <img
-                        alt="Visa, American Express, Mastercard, Apple Pay, PayPal"
-                        loading="lazy"
-                        src="/media/payment/black-and-white.png"
-                      />
+                    <h2>chốt đơn qua instagram</h2>
+                    <p>
+                      Sau khi gửi yêu cầu, đội ngũ điển sẽ xác nhận lại qua số điện thoại hoặc{' '}
+                      <a href={BRAND_INSTAGRAM_PROFILE_URL} rel="noreferrer" target="_blank">
+                        instagram
+                      </a>
+                      .
                     </p>
                   </section>
                 </div>

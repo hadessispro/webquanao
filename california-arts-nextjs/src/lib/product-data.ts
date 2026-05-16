@@ -354,7 +354,7 @@ export function normalizePayloadProduct(
     title: doc.title || '',
     handle: doc.handle || '',
     body_html: doc.bodyHtml || '',
-    vendor: doc.vendor || 'California Arts',
+    vendor: doc.vendor || 'điển',
     product_type: doc.productType || '',
     material: doc.material || undefined,
     sizeSelectorStyle: doc.sizeSelectorStyle || 'auto',
@@ -650,11 +650,11 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
     handle,
     title,
     descriptionHtml,
-    seoTitle: collection?.seo?.title || `${title} | california arts`,
+    seoTitle: collection?.seo?.title || `${title} | điển`,
     seoDescription:
       collection?.seo?.description ||
       descriptionHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160) ||
-      `${title} | california arts`,
+      `${title} | điển`,
     products,
   }
 }

@@ -1,99 +1,74 @@
 import Link from 'next/link'
-import CmsPageContent from '@/components/page/CmsPageContent'
-import { getPageBySlug } from '@/lib/pages-data'
+import ContactIntakeForm from '@/components/page/ContactIntakeForm'
+import { BRAND_CONTACT_EMAIL, BRAND_INSTAGRAM_PROFILE_URL } from '@/lib/brand'
 
-function AboutFallback() {
+const contactHighlights = [
+  {
+    label: 'email',
+    value: BRAND_CONTACT_EMAIL,
+    href: `mailto:${BRAND_CONTACT_EMAIL}`,
+  },
+  {
+    label: 'instagram',
+    value: '@dien.youalreadyknow',
+    href: BRAND_INSTAGRAM_PROFILE_URL,
+  },
+  {
+    label: 'hỗ trợ',
+    value: 'thứ 2 - thứ 7 / 10:00 - 19:00',
+  },
+]
+
+export default function AboutPage() {
   return (
-    <>
-      <div className="shopify-section">
-        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-          <div className="px-8 lg:px-8 pb-4">
-            <div className="flex text-2xl lg:text-5xl text-left justify-start">
-              <div className="w-full lg:w-full">
-                <div className="rte font-body break-words px-4">
-                  <p>
-                    <br />
-                    <br />
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+    <section className="contact-page bg-primary-background text-primary-text">
+      <div className="contact-page__hero">
+        <div className="contact-page__hero-copy">
+          <p>liên hệ</p>
+          <h1>để lại thông tin để điển liên hệ lại, chốt nhu cầu hoặc hỗ trợ đơn hàng.</h1>
+          <span>
+            Chúng tôi ưu tiên phản hồi ngắn gọn, rõ ràng và giữ lại đúng các thông tin cần thiết để
+            hỗ trợ bạn.
+          </span>
+        </div>
       </div>
 
-      <div className="shopify-section">
-        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-          <div className="px-8 lg:px-8 pb-4">
-            <div className="flex text-xl default text-left justify-start">
-              <div className="w-full lg:w-full">
-                <h2 className="font-body mb-4 px-4 text-xl">Customer Care</h2>
-                <div className="rte mb-4 font-body break-words px-4">
-                  <p>
-                    <br />
-                    For questions about shipping,
-                    <br />
-                    returns and exchanges, please
-                    <br />
-                    visit our{' '}
-                    <Link href="/pages/returns-exchanges">shipping and returns</Link>
-                    <br />
-                    page.
-                  </p>
-                  <p>
-                    <br />
-                    For accessibility, questions,
-                    <br />
-                    feedback and all other
-                    <br />
-                    inquiries, email us at
-                    <br />
-                    <strong>clientservices@california-arts.com</strong>.
-                  </p>
-                  <p>
-                    <br />
-                    Thank you visiting California
-                    <br />
-                    Arts&trade;.
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                  </p>
-                </div>
-              </div>
-            </div>
+      <div className="contact-page__layout">
+        <aside className="contact-page__aside">
+          <div className="contact-page__aside-block">
+            <h2>giữ kết nối</h2>
+            <p>
+              Nếu bạn cần hỗ trợ về đơn hàng, đổi trả, lịch drop mới hay muốn để lại góp ý, hãy để
+              lại thông tin ở form bên cạnh. Đội ngũ sẽ liên hệ lại qua email, điện thoại hoặc
+              Instagram.
+            </p>
           </div>
-        </section>
-      </div>
 
-      <div className="shopify-section">
-        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-          <div className="px-8 lg:px-8 pb-4">
-            <div className="flex text-sm default text-right justify-start">
-              <div className="w-full lg:w-full">
-                <div className="rte font-body break-words px-4">
-                  <p>
-                    &quot;Good design makes a product useful.&quot;
-                    <br />
-                    <br />
-                  </p>
-                </div>
+          <div className="contact-page__aside-list">
+            {contactHighlights.map((item) => (
+              <div className="contact-page__aside-item" key={item.label}>
+                <span>{item.label}</span>
+                {item.href ? (
+                  <a href={item.href} rel="noreferrer" target="_blank">
+                    {item.value}
+                  </a>
+                ) : (
+                  <strong>{item.value}</strong>
+                )}
               </div>
-            </div>
+            ))}
           </div>
-        </section>
+
+          <div className="contact-page__aside-note">
+            <p>
+              Với chính sách đổi trả và vận chuyển, xem thêm tại{' '}
+              <Link href="/pages/returns-exchanges">trang câu hỏi thường gặp</Link>.
+            </p>
+          </div>
+        </aside>
+
+        <ContactIntakeForm />
       </div>
-    </>
+    </section>
   )
-}
-
-export default async function AboutPage() {
-  const page = await getPageBySlug('about')
-
-  return <CmsPageContent page={page} fallback={<AboutFallback />} />
 }

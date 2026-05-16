@@ -53,7 +53,7 @@ export async function generateMetadata({
   if (!product) return { title: "Product Not Found" };
 
   return {
-    title: `${product.title} | California Arts`,
+    title: `${product.title} | điển`,
     description: product.body_html?.replace(/<[^>]*>/g, "")?.slice(0, 160),
   };
 }

@@ -88,7 +88,7 @@ export default function ProductGrid({
         >
           <section className={barSectionClass}>
             <div className="px-8 lg:px-88 section-x-padding py-2">
-              <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
+              <div className="multi-column col-gap-lg lg:col-count-3 text-left text-base lg:text-base">
                 <h2 className="px-4 font-body text-base">{barLabel}</h2>
                 {barDescriptionHtml ? (
                   <div
@@ -109,7 +109,7 @@ export default function ProductGrid({
         <div className="c_text-columns-section">
           <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-b-grid border-grid-color">
             <div className="px-8 lg:px-88 section-x-padding py-2">
-              <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
+              <div className="multi-column col-gap-lg lg:col-count-3 text-left text-base lg:text-base">
                 <h2 className="px-4 font-body text-base">{sectionTitle}</h2>
                 <div className="rte px-4 text-sm" />
               </div>

@@ -81,7 +81,7 @@ const VI_TEXT_MAP: Record<string, string> = {
   'complimentary shipping to vietnam on all orders over ₫6,578,950. no additional duties and fees upon delivery.':
     'miễn phí vận chuyển cho đơn hàng trên 950,000đ.',
   'complimentary shipping on orders over ₫950,000.': 'miễn phí vận chuyển cho đơn hàng trên 950,000đ.',
-  'california minimalism': 'tối giản california',
+  'california minimalism': 'điển / thường phục hằng ngày',
   'accessible design by producing less & building better.':
     'thiết kế dễ tiếp cận bằng cách sản xuất ít hơn và làm tốt hơn.',
   'from the palm-fringed western edge of the american dream.':
@@ -108,7 +108,7 @@ const VI_TEXT_MAP: Record<string, string> = {
   legal: 'pháp lý',
   about: 'giới thiệu',
   'privacy policy': 'chính sách bảo mật',
-  'the next great american heritage brand.': 'thương hiệu di sản mỹ đương đại.',
+  'the next great american heritage brand.': 'you already know.',
   send: 'gửi',
   'sign up for our newsletter': 'đăng ký nhận bản tin',
 }
@@ -378,9 +378,9 @@ export async function getFooterData(): Promise<FooterData> {
 
     return {
       desktopLogo:
-        mediaToImage(footer.desktopLogo, 'California Arts') || DEFAULT_FOOTER.desktopLogo,
+        mediaToImage(footer.desktopLogo, 'điển') || DEFAULT_FOOTER.desktopLogo,
       mobileLogo:
-        mediaToImage(footer.mobileLogo, 'California Arts') || DEFAULT_FOOTER.mobileLogo,
+        mediaToImage(footer.mobileLogo, 'điển') || DEFAULT_FOOTER.mobileLogo,
       columns: normalizeFooterColumns(footer.columns),
       newsletter: {
         title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
