@@ -31,21 +31,16 @@ export default function Footer({ footer }: { footer: FooterData }) {
             <p>{BRAND_TAGLINE}</p>
           </div>
 
-          <div className="dien-footer__copy">
-            <h2>liên hệ cùng điển</h2>
-            <span>đăng ký để nhận đợt mở bán mới và những cập nhật cần thiết từ thương hiệu.</span>
-          </div>
-
           <div className="dien-footer__bottom">
             <form className="dien-footer__newsletter">
               <label className="visually-hidden" htmlFor="dien-footer-email">
-                email của bạn
+                đăng ký newsletter
               </label>
               <input
                 id="dien-footer-email"
                 autoComplete="email"
                 name="email"
-                placeholder="email của bạn"
+                placeholder="đăng ký newsletter"
                 type="email"
               />
               <button type="submit">gửi</button>

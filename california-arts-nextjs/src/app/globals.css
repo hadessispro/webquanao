@@ -1261,26 +1261,26 @@ body#california-arts .mobile-menu-drawer {
 .dien-footer__inner {
   display: grid;
   gap: 12px;
-  padding: 22px 26px 20px;
+  padding: 22px 32px 18px;
   position: relative;
 }
 
 .dien-footer__brand {
   align-items: center;
   display: grid;
-  gap: 2px;
-  justify-items: start;
+  gap: 0;
+  justify-items: center;
+  margin: 0 auto;
   max-width: 260px;
-  padding-top: 0;
-  text-align: left;
+  text-align: center;
 }
 
 .dien-footer__logo img {
   display: block;
   filter: none;
   height: auto;
-  max-height: 66px;
-  max-width: 174px;
+  max-height: 74px;
+  max-width: 182px;
   object-fit: contain;
   width: auto;
 }
@@ -1317,35 +1317,13 @@ body#california-arts .mobile-menu-drawer {
   font-size: 12px;
   line-height: 1.15;
   margin: 0;
-}
-
-.dien-footer__copy {
-  display: grid;
-  gap: 2px;
-  max-width: 420px;
-}
-
-.dien-footer__copy h2,
-.dien-footer__copy span {
-  margin: 0;
-}
-
-.dien-footer__copy h2 {
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.1;
-}
-
-.dien-footer__copy span {
-  color: rgba(19, 24, 24, 0.72);
-  font-size: 12px;
-  line-height: 1.4;
+  transform: translateY(-2px);
 }
 
 .dien-footer__bottom {
   align-items: center;
   display: grid;
-  gap: 14px;
+  gap: 24px;
   grid-template-columns: minmax(0, 1fr) auto;
   position: static;
 }
@@ -1354,8 +1332,10 @@ body#california-arts .mobile-menu-drawer {
   align-items: center;
   border-bottom: 1px solid rgba(19, 24, 24, 0.28);
   display: grid;
-  gap: 10px;
+  gap: 12px;
   grid-template-columns: minmax(0, 1fr) auto;
+  max-width: 380px;
+  width: 100%;
 }
 
 .dien-footer__newsletter input,
@@ -1385,13 +1365,13 @@ body#california-arts .mobile-menu-drawer {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   justify-content: flex-end;
 }
 
 .dien-footer__links a {
   color: rgba(19, 24, 24, 0.7) !important;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.2;
   transition: color 0.18s ease, opacity 0.18s ease;
 }
@@ -1404,13 +1384,12 @@ body#california-arts .mobile-menu-drawer {
 
 @media (max-width: 767px) {
   .dien-footer__inner {
-    gap: 16px;
-    padding: 20px 16px 18px;
+    gap: 14px;
+    padding: 18px 16px 16px;
   }
 
   .dien-footer__brand {
     max-width: none;
-    padding-top: 0;
   }
 
   .dien-footer__logo img {
@@ -1420,6 +1399,11 @@ body#california-arts .mobile-menu-drawer {
 
   .dien-footer__bottom {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .dien-footer__newsletter {
+    max-width: none;
   }
 
   .dien-footer__links {
