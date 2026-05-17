@@ -7,7 +7,6 @@ import { useLayout } from '@/context/LayoutContext'
 import type { NewsletterPopupData } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
-const SESSION_DISMISS_KEY = 'dien_newsletter_popup_dismiss_session_v4'
 const SUBSCRIBED_UNTIL_KEY = 'dien_newsletter_popup_subscribed_until_v4'
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
@@ -23,10 +22,6 @@ function pathMatches(pathname: string, paths: string[]) {
 
     return pathname === path
   })
-}
-
-function rememberDismissSession() {
-  window.sessionStorage.setItem(SESSION_DISMISS_KEY, '1')
 }
 
 function rememberSubscribe(days: number) {
@@ -77,8 +72,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
 
     try {
       const subscribedUntil = Number(window.localStorage.getItem(SUBSCRIBED_UNTIL_KEY) || 0)
-      const dismissedThisSession = window.sessionStorage.getItem(SESSION_DISMISS_KEY) === '1'
-      if (subscribedUntil > Date.now() || dismissedThisSession) return undefined
+      if (subscribedUntil > Date.now()) return undefined
     } catch {
       return undefined
     }
@@ -107,7 +101,6 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
   if (!popupEnabled || !open) return null
 
   const close = () => {
-    rememberDismissSession()
     setOpen(false)
   }
 

@@ -26,6 +26,12 @@ type ProductDetailMediaItem =
       video: ProductVideo;
     };
 
+type SizeFinderDropdownKey = "height" | "weight";
+type SizeFinderDropdownOption = {
+  label: string;
+  value: string;
+};
+
 function normalizeOptionName(name: string) {
   return name.toLowerCase().trim();
 }
@@ -241,6 +247,76 @@ function formatPrice(value?: string) {
   return formatVndAmount(value);
 }
 
+function FinderDropdown({
+  isOpen,
+  label,
+  onSelect,
+  onToggle,
+  options,
+  placeholder,
+  value,
+}: {
+  isOpen: boolean;
+  label: string;
+  onSelect: (value: string) => void;
+  onToggle: () => void;
+  options: SizeFinderDropdownOption[];
+  placeholder: string;
+  value: string;
+}) {
+  const selectedLabel =
+    options.find((option) => option.value === value)?.label || placeholder;
+
+  return (
+    <div className="product-detail__finder-field product-detail__finder-field--full">
+      <span>{label}</span>
+      <div className="product-detail__finder-dropdown">
+        <button
+          aria-expanded={isOpen}
+          className={[
+            "product-detail__finder-trigger",
+            !value ? "product-detail__finder-trigger--placeholder" : "",
+            isOpen ? "product-detail__finder-trigger--open" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggle();
+          }}
+          type="button"
+        >
+          <span>{selectedLabel}</span>
+          <span aria-hidden="true" className="product-detail__finder-trigger-icon" />
+        </button>
+        {isOpen && (
+          <div className="product-detail__finder-menu" role="listbox">
+            {options.map((option) => (
+              <button
+                className={[
+                  "product-detail__finder-option",
+                  value === option.value ? "product-detail__finder-option--active" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                key={option.value}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSelect(option.value);
+                }}
+                role="option"
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const SIZE_FINDER_HEIGHTS = [
   "≤1m66",
   "1m68–1m70",
@@ -371,6 +447,8 @@ export default function ProductDetailClient({
   const [selectedHeight, setSelectedHeight] = useState<string>("");
   const [selectedWeight, setSelectedWeight] = useState<string>("");
   const [recommendedSize, setRecommendedSize] = useState<string | null>(null);
+  const [openFinderDropdown, setOpenFinderDropdown] =
+    useState<SizeFinderDropdownKey | null>(null);
 
   const imgs = useMemo(
     () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
@@ -493,12 +571,18 @@ export default function ProductDetailClient({
     infoTabs.find((tab) => tab.key === activeInfoTab) || infoTabs[0];
 
   const openSizeFinder = (view: SizeFinderView) => {
+    setOpenFinderDropdown(null);
     setSizeFinderView(view);
     setIsSizeFinderOpen(true);
   };
 
   const handleFindSize = () => {
     setRecommendedSize(resolveSizeRecommendation(desiredFit, selectedHeight, selectedWeight));
+  };
+
+  const closeSizeFinder = () => {
+    setOpenFinderDropdown(null);
+    setIsSizeFinderOpen(false);
   };
 
   const pickColor = (color: string) => {
@@ -801,7 +885,7 @@ export default function ProductDetailClient({
         <div
           aria-hidden="true"
           className="product-detail__modal-backdrop"
-          onClick={() => setIsSizeFinderOpen(false)}
+          onClick={closeSizeFinder}
         >
           <div
             aria-label="Tìm size"
@@ -813,7 +897,7 @@ export default function ProductDetailClient({
             <button
               aria-label="Đóng gợi ý size"
               className="product-detail__modal-close"
-              onClick={() => setIsSizeFinderOpen(false)}
+              onClick={closeSizeFinder}
               type="button"
             >
               ×
@@ -857,6 +941,7 @@ export default function ProductDetailClient({
                       }
                       onClick={() => {
                         setDesiredFit("ôm");
+                        setOpenFinderDropdown(null);
                         setSelectedWeight("");
                         setRecommendedSize(null);
                       }}
@@ -874,6 +959,7 @@ export default function ProductDetailClient({
                       }
                       onClick={() => {
                         setDesiredFit("thoải mái");
+                        setOpenFinderDropdown(null);
                         setSelectedWeight("");
                         setRecommendedSize(null);
                       }}
@@ -884,40 +970,46 @@ export default function ProductDetailClient({
                     </button>
                   </div>
                 </label>
-                <label className="product-detail__finder-field product-detail__finder-field--full">
-                  <span>chiều cao:</span>
-                  <select
-                    onChange={(event) => {
-                      setSelectedHeight(event.target.value);
-                      setRecommendedSize(null);
-                    }}
-                    value={selectedHeight}
-                  >
-                    <option value="">chọn chiều cao</option>
-                    {SIZE_FINDER_HEIGHTS.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="product-detail__finder-field product-detail__finder-field--full">
-                  <span>cân nặng</span>
-                  <select
-                    onChange={(event) => {
-                      setSelectedWeight(event.target.value);
-                      setRecommendedSize(null);
-                    }}
-                    value={selectedWeight}
-                  >
-                    <option value="">chọn cân nặng</option>
-                    {SIZE_FINDER_CHART[desiredFit].weightRanges.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <FinderDropdown
+                  isOpen={openFinderDropdown === "height"}
+                  label="chiều cao:"
+                  onSelect={(value) => {
+                    setSelectedHeight(value);
+                    setRecommendedSize(null);
+                    setOpenFinderDropdown(null);
+                  }}
+                  onToggle={() =>
+                    setOpenFinderDropdown((current) =>
+                      current === "height" ? null : "height",
+                    )
+                  }
+                  options={SIZE_FINDER_HEIGHTS.map((option) => ({
+                    label: option,
+                    value: option,
+                  }))}
+                  placeholder="chọn chiều cao"
+                  value={selectedHeight}
+                />
+                <FinderDropdown
+                  isOpen={openFinderDropdown === "weight"}
+                  label="cân nặng"
+                  onSelect={(value) => {
+                    setSelectedWeight(value);
+                    setRecommendedSize(null);
+                    setOpenFinderDropdown(null);
+                  }}
+                  onToggle={() =>
+                    setOpenFinderDropdown((current) =>
+                      current === "weight" ? null : "weight",
+                    )
+                  }
+                  options={SIZE_FINDER_CHART[desiredFit].weightRanges.map((option) => ({
+                    label: option,
+                    value: option,
+                  }))}
+                  placeholder="chọn cân nặng"
+                  value={selectedWeight}
+                />
 
                 <div className="product-detail__finder-footer">
                   {recommendedSize && (
