@@ -1777,13 +1777,13 @@ body#california-arts .mobile-menu-drawer {
   box-shadow: 0 24px 72px rgba(19, 24, 24, 0.12);
   color: #131818;
   display: grid;
-  gap: 26px;
+  gap: 22px;
   max-height: calc(100svh - 40px);
   overflow: auto;
-  padding: 28px 34px 24px;
+  padding: 24px 28px 20px;
   pointer-events: auto;
   position: relative;
-  width: min(720px, calc(100vw - 48px));
+  width: min(620px, calc(100vw - 56px));
 }
 
 .newsletter-popup__close {
@@ -1823,9 +1823,9 @@ body#california-arts .mobile-menu-drawer {
 
 .newsletter-popup__copy {
   display: grid;
-  gap: 14px;
-  max-width: 560px;
-  padding-right: 42px;
+  gap: 12px;
+  max-width: 500px;
+  padding-right: 34px;
   text-align: left;
 }
 
@@ -1844,11 +1844,11 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .newsletter-popup__copy h2 {
-  font-size: clamp(42px, 5vw, 70px);
+  font-size: clamp(28px, 4vw, 50px);
   font-style: italic;
   font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 0.92;
+  line-height: 0.94;
 }
 
 .newsletter-popup__headline span {
@@ -1858,8 +1858,8 @@ body#california-arts .mobile-menu-drawer {
 .newsletter-popup__wordmark {
   display: inline-block;
   height: auto;
-  max-width: 168px;
-  width: 22%;
+  max-width: 126px;
+  width: 18%;
 }
 
 .newsletter-popup__description em {
@@ -1870,14 +1870,14 @@ body#california-arts .mobile-menu-drawer {
 .newsletter-popup__copy p,
 .newsletter-popup__privacy {
   color: rgba(19, 24, 24, 0.68);
-  font-size: 16px;
-  line-height: 1.45;
+  font-size: 15px;
+  line-height: 1.42;
 }
 
 .newsletter-popup__form {
   border-bottom: 1px solid rgba(19, 24, 24, 0.28);
   display: grid;
-  gap: 16px;
+  gap: 14px;
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -1887,7 +1887,7 @@ body#california-arts .mobile-menu-drawer {
   border: 0;
   color: #131818;
   font: inherit;
-  min-height: 42px;
+  min-height: 38px;
   padding: 0;
 }
 
@@ -1898,7 +1898,7 @@ body#california-arts .mobile-menu-drawer {
 
 .newsletter-popup__form input::placeholder {
   color: rgba(19, 24, 24, 0.5);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .newsletter-popup__actions {
@@ -1915,12 +1915,12 @@ body#california-arts .mobile-menu-drawer {
 
 .newsletter-popup__dismiss {
   color: rgba(19, 24, 24, 0.72);
-  font-size: 16px;
+  font-size: 15px;
   text-align: left;
 }
 
 .newsletter-popup__submit {
-  font-size: 18px;
+  font-size: 16px;
   font-style: italic;
 }
 
@@ -1962,8 +1962,8 @@ body#california-arts .mobile-menu-drawer {
   }
 
   .newsletter-popup__wordmark {
-    max-width: 132px;
-    width: 34%;
+    max-width: 112px;
+    width: 32%;
   }
 
   .newsletter-popup__copy p,
