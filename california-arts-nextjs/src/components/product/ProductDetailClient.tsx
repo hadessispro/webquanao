@@ -845,7 +845,7 @@ export default function ProductDetailClient({
 
             {sizeFinderView === "finder" ? (
               <div className="product-detail__finder">
-                <label className="product-detail__finder-field">
+                <label className="product-detail__finder-field product-detail__finder-field--full">
                   <span>dáng sản phẩm mong muốn:</span>
                   <select
                     onChange={(event) => {
@@ -860,7 +860,7 @@ export default function ProductDetailClient({
                     <option value="thoải mái">thoải mái</option>
                   </select>
                 </label>
-                <label className="product-detail__finder-field">
+                <label className="product-detail__finder-field product-detail__finder-field--half">
                   <span>chiều cao:</span>
                   <select
                     onChange={(event) => {
@@ -877,7 +877,7 @@ export default function ProductDetailClient({
                     ))}
                   </select>
                 </label>
-                <label className="product-detail__finder-field">
+                <label className="product-detail__finder-field product-detail__finder-field--half">
                   <span>cân nặng</span>
                   <select
                     onChange={(event) => {
@@ -895,23 +895,24 @@ export default function ProductDetailClient({
                   </select>
                 </label>
 
-                <div className="product-detail__finder-actions">
-                  <button
-                    className="product-detail__finder-submit"
-                    disabled={!selectedHeight || !selectedWeight}
-                    onClick={handleFindSize}
-                    type="button"
-                  >
-                    tìm size
-                  </button>
-                </div>
-
-                {recommendedSize && (
-                  <div className="product-detail__finder-result">
-                    <span>size gợi ý</span>
-                    <strong>{recommendedSize}</strong>
+                <div className="product-detail__finder-footer">
+                  {recommendedSize && (
+                    <div className="product-detail__finder-result">
+                      <span>size gợi ý</span>
+                      <strong>{recommendedSize}</strong>
+                    </div>
+                  )}
+                  <div className="product-detail__finder-actions">
+                    <button
+                      className="product-detail__finder-submit"
+                      disabled={!selectedHeight || !selectedWeight}
+                      onClick={handleFindSize}
+                      type="button"
+                    >
+                      tìm size
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
             ) : (
               <div className="product-detail__size-chart">

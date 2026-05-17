@@ -2946,25 +2946,30 @@ body.art-menu-lock {
 .product-detail__size-tools {
   align-items: center;
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  justify-content: flex-start;
+  margin-top: 12px;
 }
 
 .product-detail__text-link {
+  align-items: center;
   background: transparent;
   border: 0;
+  border-bottom: 1px solid currentColor;
   color: var(--color-primary-text);
   cursor: pointer;
+  display: inline-flex;
   font-family: Arial, Helvetica, sans-serif;
   font-size: var(--product-detail-meta-size);
   line-height: 1.2;
   padding: 0;
-  text-decoration: underline;
+  text-decoration: none !important;
   text-underline-offset: 2px;
 }
 
 .product-detail__text-link--right {
-  margin-left: auto;
+  margin-left: 0;
 }
 
 .product-detail__add-button {
@@ -3032,7 +3037,7 @@ body.art-menu-lock {
 
 .product-detail__modal-backdrop {
   align-items: center;
-  background: rgba(19, 24, 24, 0.2);
+  background: rgba(19, 24, 24, 0.12);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -3043,12 +3048,12 @@ body.art-menu-lock {
 
 .product-detail__modal {
   background: #fff;
-  border: 1px solid rgba(19, 24, 24, 0.14);
-  box-shadow: 0 20px 48px rgba(19, 24, 24, 0.12);
-  max-width: 560px;
-  padding: 20px 20px 18px;
+  border: 1px solid rgba(19, 24, 24, 0.12);
+  box-shadow: 0 18px 42px rgba(19, 24, 24, 0.12);
+  max-width: 500px;
+  padding: 18px 18px 16px;
   position: relative;
-  width: min(100%, 560px);
+  width: min(100%, 500px);
 }
 
 .product-detail__modal-close {
@@ -3067,19 +3072,21 @@ body.art-menu-lock {
 
 .product-detail__modal-tabs {
   display: flex;
-  gap: 18px;
-  margin-bottom: 14px;
+  gap: 16px;
+  margin-bottom: 18px;
 }
 
 .product-detail__modal-tab {
   background: transparent;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid transparent;
   color: rgba(19, 24, 24, 0.6);
   cursor: pointer;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
-  padding: 0 0 6px;
+  line-height: 1;
+  padding: 0 0 8px;
+  text-decoration: none !important;
   text-transform: lowercase;
 }
 
@@ -3090,35 +3097,53 @@ body.art-menu-lock {
 
 .product-detail__finder {
   display: grid;
-  gap: 18px;
+  column-gap: 16px;
+  gap: 14px 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .product-detail__finder-field {
   display: grid;
-  gap: 8px;
+  gap: 6px;
+}
+
+.product-detail__finder-field--full {
+  grid-column: 1 / -1;
+}
+
+.product-detail__finder-field--half {
+  min-width: 0;
 }
 
 .product-detail__finder-field span,
 .product-detail__size-chart-block h3 {
   font-family: "Times New Roman", Times, serif;
-  font-size: clamp(18px, 2vw, 22px);
+  font-size: clamp(15px, 1.8vw, 18px);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .product-detail__finder-field select {
   appearance: none;
   background:
-    linear-gradient(45deg, transparent 50%, currentColor 50%) calc(100% - 22px) calc(50% - 2px) / 8px 8px no-repeat,
-    linear-gradient(135deg, currentColor 50%, transparent 50%) calc(100% - 16px) calc(50% - 2px) / 8px 8px no-repeat,
-    #fff;
-  border: 1.5px solid rgba(19, 24, 24, 0.82);
+    linear-gradient(45deg, transparent 50%, currentColor 50%) calc(100% - 18px) calc(50% - 2px) / 7px 7px no-repeat,
+    linear-gradient(135deg, currentColor 50%, transparent 50%) calc(100% - 13px) calc(50% - 2px) / 7px 7px no-repeat,
+    #fbfaf6;
+  border: 1px solid rgba(19, 24, 24, 0.38);
   border-radius: 999px;
   color: var(--color-primary-text);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  min-height: 46px;
-  padding: 0 42px 0 16px;
+  font-size: 13px;
+  min-height: 40px;
+  padding: 0 34px 0 14px;
+}
+
+.product-detail__finder-footer {
+  align-items: end;
+  display: flex;
+  gap: 16px;
+  grid-column: 1 / -1;
+  justify-content: space-between;
 }
 
 .product-detail__finder-actions {
@@ -3127,39 +3152,40 @@ body.art-menu-lock {
 }
 
 .product-detail__finder-submit {
-  background: transparent;
-  border: 1px solid rgba(19, 24, 24, 0.16);
-  color: var(--color-primary-text);
+  background: var(--color-primary-text);
+  border: 1px solid var(--color-primary-text);
+  color: #fbfbf6;
   cursor: pointer;
-  font-family: "Times New Roman", Times, serif;
-  font-size: clamp(18px, 2.2vw, 24px);
-  font-style: italic;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-style: normal;
   line-height: 1;
-  padding: 8px 16px;
+  min-height: 38px;
+  padding: 0 18px;
+  text-transform: lowercase;
 }
 
 .product-detail__finder-submit:disabled {
   cursor: not-allowed;
-  opacity: 0.4;
+  opacity: 0.32;
 }
 
 .product-detail__finder-result {
   align-items: baseline;
-  border-top: 1px solid rgba(19, 24, 24, 0.12);
-  display: flex;
-  gap: 10px;
-  padding-top: 10px;
+  display: grid;
+  gap: 2px;
 }
 
 .product-detail__finder-result span {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 11px;
+  font-size: 10px;
+  letter-spacing: 0.02em;
   text-transform: lowercase;
 }
 
 .product-detail__finder-result strong {
   font-family: "Times New Roman", Times, serif;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
 }
@@ -4364,17 +4390,17 @@ body.art-menu-lock {
   .product-detail__modal {
     max-height: calc(100svh - 32px);
     overflow-y: auto;
-    padding: 18px 16px 16px;
+    padding: 16px 16px 16px;
   }
 
   .product-detail__finder-field span,
   .product-detail__size-chart-block h3 {
-    font-size: clamp(16px, 5vw, 20px);
+    font-size: clamp(15px, 4.2vw, 18px);
   }
 
   .product-detail__finder-field select {
-    font-size: 14px;
-    min-height: 42px;
+    font-size: 13px;
+    min-height: 40px;
   }
 
   .product-detail__swatches,
@@ -4404,8 +4430,17 @@ body.art-menu-lock {
   }
 
   .product-detail__size-tools {
-    gap: 10px;
+    gap: 10px 14px;
     margin-top: 12px;
+  }
+
+  .product-detail__finder {
+    grid-template-columns: 1fr;
+  }
+
+  .product-detail__finder-footer {
+    align-items: start;
+    flex-direction: column-reverse;
   }
 
   .product-detail__finder-actions {
@@ -4413,7 +4448,8 @@ body.art-menu-lock {
   }
 
   .product-detail__finder-submit {
-    font-size: 20px;
+    font-size: 12px;
+    min-width: 112px;
   }
 
   .product-detail__size-chart table {
