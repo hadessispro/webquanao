@@ -3032,7 +3032,7 @@ body.art-menu-lock {
 
 .product-detail__modal-backdrop {
   align-items: center;
-  background: rgba(19, 24, 24, 0.32);
+  background: rgba(19, 24, 24, 0.2);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -3043,31 +3043,32 @@ body.art-menu-lock {
 
 .product-detail__modal {
   background: #fff;
-  border: 1px solid rgba(19, 24, 24, 0.18);
-  max-width: 720px;
-  padding: 28px 28px 24px;
+  border: 1px solid rgba(19, 24, 24, 0.14);
+  box-shadow: 0 20px 48px rgba(19, 24, 24, 0.12);
+  max-width: 560px;
+  padding: 20px 20px 18px;
   position: relative;
-  width: min(100%, 720px);
+  width: min(100%, 560px);
 }
 
 .product-detail__modal-close {
   background: transparent;
   border: 0;
-  color: rgba(19, 24, 24, 0.72);
+  color: rgba(19, 24, 24, 0.5);
   cursor: pointer;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1;
   padding: 0;
   position: absolute;
-  right: 18px;
-  top: 14px;
+  right: 16px;
+  top: 12px;
 }
 
 .product-detail__modal-tabs {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 14px;
 }
 
 .product-detail__modal-tab {
@@ -3077,8 +3078,8 @@ body.art-menu-lock {
   color: rgba(19, 24, 24, 0.6);
   cursor: pointer;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  padding: 0 0 8px;
+  font-size: 12px;
+  padding: 0 0 6px;
   text-transform: lowercase;
 }
 
@@ -3089,35 +3090,35 @@ body.art-menu-lock {
 
 .product-detail__finder {
   display: grid;
-  gap: 24px;
+  gap: 18px;
 }
 
 .product-detail__finder-field {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .product-detail__finder-field span,
 .product-detail__size-chart-block h3 {
   font-family: "Times New Roman", Times, serif;
-  font-size: clamp(24px, 2.8vw, 34px);
+  font-size: clamp(18px, 2vw, 22px);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .product-detail__finder-field select {
   appearance: none;
   background:
-    linear-gradient(45deg, transparent 50%, currentColor 50%) calc(100% - 26px) calc(50% - 3px) / 10px 10px no-repeat,
-    linear-gradient(135deg, currentColor 50%, transparent 50%) calc(100% - 18px) calc(50% - 3px) / 10px 10px no-repeat,
+    linear-gradient(45deg, transparent 50%, currentColor 50%) calc(100% - 22px) calc(50% - 2px) / 8px 8px no-repeat,
+    linear-gradient(135deg, currentColor 50%, transparent 50%) calc(100% - 16px) calc(50% - 2px) / 8px 8px no-repeat,
     #fff;
-  border: 3px solid #131818;
+  border: 1.5px solid rgba(19, 24, 24, 0.82);
   border-radius: 999px;
   color: var(--color-primary-text);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  min-height: 54px;
-  padding: 0 56px 0 22px;
+  font-size: 14px;
+  min-height: 46px;
+  padding: 0 42px 0 16px;
 }
 
 .product-detail__finder-actions {
@@ -3127,16 +3128,14 @@ body.art-menu-lock {
 
 .product-detail__finder-submit {
   background: transparent;
-  border: 0;
+  border: 1px solid rgba(19, 24, 24, 0.16);
   color: var(--color-primary-text);
   cursor: pointer;
   font-family: "Times New Roman", Times, serif;
-  font-size: clamp(28px, 3vw, 38px);
+  font-size: clamp(18px, 2.2vw, 24px);
   font-style: italic;
   line-height: 1;
-  padding: 0;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  padding: 8px 16px;
 }
 
 .product-detail__finder-submit:disabled {
@@ -3145,34 +3144,34 @@ body.art-menu-lock {
 }
 
 .product-detail__finder-result {
-  border-top: 1px solid rgba(19, 24, 24, 0.18);
-  display: grid;
-  gap: 6px;
-  justify-items: start;
-  padding-top: 12px;
+  align-items: baseline;
+  border-top: 1px solid rgba(19, 24, 24, 0.12);
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
 }
 
 .product-detail__finder-result span {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: lowercase;
 }
 
 .product-detail__finder-result strong {
   font-family: "Times New Roman", Times, serif;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1;
 }
 
 .product-detail__size-chart {
   display: grid;
-  gap: 24px;
+  gap: 18px;
 }
 
 .product-detail__size-chart-block {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .product-detail__size-chart-scroll {
@@ -3181,7 +3180,7 @@ body.art-menu-lock {
 
 .product-detail__size-chart table {
   border-collapse: collapse;
-  min-width: 640px;
+  min-width: 560px;
   width: 100%;
 }
 
@@ -3189,9 +3188,9 @@ body.art-menu-lock {
 .product-detail__size-chart td {
   border: 1px solid rgba(19, 24, 24, 0.16);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.3;
-  padding: 8px 10px;
+  padding: 6px 8px;
   text-align: center;
 }
 
@@ -4365,17 +4364,17 @@ body.art-menu-lock {
   .product-detail__modal {
     max-height: calc(100svh - 32px);
     overflow-y: auto;
-    padding: 24px 20px 20px;
+    padding: 18px 16px 16px;
   }
 
   .product-detail__finder-field span,
   .product-detail__size-chart-block h3 {
-    font-size: clamp(20px, 6vw, 28px);
+    font-size: clamp(16px, 5vw, 20px);
   }
 
   .product-detail__finder-field select {
-    font-size: 15px;
-    min-height: 50px;
+    font-size: 14px;
+    min-height: 42px;
   }
 
   .product-detail__swatches,
@@ -4414,7 +4413,7 @@ body.art-menu-lock {
   }
 
   .product-detail__finder-submit {
-    font-size: 32px;
+    font-size: 20px;
   }
 
   .product-detail__size-chart table {
