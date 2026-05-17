@@ -1829,6 +1829,13 @@ body#california-arts .mobile-menu-drawer {
   text-align: left;
 }
 
+.newsletter-popup__headline {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .newsletter-popup__copy h2,
 .newsletter-popup__copy p,
 .newsletter-popup__message,
@@ -1842,6 +1849,22 @@ body#california-arts .mobile-menu-drawer {
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 0.92;
+}
+
+.newsletter-popup__headline span {
+  display: inline-block;
+}
+
+.newsletter-popup__wordmark {
+  display: inline-block;
+  height: auto;
+  max-width: 168px;
+  width: 22%;
+}
+
+.newsletter-popup__description em {
+  font-style: italic;
+  font-weight: 600;
 }
 
 .newsletter-popup__copy p,
@@ -1932,6 +1955,15 @@ body#california-arts .mobile-menu-drawer {
     gap: 10px;
     max-width: 100%;
     padding-right: 24px;
+  }
+
+  .newsletter-popup__headline {
+    gap: 8px;
+  }
+
+  .newsletter-popup__wordmark {
+    max-width: 132px;
+    width: 34%;
   }
 
   .newsletter-popup__copy p,
@@ -2962,10 +2994,12 @@ body.art-menu-lock {
   display: inline-flex;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
+  justify-self: start;
   line-height: 1.2;
   padding: 0;
   text-decoration: none !important;
   text-underline-offset: 2px;
+  width: fit-content;
 }
 
 .product-detail__text-link--right {
@@ -3072,12 +3106,14 @@ body.art-menu-lock {
   position: absolute;
   right: 18px;
   top: 10px;
+  z-index: 2;
 }
 
 .product-detail__modal-tabs {
   display: flex;
-  justify-content: space-between;
+  gap: 18px;
   margin-bottom: 24px;
+  padding-right: 40px;
   width: 100%;
 }
 
@@ -3090,13 +3126,8 @@ body.art-menu-lock {
   font-size: 13px;
   line-height: 1;
   padding: 0 0 8px;
-  text-align: left;
   text-decoration: none !important;
   text-transform: lowercase;
-}
-
-.product-detail__modal-tab:last-child {
-  text-align: right;
 }
 
 .product-detail__modal-tab--active {

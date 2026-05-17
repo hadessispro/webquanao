@@ -145,8 +145,23 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
         </button>
 
         <div className="newsletter-popup__copy">
-          <h2>{title}</h2>
-          <p>{description}</p>
+          {locale === 'vi' ? (
+            <>
+              <h2 className="newsletter-popup__headline">
+                <span>đồng hành cùng</span>
+                <img alt="điển" className="newsletter-popup__wordmark" src="/media/dien-logo-header.png" />
+              </h2>
+              <p className="newsletter-popup__description">
+                nhận quyền <em>truy cập sớm</em> cho các đợt drop tiếp theo và
+                <em> miễn phí vận chuyển</em> cho đơn hàng đầu tiên!
+              </p>
+            </>
+          ) : (
+            <>
+              <h2>{title}</h2>
+              <p>{description}</p>
+            </>
+          )}
         </div>
 
         <form className="newsletter-popup__form" onSubmit={submit}>
