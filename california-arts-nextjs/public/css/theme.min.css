@@ -25,11 +25,7 @@ border-t-grid !important;
 Packing Slip
 
     <style>
-         @font-face {
-  font-family: Nimbas-sans;
-  src: url('https://cdn.shopify.com/s/files/1/0564/3059/2151/files/NimbusSanL-Reg_58752b9d-a6a8-4d90-b87f-e5ff20476ba0.otf?v=1665388770');
-}
-      </style>
+         </style>
 <div class="u_order_header_line_sec">
   </div>
 <div class="u_order_header_line">
@@ -236,7 +232,7 @@ of $10 will be deducted from all US and Canadian returns and $48 for all interna
 }
 .u_order_msg_size {
   margin: 0;
-    font-family: 'Nimbas-sans', sans-serif;
+    font-family: "Times New Roman", Times, serif;
     font-size:8px;
   letter-spacing: 0px;
   color: black;
@@ -254,7 +250,7 @@ padding-left: 20px;
       .u_order_date {
   margin: 0;
   padding: 10px 0;
-        font-family: 'Nimbas-sans', sans-serif; 
+        font-family: "Times New Roman", Times, serif; 
         font-size: 10.5px;
   letter-spacing: 0px;
 }
@@ -262,7 +258,7 @@ padding-left: 20px;
   margin: 0;
   padding: 10px 0 0 0;
             text-transform: capitalize;
-        font-family: 'Nimbas-sans', sans-serif; 
+        font-family: "Times New Roman", Times, serif; 
         font-size: 10.5px;
   letter-spacing: 0px;
 }
@@ -270,7 +266,7 @@ padding-left: 20px;
   margin: 0;
   padding: 0px 0;
           margin: 0;
-        font-family: 'Nimbas-sans', sans-serif;
+        font-family: "Times New Roman", Times, serif;
         font-size: 10.5px;
   letter-spacing: 0px;
   color: black;
@@ -300,7 +296,7 @@ padding-left: 20px;
 }
 .u_order_shipping_msg{
 margin: 0;
-  font-family: 'Nimbas-sans', sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 10px;
   letter-spacing: 0px;
   color: black;
@@ -336,7 +332,7 @@ margin: 0;
   text-transform: uppercase;
   text-align: left;
 font-weight:bold;
-font-family: 'Nimbas-sans', sans-serif;
+font-family: "Times New Roman", Times, serif;
   font-size:9px;
 }
 .u_order_item_body span {
@@ -347,7 +343,7 @@ font-family: 'Nimbas-sans', sans-serif;
   text-transform: capitalize;
   text-align: left;
   line-height:normal;
-   font-family: 'Nimbas-sans', sans-serif;
+   font-family: "Times New Roman", Times, serif;
   font-size:9px;
 }
         .u_order_item_body .u_order_desp span{
@@ -375,7 +371,7 @@ font-family: 'Nimbas-sans', sans-serif;
   margin: 0;
   padding: 0;
   letter-spacing: .5px;
-  font-family: 'Nimbas-sans', sans-serif;
+  font-family: "Times New Roman", Times, serif;
   text-transform: capitalize;
   color: black;
 }
@@ -384,7 +380,7 @@ font-family: 'Nimbas-sans', sans-serif;
   padding: 10px 0;
   letter-spacing: 0px;
 color: black;
-font-family: 'Nimbas-sans', sans-serif;
+font-family: "Times New Roman", Times, serif;
   font-size:9.5px;
 }
 .u_order_singnature_wrapper {
@@ -414,7 +410,7 @@ padding: 70px 0 0 0;
 }
 .u_profit_msg {
   margin: 0;
-  font-family: 'Nimbas-sans', sans-serif;
+  font-family: "Times New Roman", Times, serif;
   font-size: 8px;
   letter-spacing: 0px;
   color: black;
@@ -438,7 +434,7 @@ margin-left:auto;
     color: black;
     text-transform: capitalize;
     text-align: left;
-    font-family: 'Nimbas-sans', sans-serif;
+    font-family: "Times New Roman", Times, serif;
                font-size: 10px;
             }
        .u_order_item_body {
@@ -496,4 +492,5 @@ margin-left:auto;
     touch-action: pan-y pinch-zoom !important;
   }
 }
+
 

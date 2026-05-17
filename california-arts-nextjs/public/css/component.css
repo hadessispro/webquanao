@@ -2,13 +2,13 @@
     --base-font-size: 81.25%;
     --base-line-height: 1.2;
 
-    --heading-font-stack: "nimbus-sans", Helvetica, Arial, sans-serif;
+    --heading-font-stack: "Times New Roman", Times, serif;
     --heading-font-weight: 400;
     --heading-font-style: normal;
     --heading-line-height: 1;
 
 
-    --body-font-stack: "nimbus-sans", serif;
+    --body-font-stack: "Times New Roman", Times, serif;
     --body-font-weight: 400;
     --body-font-bold: FontDrop;
     --body-font-bold-italic: ;
@@ -1622,7 +1622,7 @@
   margin-right: 0px;
 }
 
-.ge-free-shipping-container{border-bottom: var(--border-width) solid var(--color-border); background-color:#ffffff; min-height:30px; width: 100%; display: flex; align-items: center; justify-content: center; text-align: center;}  .ge-free-shipping-container .ge-free-shipping-msg{font-family: 'nimbus-sans',sans-serif; color: #131818; font-size: 10.4px;}
+.ge-free-shipping-container{border-bottom: var(--border-width) solid var(--color-border); background-color:#ffffff; min-height:30px; width: 100%; display: flex; align-items: center; justify-content: center; text-align: center;}  .ge-free-shipping-container .ge-free-shipping-msg{font-family: "Times New Roman", Times, serif; color: #131818; font-size: 10.4px;}
 
 :root {
   --color-header-accent: var(--color-primary-accent);

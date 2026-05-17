@@ -429,6 +429,35 @@ body#california-arts .mobile-menu-drawer {
   background: var(--color-primary-background, #fff);
 }
 
+.story-page,
+.story-page__bar p,
+.story-page__copy h2,
+.story-page__copy p,
+.contact-page__hero-copy h1,
+.contact-page__hero-copy span,
+.contact-page__aside-block h2,
+.contact-page__aside-block p,
+.contact-page__aside-item a,
+.contact-page__aside-item strong,
+.contact-page__aside-note p,
+.contact-page__aside-note a,
+.contact-intake-form__head h2,
+.contact-intake-form__message {
+  font-family: var(--heading-font-stack) !important;
+}
+
+.contact-page__hero-copy p,
+.contact-page__aside-item span,
+.contact-intake-form__head p,
+.contact-intake-form__field span,
+.contact-intake-form input:not([type='checkbox']),
+.contact-intake-form select,
+.contact-intake-form textarea,
+.contact-intake-form__checkbox span,
+.contact-intake-form__submit {
+  font-family: var(--ui-font-stack) !important;
+}
+
 .story-page__section {
   display: grid;
 }
@@ -465,6 +494,7 @@ body#california-arts .mobile-menu-drawer {
 
 .story-page__bar p {
   font-size: 14px;
+  font-family: var(--heading-font-stack) !important;
   line-height: 1.15;
 }
 
@@ -489,6 +519,7 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .story-page__copy h2 {
+  font-family: var(--heading-font-stack) !important;
   font-size: clamp(20px, 2.6vw, 34px);
   font-weight: 400;
   line-height: 1.06;
@@ -496,6 +527,7 @@ body#california-arts .mobile-menu-drawer {
 
 .story-page__copy p {
   color: rgba(19, 24, 24, 0.82);
+  font-family: var(--heading-font-stack) !important;
   font-size: 14px;
   line-height: 1.46;
 }
@@ -530,6 +562,7 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .contact-page__hero-copy h1 {
+  font-family: var(--heading-font-stack) !important;
   font-size: clamp(28px, 4vw, 52px);
   font-weight: 400;
   line-height: 1;
@@ -537,6 +570,7 @@ body#california-arts .mobile-menu-drawer {
 
 .contact-page__hero-copy span {
   color: rgba(19, 24, 24, 0.76);
+  font-family: var(--heading-font-stack) !important;
   font-size: 15px;
   line-height: 1.45;
   max-width: 560px;
@@ -561,6 +595,7 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .contact-page__aside-block h2 {
+  font-family: var(--heading-font-stack) !important;
   font-size: 18px;
   font-weight: 400;
   line-height: 1.1;
@@ -569,6 +604,7 @@ body#california-arts .mobile-menu-drawer {
 .contact-page__aside-block p,
 .contact-page__aside-note p {
   color: rgba(19, 24, 24, 0.78);
+  font-family: var(--heading-font-stack) !important;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -604,6 +640,7 @@ body#california-arts .mobile-menu-drawer {
 .contact-page__aside-item strong,
 .contact-page__aside-note a {
   color: #131818 !important;
+  font-family: var(--heading-font-stack) !important;
   font-size: 14px;
   line-height: 1.35;
 }
@@ -635,6 +672,7 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .contact-intake-form__head h2 {
+  font-family: var(--heading-font-stack) !important;
   font-size: clamp(20px, 2vw, 32px);
   font-weight: 400;
   line-height: 1.14;
@@ -724,6 +762,7 @@ body#california-arts .mobile-menu-drawer {
 
 .contact-intake-form__message {
   color: rgba(19, 24, 24, 0.72);
+  font-family: var(--heading-font-stack) !important;
   font-size: 13px;
   line-height: 1.4;
 }
