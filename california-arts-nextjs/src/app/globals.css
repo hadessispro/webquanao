@@ -1777,13 +1777,13 @@ body#california-arts .mobile-menu-drawer {
   box-shadow: 0 24px 72px rgba(19, 24, 24, 0.12);
   color: #131818;
   display: grid;
-  gap: 22px;
+  gap: 20px;
   max-height: calc(100svh - 40px);
   overflow: auto;
-  padding: 24px 28px 20px;
+  padding: 20px 24px 16px;
   pointer-events: auto;
   position: relative;
-  width: min(620px, calc(100vw - 56px));
+  width: min(580px, calc(100vw - 52px));
 }
 
 .newsletter-popup__close {
@@ -1823,17 +1823,18 @@ body#california-arts .mobile-menu-drawer {
 
 .newsletter-popup__copy {
   display: grid;
-  gap: 12px;
-  max-width: 500px;
-  padding-right: 34px;
+  gap: 10px;
+  max-width: 100%;
+  padding-right: 30px;
   text-align: left;
 }
 
 .newsletter-popup__headline {
   align-items: flex-end;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
+  gap: 10px;
+  white-space: nowrap;
 }
 
 .newsletter-popup__copy h2,
@@ -1844,11 +1845,11 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .newsletter-popup__copy h2 {
-  font-size: clamp(28px, 4vw, 50px);
+  font-size: clamp(24px, 3.8vw, 42px);
   font-style: italic;
   font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 0.94;
+  line-height: 0.96;
 }
 
 .newsletter-popup__headline span {
@@ -1858,8 +1859,9 @@ body#california-arts .mobile-menu-drawer {
 .newsletter-popup__wordmark {
   display: inline-block;
   height: auto;
-  max-width: 126px;
-  width: 18%;
+  flex: 0 0 auto;
+  max-width: 112px;
+  width: 112px;
 }
 
 .newsletter-popup__description em {
@@ -1871,13 +1873,13 @@ body#california-arts .mobile-menu-drawer {
 .newsletter-popup__privacy {
   color: rgba(19, 24, 24, 0.68);
   font-size: 15px;
-  line-height: 1.42;
+  line-height: 1.48;
 }
 
 .newsletter-popup__form {
   border-bottom: 1px solid rgba(19, 24, 24, 0.28);
   display: grid;
-  gap: 14px;
+  gap: 12px;
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -1887,7 +1889,7 @@ body#california-arts .mobile-menu-drawer {
   border: 0;
   color: #131818;
   font: inherit;
-  min-height: 38px;
+  min-height: 34px;
   padding: 0;
 }
 
@@ -1915,13 +1917,14 @@ body#california-arts .mobile-menu-drawer {
 
 .newsletter-popup__dismiss {
   color: rgba(19, 24, 24, 0.72);
-  font-size: 15px;
+  font-size: 16px;
   text-align: left;
 }
 
 .newsletter-popup__submit {
-  font-size: 16px;
+  font-size: 18px;
   font-style: italic;
+  font-weight: 600;
 }
 
 .newsletter-popup__message {
@@ -1930,8 +1933,9 @@ body#california-arts .mobile-menu-drawer {
 }
 
 .newsletter-popup__privacy {
-  font-size: 12px;
-  text-align: right;
+  font-size: 13px;
+  margin-top: -6px !important;
+  text-align: center;
 }
 
 .newsletter-popup__privacy a {
@@ -1947,7 +1951,7 @@ body#california-arts .mobile-menu-drawer {
   .newsletter-popup__panel {
     max-height: calc(100svh - 24px);
     gap: 18px;
-    padding: 24px 18px 18px;
+    padding: 18px 16px 16px;
     width: 100%;
   }
 
@@ -1958,12 +1962,14 @@ body#california-arts .mobile-menu-drawer {
   }
 
   .newsletter-popup__headline {
+    flex-wrap: wrap;
     gap: 8px;
+    white-space: normal;
   }
 
   .newsletter-popup__wordmark {
-    max-width: 112px;
-    width: 32%;
+    max-width: 96px;
+    width: 96px;
   }
 
   .newsletter-popup__copy p,

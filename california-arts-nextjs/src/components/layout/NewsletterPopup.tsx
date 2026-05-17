@@ -47,7 +47,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
       : localizedText(locale, settings.description, settings.descriptionVi)
   const placeholder =
     locale === 'vi'
-      ? 'email của bạn'
+      ? 'email của bro'
       : localizedText(locale, settings.placeholder, settings.placeholderVi)
   const submitLabel =
     locale === 'vi'
@@ -55,7 +55,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
       : localizedText(locale, settings.buttonLabel, settings.buttonLabelVi)
   const privacyText =
     locale === 'vi'
-      ? 'khi đăng ký, bạn đồng ý với chính sách bảo mật'
+      ? 'abc*'
       : localizedText(locale, settings.privacyText, settings.privacyTextVi)
   const popupEnabled = settings.enabled !== false || pathname === '/'
   const popupPaths =
