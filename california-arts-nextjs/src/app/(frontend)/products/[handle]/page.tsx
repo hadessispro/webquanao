@@ -1,38 +1,7 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { notFound } from "next/navigation";
 import { getAllStorefrontProducts, getStorefrontProductByHandle } from "@/lib/product-data";
-import type { Product } from "@/lib/products";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
-
-function getRecommendedProducts(product: Product, allProducts: Product[]) {
-  return allProducts
-    .filter((item) => item.handle !== product.handle)
-    .map((item) => {
-      const sameType = item.product_type && item.product_type === product.product_type ? 4 : 0;
-      const sameCollection = item.collections?.some((collection) =>
-        product.collections?.includes(collection),
-      )
-        ? 3
-        : 0;
-      const sharedTags = item.tags.filter((tag) => product.tags.includes(tag)).length;
-
-      return {
-        item,
-        score: sameType + sameCollection + sharedTags,
-      };
-    })
-    .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
-    .map(({ item }) => item);
-}
-
-function toProductPreview(product: Product) {
-  return {
-    handle: product.handle,
-    title: product.title,
-    images: product.images.slice(0, 1),
-    variants: product.variants.slice(0, 1),
-  };
-}
 
 // Generate static params for all products
 export async function generateStaticParams() {
@@ -60,30 +29,31 @@ export async function generateMetadata({
 
 export default async function ProductDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { handle } = await params;
-  const [product, allProducts] = await Promise.all([
-    getStorefrontProductByHandle(handle),
-    getAllStorefrontProducts(),
-  ]);
+  const resolvedSearchParams = await searchParams;
+  const variantParam = resolvedSearchParams.variant;
+  const colorParam = resolvedSearchParams.color;
+  const product = await getStorefrontProductByHandle(handle);
 
   if (!product) {
     notFound();
   }
 
-  const recommendedProducts = getRecommendedProducts(product, allProducts);
-  const recommendedPreviews = recommendedProducts.map(toProductPreview);
+  const initialVariantId = Array.isArray(variantParam)
+    ? Number.parseInt(variantParam[0] || "0", 10)
+    : Number.parseInt(variantParam || "0", 10);
+  const initialColorParam = Array.isArray(colorParam) ? colorParam[0] : colorParam;
 
   return (
-    <Suspense fallback={null}>
-      <ProductDetailClient
-        allProducts={allProducts.map(toProductPreview)}
-        product={product}
-        styleWithProducts={recommendedPreviews.slice(0, 3)}
-        suggestedProducts={recommendedPreviews.slice(0, 4)}
-      />
-    </Suspense>
+    <ProductDetailClient
+      initialColorParam={initialColorParam}
+      initialVariantId={Number.isFinite(initialVariantId) ? initialVariantId : 0}
+      product={product}
+    />
   );
 }

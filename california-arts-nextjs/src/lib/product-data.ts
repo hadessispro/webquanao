@@ -531,9 +531,6 @@ export async function getAllStorefrontProducts(): Promise<Product[]> {
 }
 
 export async function getStorefrontProductByHandle(handle: string): Promise<Product | undefined> {
-  const cachedProduct = (await getAllStorefrontProducts()).find((product) => product.handle === handle)
-  if (cachedProduct) return cachedProduct
-
   try {
     const payload = await getPayloadClient()
     const result = await payload.find({
@@ -562,6 +559,9 @@ export async function getStorefrontProductByHandle(handle: string): Promise<Prod
   } catch {
     // Fall through to JSON fallback.
   }
+
+  const cachedProduct = (await getAllStorefrontProducts()).find((product) => product.handle === handle)
+  if (cachedProduct) return cachedProduct
 
   return getAllProductsFromJson().find((product) => product.handle === handle)
 }

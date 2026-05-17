@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useLayout } from "@/context/LayoutContext";
 import { BrandPrice } from "@/components/ui/BrandCurrency";
 import { formatVndAmount } from "@/lib/price";
@@ -12,8 +11,6 @@ import {
   isProductSoldOut,
 } from "@/lib/products";
 import { BRAND_CONTACT_EMAIL, BRAND_INSTAGRAM_PROFILE_URL, BRAND_NAME } from "@/lib/brand";
-
-type ProductPreview = Pick<Product, "handle" | "images" | "title" | "variants">;
 
 type ProductDetailMediaItem =
   | {
@@ -244,6 +241,56 @@ function formatPrice(value?: string) {
   return formatVndAmount(value);
 }
 
+const SIZE_FINDER_HEIGHTS = [
+  "≤1m66",
+  "1m68–1m70",
+  "1m71–1m75",
+  "1m76–1m78",
+  "1m80–1m87",
+] as const;
+
+const SIZE_FINDER_CHART = {
+  "ôm": {
+    weightRanges: ["≤53 kg", "54–58 kg", "59–61 kg", "62–64 kg", "65–69 kg", "70–74 kg", "75–81 kg", "82–86 kg"] as const,
+    matrix: [
+      ["S", "S", "S", "M", "M", "L", "XL", "XXL"],
+      ["S", "S", "M", "M", "M", "L", "XL", "XXL"],
+      ["S", "M", "M", "M", "M", "L", "XL", "XXL"],
+      ["M", "M", "M", "L", "L", "XL", "XL", "XXL"],
+      ["M", "L", "L", "L", "XL", "XL", "XXL", "XXL"],
+    ] as const,
+  },
+  "thoải mái": {
+    weightRanges: ["≤53kg", "54–60kg", "61–63kg", "64–66kg", "67–73kg", "74–78kg", "79–85kg"] as const,
+    matrix: [
+      ["S", "M", "M", "L", "XL", "XXL", "XXL"],
+      ["S", "M", "M", "L", "L", "XL", "XXL"],
+      ["S", "M", "M", "L", "L", "XL", "XXL"],
+      ["M", "M", "L", "L", "XL", "XL", "XXL"],
+      ["M", "L", "L", "XL", "XL", "XL", "XXL"],
+    ] as const,
+  },
+} as const;
+
+type SizeFinderFit = keyof typeof SIZE_FINDER_CHART;
+type SizeFinderView = "finder" | "chart";
+type ProductInfoTab = "details" | "shipping" | "exchange";
+
+function resolveSizeRecommendation(
+  fit: SizeFinderFit,
+  height: string,
+  weight: string,
+) {
+  const heightIndex = SIZE_FINDER_HEIGHTS.findIndex((item) => item === height);
+  const weightIndex = SIZE_FINDER_CHART[fit].weightRanges.findIndex((item) => item === weight);
+
+  if (heightIndex < 0 || weightIndex < 0) {
+    return null;
+  }
+
+  return SIZE_FINDER_CHART[fit].matrix[heightIndex]?.[weightIndex] || null;
+}
+
 const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
   Details:
     "<p>- Bề mặt ngoài 100% len<br />- Phom oversized<br />- Cổ quân đội bản lớn<br />- Cổ đứng với nút cài<br />- Thiết kế hai hàng khuy<br />- Khuy đồng màu<br />- Túi viền phía trước<br />- Dáng dài qua gối<br />- Xẻ tà giữa thân sau<br />- Túi ngực bên trong<br />- Đai rời cùng chất liệu<br />- Đỉa đai phía sau</p><p>Chất liệu &amp; bảo quản<br />- Vỏ ngoài: 100% len<br />- Bảo quản: Chỉ giặt khô</p>",
@@ -281,22 +328,20 @@ function getFallbackAccordionHtml(product: Product, title: string) {
 }
 
 export default function ProductDetailClient({
+  initialColorParam,
+  initialVariantId = 0,
   product,
 }: {
+  initialColorParam?: string;
+  initialVariantId?: number;
   product: Product;
-  allProducts: ProductPreview[];
-  suggestedProducts: ProductPreview[];
-  styleWithProducts: ProductPreview[];
 }) {
-  const searchParams = useSearchParams();
   const { addCartItem, setIsCartOpen, t } = useLayout();
   const colors = getProductColors(product);
   const sizes = getProductSizes(product);
   const sizeSelectorStyle = getSizeSelectorStyle(product);
   const soldOut = isProductSoldOut(product);
   const colorImageMap = useMemo(() => buildColorImages(product), [product]);
-  const initialVariantId = Number(searchParams.get("variant") || 0);
-  const initialColorParam = searchParams.get("color") || undefined;
   const variantFromUrl = useMemo(() => {
     if (!initialVariantId) return undefined;
     return product.variants.find((variant) => variant.id === initialVariantId);
@@ -319,7 +364,13 @@ export default function ProductDetailClient({
   const [selColor, setSelColor] = useState(resolvedInitialColor);
   const [selSize, setSelSize] = useState(initialSize);
   const [mobileIdx, setMobileIdx] = useState(0);
-  const [openAcc, setOpenAcc] = useState<number | null>(null);
+  const [activeInfoTab, setActiveInfoTab] = useState<ProductInfoTab>("details");
+  const [isSizeFinderOpen, setIsSizeFinderOpen] = useState(false);
+  const [sizeFinderView, setSizeFinderView] = useState<SizeFinderView>("finder");
+  const [desiredFit, setDesiredFit] = useState<SizeFinderFit>("ôm");
+  const [selectedHeight, setSelectedHeight] = useState<string>("");
+  const [selectedWeight, setSelectedWeight] = useState<string>("");
+  const [recommendedSize, setRecommendedSize] = useState<string | null>(null);
 
   const imgs = useMemo(
     () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
@@ -394,6 +445,61 @@ export default function ProductDetailClient({
       };
     });
   }, [product, t]);
+
+  const infoTabs = useMemo(() => {
+    const accordionMap = new Map(
+      accordions.map((accordion) => [accordion.title.toLowerCase(), accordion.html]),
+    );
+    const detailHtml = [
+      accordionMap.get("details"),
+      accordionMap.get("sustainability"),
+    ]
+      .filter(Boolean)
+      .join("");
+    const shippingHtml =
+      accordionMap.get("shipping & returns") ||
+      "<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Hỗ trợ hoàn trả trong vòng 14 ngày kể từ khi giao thành công.</p>";
+    const exchangeHtml = [
+      accordionMap.get("size & fit"),
+      accordionMap.get("need assistance?"),
+    ]
+      .filter(Boolean)
+      .join("");
+
+    return [
+      {
+        key: "details" as const,
+        label: t("details"),
+        html:
+          detailHtml ||
+          "<p>Được hoàn thiện với tỷ lệ cân nhắc kỹ và hướng đến nhu cầu mặc hằng ngày.</p>",
+      },
+      {
+        key: "shipping" as const,
+        label: "giao hàng",
+        html: shippingHtml,
+      },
+      {
+        key: "exchange" as const,
+        label: "đổi size",
+        html:
+          exchangeHtml ||
+          "<p>Liên hệ với chúng tôi qua email hoặc instagram để được hỗ trợ đổi size phù hợp hơn.</p>",
+      },
+    ];
+  }, [accordions, t]);
+
+  const activeInfoTabData =
+    infoTabs.find((tab) => tab.key === activeInfoTab) || infoTabs[0];
+
+  const openSizeFinder = (view: SizeFinderView) => {
+    setSizeFinderView(view);
+    setIsSizeFinderOpen(true);
+  };
+
+  const handleFindSize = () => {
+    setRecommendedSize(resolveSizeRecommendation(desiredFit, selectedHeight, selectedWeight));
+  };
 
   const pickColor = (color: string) => {
     setSelColor(color);
@@ -589,51 +695,69 @@ export default function ProductDetailClient({
             )}
 
             {sizes.length > 0 && (
-              <div
-                aria-label={t("size")}
-                className="product-detail__option product-detail__option--inline"
-                role="group"
-              >
-                <span className="product-detail__option-label">{t("size")}</span>
+              <>
                 <div
-                  className={
-                    sizeSelectorStyle === "text"
-                      ? "product-detail__sizes product-detail__sizes--text"
-                      : "product-detail__sizes product-detail__sizes--box"
-                  }
+                  aria-label={t("size")}
+                  className="product-detail__option product-detail__option--inline"
+                  role="group"
                 >
-                  {sizes.map((size) => {
-                    const available = colorVariants.some(
-                      (v) =>
-                        getVariantOption(product, v, "size") === size && v.available,
-                    );
-                    const active = selSize === size;
-                    const label = getSizeLabel(product, size);
+                  <span className="product-detail__option-label">{t("size")}</span>
+                  <div
+                    className={
+                      sizeSelectorStyle === "text"
+                        ? "product-detail__sizes product-detail__sizes--text"
+                        : "product-detail__sizes product-detail__sizes--box"
+                    }
+                  >
+                    {sizes.map((size) => {
+                      const available = colorVariants.some(
+                        (v) =>
+                          getVariantOption(product, v, "size") === size && v.available,
+                      );
+                      const active = selSize === size;
+                      const label = getSizeLabel(product, size);
 
-                    return (
-                      <button
-                        aria-pressed={active}
-                        className={[
-                          "product-detail__size",
-                          sizeSelectorStyle === "text"
-                            ? "product-detail__size--text"
-                            : "product-detail__size--box",
-                          active ? "product-detail__size--active" : "",
-                          !available ? "product-detail__size--disabled" : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                        disabled={!available}
-                        key={size}
-                        onClick={() => setSelSize(size)}
-                        type="button"
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
+                      return (
+                        <button
+                          aria-pressed={active}
+                          className={[
+                            "product-detail__size",
+                            sizeSelectorStyle === "text"
+                              ? "product-detail__size--text"
+                              : "product-detail__size--box",
+                            active ? "product-detail__size--active" : "",
+                            !available ? "product-detail__size--disabled" : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                          disabled={!available}
+                          key={size}
+                          onClick={() => setSelSize(size)}
+                          type="button"
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+                <div className="product-detail__size-tools">
+                  <button
+                    className="product-detail__text-link"
+                    onClick={() => openSizeFinder("finder")}
+                    type="button"
+                  >
+                    gợi ý size?
+                  </button>
+                  <button
+                    className="product-detail__text-link product-detail__text-link--right"
+                    onClick={() => openSizeFinder("chart")}
+                    type="button"
+                  >
+                    bảng size
+                  </button>
+                </div>
+              </>
             )}
 
             <button
@@ -645,40 +769,184 @@ export default function ProductDetailClient({
               {buttonLabel}
             </button>
 
-            <div className="product-detail__accordions">
-              {accordions.map((accordion, index) => (
-                <div
-                  className={
-                    openAcc === index
-                      ? "product-detail__accordion product-detail__accordion--open"
-                      : "product-detail__accordion"
-                  }
-                  key={accordion.title}
-                >
+            <div className="product-detail__info">
+              <div className="product-detail__info-tabs" role="tablist" aria-label="Thông tin sản phẩm">
+                {infoTabs.map((tab) => (
                   <button
-                    aria-expanded={openAcc === index}
-                    className="product-detail__accordion-trigger"
-                    onClick={() => setOpenAcc(openAcc === index ? null : index)}
+                    aria-selected={activeInfoTab === tab.key}
+                    className={
+                      activeInfoTab === tab.key
+                        ? "product-detail__info-tab product-detail__info-tab--active"
+                        : "product-detail__info-tab"
+                    }
+                    key={tab.key}
+                    onClick={() => setActiveInfoTab(tab.key)}
+                    role="tab"
                     type="button"
                   >
-                    <span>{accordion.label}</span>
-                    <span aria-hidden="true" className="product-detail__accordion-indicator">
-                      {openAcc === index ? "-" : "+"}
-                    </span>
+                    {tab.label}
                   </button>
-                  <div className="product-detail__accordion-panel">
-                    <div
-                      className="product-detail__accordion-body"
-                      dangerouslySetInnerHTML={{ __html: accordion.html }}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div
+                className="product-detail__info-panel"
+                dangerouslySetInnerHTML={{ __html: activeInfoTabData.html }}
+              />
             </div>
-
           </div>
         </aside>
       </div>
+
+      {isSizeFinderOpen && (
+        <div
+          aria-hidden="true"
+          className="product-detail__modal-backdrop"
+          onClick={() => setIsSizeFinderOpen(false)}
+        >
+          <div
+            aria-label="Tìm size"
+            aria-modal="true"
+            className="product-detail__modal"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+          >
+            <button
+              aria-label="Đóng gợi ý size"
+              className="product-detail__modal-close"
+              onClick={() => setIsSizeFinderOpen(false)}
+              type="button"
+            >
+              ×
+            </button>
+            <div className="product-detail__modal-tabs">
+              <button
+                className={
+                  sizeFinderView === "finder"
+                    ? "product-detail__modal-tab product-detail__modal-tab--active"
+                    : "product-detail__modal-tab"
+                }
+                onClick={() => setSizeFinderView("finder")}
+                type="button"
+              >
+                tìm size
+              </button>
+              <button
+                className={
+                  sizeFinderView === "chart"
+                    ? "product-detail__modal-tab product-detail__modal-tab--active"
+                    : "product-detail__modal-tab"
+                }
+                onClick={() => setSizeFinderView("chart")}
+                type="button"
+              >
+                bảng size
+              </button>
+            </div>
+
+            {sizeFinderView === "finder" ? (
+              <div className="product-detail__finder">
+                <label className="product-detail__finder-field">
+                  <span>dáng sản phẩm mong muốn:</span>
+                  <select
+                    onChange={(event) => {
+                      const value = event.target.value as SizeFinderFit;
+                      setDesiredFit(value);
+                      setSelectedWeight("");
+                      setRecommendedSize(null);
+                    }}
+                    value={desiredFit}
+                  >
+                    <option value="ôm">ôm</option>
+                    <option value="thoải mái">thoải mái</option>
+                  </select>
+                </label>
+                <label className="product-detail__finder-field">
+                  <span>chiều cao:</span>
+                  <select
+                    onChange={(event) => {
+                      setSelectedHeight(event.target.value);
+                      setRecommendedSize(null);
+                    }}
+                    value={selectedHeight}
+                  >
+                    <option value="">chọn chiều cao</option>
+                    {SIZE_FINDER_HEIGHTS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="product-detail__finder-field">
+                  <span>cân nặng</span>
+                  <select
+                    onChange={(event) => {
+                      setSelectedWeight(event.target.value);
+                      setRecommendedSize(null);
+                    }}
+                    value={selectedWeight}
+                  >
+                    <option value="">chọn cân nặng</option>
+                    {SIZE_FINDER_CHART[desiredFit].weightRanges.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="product-detail__finder-actions">
+                  <button
+                    className="product-detail__finder-submit"
+                    disabled={!selectedHeight || !selectedWeight}
+                    onClick={handleFindSize}
+                    type="button"
+                  >
+                    tìm size
+                  </button>
+                </div>
+
+                {recommendedSize && (
+                  <div className="product-detail__finder-result">
+                    <span>size gợi ý</span>
+                    <strong>{recommendedSize}</strong>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="product-detail__size-chart">
+                {(Object.keys(SIZE_FINDER_CHART) as SizeFinderFit[]).map((fit) => (
+                  <div className="product-detail__size-chart-block" key={fit}>
+                    <h3>{fit}</h3>
+                    <div className="product-detail__size-chart-scroll">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>chiều cao \\ cân nặng</th>
+                            {SIZE_FINDER_CHART[fit].weightRanges.map((weight) => (
+                              <th key={weight}>{weight}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {SIZE_FINDER_HEIGHTS.map((height, rowIndex) => (
+                            <tr key={height}>
+                              <th>{height}</th>
+                              {SIZE_FINDER_CHART[fit].matrix[rowIndex].map((size, colIndex) => (
+                                <td key={`${height}-${colIndex}`}>{size}</td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
