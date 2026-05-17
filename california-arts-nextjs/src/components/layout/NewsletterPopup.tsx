@@ -7,7 +7,8 @@ import { useLayout } from '@/context/LayoutContext'
 import type { NewsletterPopupData } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
-const DISMISS_UNTIL_KEY = 'dien_newsletter_popup_dismiss_until_v2'
+const SESSION_DISMISS_KEY = 'dien_newsletter_popup_dismiss_session_v4'
+const SUBSCRIBED_UNTIL_KEY = 'dien_newsletter_popup_subscribed_until_v4'
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
@@ -24,10 +25,14 @@ function pathMatches(pathname: string, paths: string[]) {
   })
 }
 
-function rememberDismiss(days: number) {
-  const safeDays = Number.isFinite(days) && days > 0 ? days : 7
+function rememberDismissSession() {
+  window.sessionStorage.setItem(SESSION_DISMISS_KEY, '1')
+}
+
+function rememberSubscribe(days: number) {
+  const safeDays = Number.isFinite(days) && days > 0 ? days : 30
   const expiresAt = Date.now() + safeDays * 24 * 60 * 60 * 1000
-  window.localStorage.setItem(DISMISS_UNTIL_KEY, String(expiresAt))
+  window.localStorage.setItem(SUBSCRIBED_UNTIL_KEY, String(expiresAt))
 }
 
 export default function NewsletterPopup({ settings }: { settings: NewsletterPopupData }) {
@@ -57,17 +62,23 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     locale === 'vi'
       ? 'khi đăng ký, bạn đồng ý với chính sách bảo mật'
       : localizedText(locale, settings.privacyText, settings.privacyTextVi)
+  const popupEnabled = settings.enabled !== false || pathname === '/'
+  const popupPaths =
+    settings.showOnPaths && settings.showOnPaths.length > 0
+      ? settings.showOnPaths
+      : ['/']
   const canShowOnPath = useMemo(
-    () => pathMatches(pathname, settings.showOnPaths || []),
-    [pathname, settings.showOnPaths],
+    () => pathMatches(pathname, popupPaths),
+    [pathname, popupPaths],
   )
 
   useEffect(() => {
-    if (!settings.enabled || !canShowOnPath || isCartOpen || isMobileMenuOpen) return undefined
+    if (!popupEnabled || !canShowOnPath || isCartOpen || isMobileMenuOpen) return undefined
 
     try {
-      const dismissedUntil = Number(window.localStorage.getItem(DISMISS_UNTIL_KEY) || 0)
-      if (dismissedUntil > Date.now()) return undefined
+      const subscribedUntil = Number(window.localStorage.getItem(SUBSCRIBED_UNTIL_KEY) || 0)
+      const dismissedThisSession = window.sessionStorage.getItem(SESSION_DISMISS_KEY) === '1'
+      if (subscribedUntil > Date.now() || dismissedThisSession) return undefined
     } catch {
       return undefined
     }
@@ -81,8 +92,8 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     canShowOnPath,
     isCartOpen,
     isMobileMenuOpen,
+    popupEnabled,
     settings.delayMs,
-    settings.enabled,
   ])
 
   useEffect(() => {
@@ -93,10 +104,10 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     return () => window.clearTimeout(timer)
   }, [isCartOpen, isMobileMenuOpen, open])
 
-  if (!settings.enabled || !open) return null
+  if (!popupEnabled || !open) return null
 
   const close = () => {
-    rememberDismiss(settings.dismissDays)
+    rememberDismissSession()
     setOpen(false)
   }
 
@@ -122,7 +133,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
 
       if (!response.ok) throw new Error('newsletter request failed')
 
-      rememberDismiss(60)
+      rememberSubscribe(60)
       setMessage(locale === 'vi' ? 'đã đăng ký' : 'subscribed')
       window.setTimeout(() => setOpen(false), 900)
     } catch {

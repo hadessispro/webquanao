@@ -847,20 +847,44 @@ export default function ProductDetailClient({
               <div className="product-detail__finder">
                 <label className="product-detail__finder-field product-detail__finder-field--full">
                   <span>dáng sản phẩm mong muốn:</span>
-                  <select
-                    onChange={(event) => {
-                      const value = event.target.value as SizeFinderFit;
-                      setDesiredFit(value);
-                      setSelectedWeight("");
-                      setRecommendedSize(null);
-                    }}
-                    value={desiredFit}
-                  >
-                    <option value="ôm">ôm</option>
-                    <option value="thoải mái">thoải mái</option>
-                  </select>
+                  <div className="product-detail__finder-fit-options" role="tablist" aria-label="Dáng sản phẩm mong muốn">
+                    <button
+                      aria-selected={desiredFit === "ôm"}
+                      className={
+                        desiredFit === "ôm"
+                          ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
+                          : "product-detail__finder-fit-option"
+                      }
+                      onClick={() => {
+                        setDesiredFit("ôm");
+                        setSelectedWeight("");
+                        setRecommendedSize(null);
+                      }}
+                      role="tab"
+                      type="button"
+                    >
+                      ôm
+                    </button>
+                    <button
+                      aria-selected={desiredFit === "thoải mái"}
+                      className={
+                        desiredFit === "thoải mái"
+                          ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
+                          : "product-detail__finder-fit-option"
+                      }
+                      onClick={() => {
+                        setDesiredFit("thoải mái");
+                        setSelectedWeight("");
+                        setRecommendedSize(null);
+                      }}
+                      role="tab"
+                      type="button"
+                    >
+                      thoải mái
+                    </button>
+                  </div>
                 </label>
-                <label className="product-detail__finder-field product-detail__finder-field--half">
+                <label className="product-detail__finder-field product-detail__finder-field--full">
                   <span>chiều cao:</span>
                   <select
                     onChange={(event) => {
@@ -877,7 +901,7 @@ export default function ProductDetailClient({
                     ))}
                   </select>
                 </label>
-                <label className="product-detail__finder-field product-detail__finder-field--half">
+                <label className="product-detail__finder-field product-detail__finder-field--full">
                   <span>cân nặng</span>
                   <select
                     onChange={(event) => {
