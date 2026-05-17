@@ -50,8 +50,8 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   return (
     <html className="js" data-scroll-behavior="auto" lang="en" suppressHydrationWarning>
       <head>
-        <link rel="stylesheet" href="/css/theme.min.css" />
-        <link rel="stylesheet" href="/css/component.css" />
+        <link rel="stylesheet" href="/css/theme.min.css?v=20260517b" />
+        <link rel="stylesheet" href="/css/component.css?v=20260517b" />
         <style dangerouslySetInnerHTML={{ __html: typographyOverride }} />
       </head>
       <body id="california-arts" suppressHydrationWarning>
