@@ -103,20 +103,18 @@ body#california-arts .mobile-menu-drawer {
 }
 
 #page-wrapper {
+  display: block;
   min-height: 100vh;
   min-height: 100svh;
-  display: flex;
-  flex-direction: column;
 }
 
 #page-wrapper > main {
-  flex: 1 0 auto;
   min-height: 0;
 }
 
 #shopify-section-footer {
   flex-shrink: 0;
-  margin-top: auto;
+  margin-top: 0;
   position: relative;
   width: 100%;
   z-index: 1;

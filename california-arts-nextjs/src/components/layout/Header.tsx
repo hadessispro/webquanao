@@ -283,11 +283,21 @@ export default function Header({ header }: HeaderProps) {
       : 'complimentary shipping on orders over ₫950,000.'
 
   useEffect(() => {
+    setSearchOpen(false)
+    setOpenMegaMenuHref(null)
+    setNearFooter(false)
+    document.documentElement.classList.remove('site-footer-near')
+  }, [pathname])
+
+  useEffect(() => {
     let frameId = 0
+    let settleFrameId = 0
+    let settleTimerId = 0
 
     const updateHeaderState = () => {
       frameId = 0
-      setScrolled(window.scrollY > 18)
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+      setScrolled(scrollTop > 18)
 
       const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
       const headerHeight = headerEl?.getBoundingClientRect().height || 90
@@ -301,8 +311,14 @@ export default function Header({ header }: HeaderProps) {
       }
 
       const footerRect = footer.getBoundingClientRect()
-      const footerRevealPoint = Math.max(headerHeight + 44, window.innerHeight * 0.72)
-      const isNearFooter = footerRect.top <= footerRevealPoint && footerRect.bottom > headerHeight
+      const footerRevealPoint = window.innerHeight + Math.min(120, headerHeight + 40)
+      const isNearFooter = scrollTop > 24 && footerRect.top <= footerRevealPoint && footerRect.bottom > 0
+
+      if (isNearFooter) {
+        setSearchOpen(false)
+        setOpenMegaMenuHref(null)
+        setIsMobileMenuOpen(false)
+      }
 
       setNearFooter(isNearFooter)
       document.documentElement.classList.toggle('site-footer-near', isNearFooter)
@@ -314,17 +330,21 @@ export default function Header({ header }: HeaderProps) {
     }
 
     updateHeaderState()
+    settleFrameId = window.requestAnimationFrame(updateHeaderState)
+    settleTimerId = window.setTimeout(updateHeaderState, 120)
     window.addEventListener('scroll', queueUpdate, { passive: true })
     window.addEventListener('resize', queueUpdate)
 
     return () => {
       if (frameId) window.cancelAnimationFrame(frameId)
+      if (settleFrameId) window.cancelAnimationFrame(settleFrameId)
+      if (settleTimerId) window.clearTimeout(settleTimerId)
       window.removeEventListener('scroll', queueUpdate)
       window.removeEventListener('resize', queueUpdate)
       document.documentElement.style.removeProperty('--header-stack-height')
       document.documentElement.classList.remove('site-footer-near')
     }
-  }, [pathname])
+  }, [pathname, setIsMobileMenuOpen])
 
   useEffect(() => {
     if (!openMegaMenuHref) return undefined
