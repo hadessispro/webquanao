@@ -349,7 +349,7 @@ export default function Header({ header }: HeaderProps) {
   useEffect(() => {
     if (!openMegaMenuHref) return undefined
 
-    const handlePointerDown = (event: PointerEvent) => {
+    const closeIfOutsideMenu = (event: Event) => {
       if (!desktopMenuRef.current?.contains(event.target as Node)) {
         setOpenMegaMenuHref(null)
       }
@@ -361,11 +361,13 @@ export default function Header({ header }: HeaderProps) {
       }
     }
 
-    window.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointerdown', closeIfOutsideMenu)
+    window.addEventListener('pointermove', closeIfOutsideMenu, { passive: true })
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      window.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('pointerdown', closeIfOutsideMenu)
+      window.removeEventListener('pointermove', closeIfOutsideMenu)
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [openMegaMenuHref])

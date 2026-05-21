@@ -90,6 +90,17 @@ body#california-arts [role='button'] {
   text-decoration-line: none !important;
 }
 
+body#california-arts :where(a, button, [role='button'], summary):focus,
+body#california-arts :where(a, button, [role='button'], summary):focus-visible,
+body#california-arts :where(a, button, [role='button'], summary):active {
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+body#california-arts :where(a, button, [role='button'], summary)::-moz-focus-inner {
+  border: 0 !important;
+}
+
 body#california-arts .text-xs {
   font-size: 14px;
 }
@@ -2229,13 +2240,11 @@ body.art-menu-lock {
   padding: 0;
 }
 
-.c_header-menu-ul:hover > li .ca_menu-1st-button,
-.c_header-menu-ul:focus-within > li .ca_menu-1st-button {
+.c_header-menu-ul:hover > li .ca_menu-1st-button {
   opacity: 0.36;
 }
 
 .c_header-menu-ul > li:hover .ca_menu-1st-button,
-.c_header-menu-ul > li:focus-within .ca_menu-1st-button,
 .c_header-menu-ul > li.ca_menu-1st-c--open .ca_menu-1st-button {
   opacity: 1;
 }
@@ -2354,7 +2363,6 @@ body.art-menu-lock {
 }
 
 .c_header-menu-ul > li:hover .c_megamenu-upper,
-.c_header-menu-ul > li:focus-within .c_megamenu-upper,
 .c_header-menu-ul > li.ca_menu-1st-c--open .c_megamenu-upper {
   opacity: 1 !important;
   pointer-events: auto !important;
