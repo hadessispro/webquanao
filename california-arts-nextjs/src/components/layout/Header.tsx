@@ -1,16 +1,18 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLayout } from '@/context/LayoutContext'
-import { BrandCurrencyText } from '@/components/ui/BrandCurrency'
+import { BrandCurrencyText, BrandPrice } from '@/components/ui/BrandCurrency'
 import { HeaderData, HeaderMegaMenu, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
 interface HeaderProps {
   header: HeaderData
 }
+
+const BRAND_LOGO_SRC = '/media/dien-logo-header.png'
 
 function SmartLink({
   href,
@@ -156,6 +158,97 @@ function topNavLabel(item: HeaderNavItem, locale: Locale) {
   return localizedText(locale, item.label, item.labelVi) || item.label
 }
 
+type SearchResult = {
+  handle: string
+  href: string
+  image?: string
+  price?: string
+  title: string
+}
+
+type ProductMenuGroup = {
+  href?: string
+  items?: Array<{
+    href?: string
+    label: string
+  }>
+  title: string
+}
+
+const PRODUCT_MENU_GROUPS: ProductMenuGroup[] = [
+  {
+    title: 'áo',
+    items: [
+      { label: 'áo thun', href: '/collections/collection-t-shirts-tanks' },
+      { label: 'áo sơ mi' },
+      { label: 'áo khoác', href: '/collections/coats-jackets' },
+    ],
+  },
+  {
+    title: 'quần',
+    items: [
+      { label: 'quần dài', href: '/collections/trousers-shorts' },
+      { label: 'quần ngắn' },
+    ],
+  },
+  {
+    title: 'phụ kiện',
+    href: '/collections/accessories',
+  },
+  {
+    title: 'xem tất cả',
+    href: '/collections/shop-all',
+  },
+]
+
+function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div
+      className="c_megamenu-upper dien-product-menu absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text"
+      onPointerLeave={onNavigate}
+    >
+      <div className="dien-product-menu__inner section-x-padding">
+        <div className="dien-product-menu__tabs" aria-hidden="true">
+          <span className="dien-product-menu__tab dien-product-menu__tab--active">sản phẩm</span>
+          <span className="dien-product-menu__tab">về điển</span>
+        </div>
+
+        <div className="dien-product-menu__groups">
+          {PRODUCT_MENU_GROUPS.map((group) => (
+            <div className="dien-product-menu__group" key={group.title}>
+              {group.href ? (
+                <SmartLink className="dien-product-menu__heading dien-product-menu__heading--link" href={group.href} onClick={onNavigate}>
+                  {group.title}
+                </SmartLink>
+              ) : (
+                <h2 className="dien-product-menu__heading">{group.title}</h2>
+              )}
+
+              {group.items && group.items.length > 0 && (
+                <ul className="dien-product-menu__list">
+                  {group.items.map((item) => (
+                    <li key={item.label}>
+                      {item.href ? (
+                        <SmartLink className="dien-product-menu__link" href={item.href} onClick={onNavigate}>
+                          {item.label}
+                        </SmartLink>
+                      ) : (
+                        <span className="dien-product-menu__link dien-product-menu__link--disabled" aria-disabled="true">
+                          {item.label}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function MegaMenu({
   fallbackHref,
   locale,
@@ -169,8 +262,15 @@ function MegaMenu({
 }) {
   if (!megaMenu.enabled) return null
 
+  if (fallbackHref === '/collections/shop-all') {
+    return <ProductMegaMenu onNavigate={onNavigate} />
+  }
+
   return (
-    <div className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color">
+    <div
+      className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color"
+      onPointerLeave={onNavigate}
+    >
       <div className="c_megamenu-main section-x-padding text-center">
         <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center">
           {megaMenu.columns.length > 0 && (
@@ -269,10 +369,13 @@ export default function Header({ header }: HeaderProps) {
   const pathname = usePathname()
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  const [searchLoading, setSearchLoading] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [nearFooter, setNearFooter] = useState(false)
   const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
-  const logo = header.logo
+  const logoAlt = header.logo?.alt || header.logoAlt || 'điển'
   const isHome = pathname === '/'
   const desktopNavigation = header.navigation
     .filter((item) => item.href !== '/pages/campaign')
@@ -284,10 +387,45 @@ export default function Header({ header }: HeaderProps) {
 
   useEffect(() => {
     setSearchOpen(false)
+    setSearchQuery('')
+    setSearchResults([])
     setOpenMegaMenuHref(null)
     setNearFooter(false)
     document.documentElement.classList.remove('site-footer-near')
   }, [pathname])
+
+  useEffect(() => {
+    if (!searchOpen) return undefined
+
+    const controller = new AbortController()
+    const timer = window.setTimeout(async () => {
+      setSearchLoading(true)
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`, {
+          signal: controller.signal,
+        })
+        if (!response.ok) throw new Error('search failed')
+        const data = (await response.json()) as { results?: SearchResult[] }
+        setSearchResults(Array.isArray(data.results) ? data.results : [])
+      } catch (error) {
+        if (!controller.signal.aborted) setSearchResults([])
+      } finally {
+        if (!controller.signal.aborted) setSearchLoading(false)
+      }
+    }, 140)
+
+    return () => {
+      controller.abort()
+      window.clearTimeout(timer)
+    }
+  }, [searchOpen, searchQuery])
+
+  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (searchResults[0]?.href) {
+      window.location.href = searchResults[0].href
+    }
+  }
 
   useEffect(() => {
     let frameId = 0
@@ -437,11 +575,11 @@ export default function Header({ header }: HeaderProps) {
 
                   <h1 className="c_header-logo site-header__brand">
                     <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
-                      {logo ? <img src={logo.src} alt={logo.alt || header.logoAlt} /> : header.logoText}
+                      <img src={BRAND_LOGO_SRC} alt={logoAlt} />
                     </SmartLink>
                   </h1>
 
-                  <div className="c_header-menu site-header__menu" ref={desktopMenuRef}>
+                  <div className="c_header-menu site-header__menu" onMouseLeave={() => setOpenMegaMenuHref(null)} ref={desktopMenuRef}>
                     <ul
                       className="c_header-menu-ul flex flex-wrap"
                       onMouseLeave={() => setOpenMegaMenuHref(null)}
@@ -502,7 +640,7 @@ export default function Header({ header }: HeaderProps) {
 
                   <h1 className="site-header__mobile-brand">
                     <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
-                      {logo ? <img src={logo.src} alt={logo.alt || header.logoAlt} /> : header.logoText}
+                      <img src={BRAND_LOGO_SRC} alt={logoAlt} />
                     </SmartLink>
                   </h1>
 
@@ -530,28 +668,50 @@ export default function Header({ header }: HeaderProps) {
           </section>
 
           {searchOpen && (
-            <div className="search-overlay anim-fade" onClick={(event) => event.stopPropagation()}>
-              <div className="section-x-padding">
-                <form action="/search" method="get" className="input-group search" role="search">
-                  <div className="flex items-center justify-between">
-                    <button className="py-2 mr-4" aria-label={t('submitSearch')} type="submit">
-                      <span className="inline-block w-5 h-5 align-middle">
-                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-search" viewBox="0 0 24 24">
-                          <path fillRule="evenodd" d="M10.533 17.438a6.968 6.968 0 01-6.96-6.96 6.968 6.968 0 016.96-6.96 6.968 6.968 0 016.96 6.96 6.968 6.968 0 01-6.96 6.96zm6.949-1.314a8.917 8.917 0 002.01-5.646c0-4.941-4.02-8.96-8.96-8.96-4.94 0-8.96 4.019-8.96 8.96 0 4.94 4.02 8.96 8.96 8.96 2.082 0 3.996-.72 5.52-1.916l4.962 4.96 1.415-1.413-4.947-4.945z" />
-                        </svg>
-                      </span>
-                    </button>
-                    <input type="text" name="q" placeholder={t('search')} className="placeholder-current font-body w-full block bg-transparent" autoFocus />
-                    <button className="py-2 ml-4" aria-label={t('closeSearch')} onClick={() => setSearchOpen(false)} type="button">
-                      <span className="inline-block w-5 h-5 align-middle">
-                        <svg aria-hidden="true" focusable="false" className="icon fill-current icon-close" viewBox="0 0 24 24">
-                          <path fillRule="evenodd" d="M18.364 4.222l1.414 1.414L13.414 12l6.364 6.364-1.414 1.414L12 13.414l-6.364 6.364-1.414-1.414L10.586 12 4.222 5.636l1.414-1.414L12 10.586z" />
-                        </svg>
-                      </span>
-                    </button>
-                  </div>
+            <div className="search-overlay search-overlay--drawer anim-fade" onClick={() => setSearchOpen(false)}>
+              <aside className="search-overlay__panel" onClick={(event) => event.stopPropagation()}>
+                <div className="search-overlay__head">
+                  <p>tìm kiếm</p>
+                  <button aria-label={t('closeSearch')} className="search-overlay__close" onClick={() => setSearchOpen(false)} type="button">
+                    <span />
+                  </button>
+                </div>
+
+                <form className="search-overlay__form" onSubmit={submitSearch} role="search">
+                  <input
+                    autoFocus
+                    className="search-overlay__input"
+                    name="q"
+                    onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                    placeholder="nhập tên sản phẩm hoặc từ khóa"
+                    type="text"
+                    value={searchQuery}
+                  />
+                  <button className="search-overlay__submit" type="submit">
+                    tìm
+                  </button>
                 </form>
-              </div>
+
+                <div className="search-overlay__results">
+                  <p className="search-overlay__label">
+                    {searchQuery ? 'kết quả gợi ý' : 'sản phẩm gợi ý'}
+                  </p>
+                  {searchLoading && <p className="search-overlay__empty">đang tìm...</p>}
+                  {!searchLoading && searchResults.length === 0 && (
+                    <p className="search-overlay__empty">chưa có sản phẩm phù hợp.</p>
+                  )}
+                  {!searchLoading &&
+                    searchResults.map((product) => (
+                      <SmartLink className="search-overlay__result" href={product.href} key={product.handle} onClick={() => setSearchOpen(false)}>
+                        {product.image && <img alt={product.title} src={product.image} />}
+                        <span>
+                          <strong>{product.title}</strong>
+                          {product.price && <BrandPrice amount={product.price} />}
+                        </span>
+                      </SmartLink>
+                    ))}
+                </div>
+              </aside>
             </div>
           )}
         </div>

@@ -7,7 +7,7 @@ import { useLayout } from '@/context/LayoutContext'
 import type { NewsletterPopupData } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
-const SUBSCRIBED_UNTIL_KEY = 'dien_newsletter_popup_subscribed_until_v4'
+const SUBSCRIBED_UNTIL_KEY = 'dien_newsletter_popup_subscribed_until_v5'
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
@@ -36,6 +36,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [open, setOpen] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const title =
     locale === 'vi'
@@ -51,7 +52,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
       : localizedText(locale, settings.placeholder, settings.placeholderVi)
   const submitLabel =
     locale === 'vi'
-      ? 'tham gia'
+      ? 'tham gia!'
       : localizedText(locale, settings.buttonLabel, settings.buttonLabelVi)
   const privacyText =
     locale === 'vi'
@@ -102,6 +103,10 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
 
   const close = () => {
     setOpen(false)
+    window.setTimeout(() => {
+      setSuccess(false)
+      setMessage('')
+    }, 220)
   }
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -127,8 +132,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
       if (!response.ok) throw new Error('newsletter request failed')
 
       rememberSubscribe(60)
-      setMessage(locale === 'vi' ? 'đã đăng ký' : 'subscribed')
-      window.setTimeout(() => setOpen(false), 900)
+      setSuccess(true)
     } catch {
       setMessage(locale === 'vi' ? 'không thể đăng ký lúc này' : 'could not subscribe right now')
     } finally {
@@ -139,57 +143,71 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
   return (
     <div className="newsletter-popup" role="dialog" aria-modal="true" aria-label={title}>
       <button className="newsletter-popup__scrim" aria-label="close popup" onClick={close} type="button" />
-      <section className="newsletter-popup__panel">
+      <section className={success ? 'newsletter-popup__panel newsletter-popup__panel--success' : 'newsletter-popup__panel'}>
         <button className="newsletter-popup__close" aria-label="close popup" onClick={close} type="button">
           <span />
         </button>
 
-        <div className="newsletter-popup__copy">
-          {locale === 'vi' ? (
-            <>
-              <h2 className="newsletter-popup__headline">
-                <span>đồng hành cùng</span>
-                <img alt="điển" className="newsletter-popup__wordmark" src="/media/dien-logo-header.png" />
-              </h2>
-              <p className="newsletter-popup__description">
-                nhận quyền <em>truy cập sớm</em> cho các đợt drop tiếp theo và
-                <em> miễn phí vận chuyển</em> cho đơn hàng đầu tiên!
-              </p>
-            </>
-          ) : (
-            <>
-              <h2>{title}</h2>
-              <p>{description}</p>
-            </>
-          )}
-        </div>
-
-        <form className="newsletter-popup__form" onSubmit={submit}>
-          <input
-            autoComplete="email"
-            name="email"
-            onChange={(event) => setEmail(event.currentTarget.value)}
-            placeholder={placeholder}
-            type="email"
-            value={email}
-          />
-          <div className="newsletter-popup__actions">
-            <button className="newsletter-popup__dismiss" onClick={close} type="button">
-              {locale === 'vi' ? 'không, cảm ơn' : 'no, thanks'}
-            </button>
-            <button className="newsletter-popup__submit" disabled={submitting} type="submit">
-              {submitting ? '...' : submitLabel}
+        {success ? (
+          <div className="newsletter-popup__thanks">
+            <h2>cảm ơn!</h2>
+            <p>
+              thông tin đã được cập nhật. bạn đã đồng ý nhận các thông báo mới từ điển.
+            </p>
+            <button className="newsletter-popup__continue" onClick={close} type="button">
+              tiếp tục mua sắm
             </button>
           </div>
-        </form>
+        ) : (
+          <>
+            <div className="newsletter-popup__copy">
+              {locale === 'vi' ? (
+                <>
+                  <h2 className="newsletter-popup__headline">
+                    <span>đồng hành cùng</span>
+                    <img alt="điển" className="newsletter-popup__wordmark" src="/media/dien-logo-header.png" />
+                  </h2>
+                  <p className="newsletter-popup__description">
+                    nhận quyền <em>truy cập sớm</em> cho các đợt drop tiếp theo và
+                    <em> miễn phí vận chuyển</em> cho đơn hàng đầu tiên!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2>{title}</h2>
+                  <p>{description}</p>
+                </>
+              )}
+            </div>
 
-        {message && <p className="newsletter-popup__message">{message}</p>}
+            <form className="newsletter-popup__form" onSubmit={submit}>
+              <input
+                autoComplete="email"
+                name="email"
+                onChange={(event) => setEmail(event.currentTarget.value)}
+                placeholder={placeholder}
+                type="email"
+                value={email}
+              />
+              <div className="newsletter-popup__actions">
+                <button className="newsletter-popup__dismiss" onClick={close} type="button">
+                  {locale === 'vi' ? 'không, cảm ơn' : 'no, thanks'}
+                </button>
+                <button className="newsletter-popup__submit" disabled={submitting} type="submit">
+                  {submitting ? '...' : submitLabel}
+                </button>
+              </div>
+            </form>
 
-        <p className="newsletter-popup__privacy">
-          <Link href={settings.privacyHref} onClick={close}>
-            {privacyText}
-          </Link>
-        </p>
+            {message && <p className="newsletter-popup__message">{message}</p>}
+
+            <p className="newsletter-popup__privacy">
+              <Link href={settings.privacyHref} onClick={close}>
+                {privacyText}
+              </Link>
+            </p>
+          </>
+        )}
       </section>
     </div>
   )

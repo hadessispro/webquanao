@@ -5,12 +5,15 @@ import Link from 'next/link'
 import type { FooterData } from '@/lib/storefront-types'
 import { BRAND_INSTAGRAM_PROFILE_URL, BRAND_NAME, BRAND_TAGLINE } from '@/lib/brand'
 
+const BRAND_LOGO_SRC = '/media/dien-logo-header.png'
+
 function isExternalHref(href: string) {
   return href.startsWith('http://') || href.startsWith('https://')
 }
 
 export default function Footer({ footer }: { footer: FooterData }) {
   const logo = footer.desktopLogo || footer.mobileLogo
+  const logoAlt = logo?.alt || BRAND_NAME
   const footerLinks = [
     { label: 'liên hệ', href: '/pages/about' },
     { label: 'chính sách', href: '/pages/privacy-policy' },
@@ -23,11 +26,9 @@ export default function Footer({ footer }: { footer: FooterData }) {
       <footer className="site-footer dien-footer" role="contentinfo">
         <div className="dien-footer__inner">
           <div className="dien-footer__brand">
-            {logo && (
-              <div className="dien-footer__logo">
-                <img src={logo.src} alt={logo.alt || BRAND_NAME} />
-              </div>
-            )}
+            <div className="dien-footer__logo">
+              <img src={BRAND_LOGO_SRC} alt={logoAlt} />
+            </div>
             <p>{BRAND_TAGLINE}</p>
           </div>
 
