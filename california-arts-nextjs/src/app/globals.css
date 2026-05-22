@@ -1,9 +1,9 @@
 /* === STICKY FOOTER === */
 :root {
   --dien-bg: #fdfcf9;
-  --dien-heading-size: 20px;
-  --dien-subheading-size: 16px;
-  --dien-body-size: 14px;
+  --dien-heading-size: 22px;
+  --dien-subheading-size: 17px;
+  --dien-body-size: 16px;
   --body-font-stack: "Times New Roman", Times, serif;
   --serif-font-stack: "Times New Roman", Times, serif;
   --heading-font-stack: var(--serif-font-stack);
@@ -270,12 +270,12 @@ body#california-arts .bg-footer-background,
 
 .home-hero__eyebrow,
 .home-hero__body {
-  font-size: 14px;
+  font-size: var(--dien-body-size);
   line-height: 1.35;
 }
 
 .home-hero__title {
-  font-size: 18px;
+  font-size: var(--dien-heading-size);
   line-height: 1.35;
 }
 
@@ -286,7 +286,7 @@ body#california-arts .bg-footer-background,
   border-radius: 999px;
   color: #fbfbf6;
   display: inline-flex;
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   justify-content: center;
   justify-self: end;
   line-height: 1;
@@ -329,7 +329,7 @@ body#california-arts .bg-footer-background,
 .cms-page {
   background: var(--color-primary-background, #fbfbf6);
   color: var(--color-primary-text, #131818);
-  min-height: calc(100svh - var(--sticky-header-height, 66px));
+  min-height: 0;
 }
 
 .cms-page__section {
@@ -338,7 +338,7 @@ body#california-arts .bg-footer-background,
 }
 
 .cms-page__section--intro {
-  padding: 84px 0 46px;
+  padding: 60px 0 38px;
 }
 
 .cms-page__section--text {
@@ -526,7 +526,7 @@ body#california-arts .bg-footer-background,
 }
 
 .story-page__bar p {
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   font-family: var(--heading-font-stack) !important;
   line-height: 1.15;
 }
@@ -553,7 +553,7 @@ body#california-arts .bg-footer-background,
 
 .story-page__copy h2 {
   font-family: var(--heading-font-stack) !important;
-  font-size: clamp(20px, 2.6vw, 34px);
+  font-size: var(--dien-heading-size);
   font-weight: 400;
   line-height: 1.06;
 }
@@ -561,13 +561,45 @@ body#california-arts .bg-footer-background,
 .story-page__copy p {
   color: rgba(19, 24, 24, 0.82);
   font-family: var(--heading-font-stack) !important;
-  font-size: 14px;
+  font-size: var(--dien-body-size);
   line-height: 1.46;
 }
 
 .contact-page__hero {
   border-bottom: 1px solid rgba(19, 24, 24, 0.16);
   padding: 38px 28px 30px;
+}
+
+.contact-page--static .contact-page__static {
+  border-top: 0;
+  padding-bottom: 58px;
+}
+
+.contact-page__static-inner {
+  display: grid;
+  gap: 18px;
+}
+
+.contact-page__eyebrow {
+  color: rgba(19, 24, 24, 0.58);
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-subheading-size);
+  line-height: 1.2;
+}
+
+.contact-page--static h1 {
+  font-size: var(--dien-heading-size);
+  line-height: 1.12;
+}
+
+.contact-page--static p {
+  font-size: var(--dien-body-size);
+  line-height: 1.48;
+}
+
+.contact-page--static a {
+  color: currentColor !important;
+  font-weight: 600;
 }
 
 .contact-page__hero-copy {
@@ -998,15 +1030,15 @@ body#california-arts .bg-footer-background,
 .logo-image {
   align-items: center;
   display: inline-flex !important;
-  max-width: 102px !important;
-  min-height: 32px;
+  max-width: 136px !important;
+  min-height: 48px;
 }
 
 .logo-image img {
   display: block;
   height: auto;
-  max-height: 36px;
-  max-width: 102px;
+  max-height: 52px;
+  max-width: 136px;
   object-fit: contain;
   object-position: left center;
   width: auto;
@@ -1017,9 +1049,9 @@ body#california-arts .bg-footer-background,
   column-gap: 18px;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 34px;
-  padding-bottom: 2px !important;
-  padding-top: 2px !important;
+  min-height: 56px;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
   position: relative;
 }
 
@@ -1131,7 +1163,7 @@ body#california-arts .bg-footer-background,
   }
 
   .site-header__mobile-actions .header-locale-toggle {
-    font-size: 10px;
+    font-size: var(--dien-body-size);
     height: 18px;
     min-width: 26px;
     padding: 0 6px !important;
@@ -1286,6 +1318,8 @@ body#california-arts .bg-footer-background,
   border: 0;
   color: currentColor;
   display: inline-flex;
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-subheading-size);
   height: 28px;
   line-height: 1;
   padding: 0 !important;
@@ -1366,8 +1400,8 @@ body#california-arts .bg-footer-background,
 
 .dien-footer__inner {
   display: grid;
-  gap: 12px;
-  padding: 22px 32px 18px;
+  gap: 8px;
+  padding: 18px 32px 12px;
   position: relative;
 }
 
@@ -1420,10 +1454,11 @@ body#california-arts .bg-footer-background,
 
 .dien-footer__brand p {
   color: #131818;
+  font-family: var(--ui-font-stack) !important;
   font-size: var(--dien-body-size);
   line-height: 1.15;
   margin: 0;
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .dien-footer__bottom {
@@ -1440,7 +1475,7 @@ body#california-arts .bg-footer-background,
   display: grid;
   gap: 12px;
   grid-template-columns: minmax(0, 1fr) auto;
-  max-width: 380px;
+  max-width: 440px;
   width: 100%;
 }
 
@@ -1464,20 +1499,20 @@ body#california-arts .bg-footer-background,
   font-family: Arial, Helvetica, sans-serif !important;
   font-size: var(--dien-subheading-size);
   letter-spacing: 0;
-  text-transform: uppercase;
+  text-transform: lowercase;
 }
 
 .dien-footer__links {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
   justify-content: flex-end;
 }
 
 .dien-footer__links a {
   color: rgba(19, 24, 24, 0.7) !important;
-  font-size: var(--dien-body-size);
+  font-size: var(--dien-subheading-size);
   line-height: 1.2;
   transition: color 0.18s ease, opacity 0.18s ease;
 }
@@ -1675,7 +1710,7 @@ body#california-arts .bg-footer-background,
 
 .collection-product-page__next-cta-inner p {
   color: rgba(19, 24, 24, 0.72);
-  font-size: 16px;
+  font-size: var(--dien-subheading-size);
   line-height: 1.3;
   margin: 0;
 }
@@ -1686,7 +1721,7 @@ body#california-arts .bg-footer-background,
   border: 1px solid #101615;
   color: #fbfbf6 !important;
   display: inline-flex;
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   justify-content: center;
   min-height: 38px;
   min-width: 132px;
@@ -1905,7 +1940,7 @@ body#california-arts .bg-footer-background,
 .newsletter-popup__copy p,
 .newsletter-popup__privacy {
   color: rgba(19, 24, 24, 0.68);
-  font-size: 15px;
+  font-size: var(--dien-body-size);
   line-height: 1.48;
 }
 
@@ -1933,7 +1968,7 @@ body#california-arts .bg-footer-background,
 
 .newsletter-popup__form input::placeholder {
   color: rgba(19, 24, 24, 0.5);
-  font-size: 15px;
+  font-size: var(--dien-body-size);
 }
 
 .newsletter-popup__actions {
@@ -1950,12 +1985,12 @@ body#california-arts .bg-footer-background,
 
 .newsletter-popup__dismiss {
   color: rgba(19, 24, 24, 0.72);
-  font-size: 16px;
+  font-size: var(--dien-subheading-size);
   text-align: left;
 }
 
 .newsletter-popup__submit {
-  font-size: 18px;
+  font-size: var(--dien-subheading-size);
   font-style: italic;
   font-weight: 600;
 }
@@ -2008,7 +2043,7 @@ body#california-arts .bg-footer-background,
   .newsletter-popup__copy p,
   .newsletter-popup__form input::placeholder,
   .newsletter-popup__dismiss {
-    font-size: 14px;
+    font-size: var(--dien-body-size);
   }
 }
 
@@ -2133,7 +2168,7 @@ body.art-menu-lock {
 
 .art-menu__tab {
   color: rgba(19, 24, 24, 0.44);
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   line-height: 1.2;
 }
 
@@ -2149,7 +2184,7 @@ body.art-menu-lock {
 .art-menu__primary-link {
   color: #131818;
   display: block;
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   line-height: 1.15;
 }
 
@@ -2306,7 +2341,7 @@ body.art-menu-lock {
   color: currentColor;
   column-gap: 4px;
   display: inline-flex;
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   line-height: 1;
   padding: 0 !important;
 }
@@ -2349,7 +2384,7 @@ body.art-menu-lock {
   border-radius: 999px;
   color: #fff;
   display: flex;
-  font-size: 10px;
+  font-size: var(--dien-body-size);
   height: 16px;
   justify-content: center;
   line-height: 1;
@@ -2842,14 +2877,14 @@ body.art-menu-lock {
 }
 
 .product-grid-title {
-  font-size: 16px;
+  font-size: var(--dien-subheading-size);
   line-height: 1.25;
 }
 
 .ca_pro-prices,
 .c_grid-var,
 .c_grid-var label {
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   line-height: 1.3;
 }
 
@@ -3589,8 +3624,8 @@ body.art-menu-lock {
 .checkout-page {
   --checkout-border: rgba(19, 24, 24, 0.18);
   --checkout-muted: rgba(19, 24, 24, 0.62);
-  background: #fff;
-  font-size: 14px;
+  background: var(--dien-bg);
+  font-size: var(--dien-body-size);
   line-height: 1.45;
   min-height: calc(100svh - var(--sticky-header-height, 66px));
   overflow-x: hidden;
@@ -4028,7 +4063,7 @@ body.art-menu-lock {
   border-radius: 0;
   color: var(--color-primary-background);
   font-family: var(--heading-font-stack);
-  font-size: 14px;
+  font-size: var(--dien-subheading-size);
   height: 42px;
   min-height: 0;
   padding: 0 18px;
@@ -4111,7 +4146,7 @@ body.art-menu-lock {
 
 .checkout-page__payment-head span {
   color: rgba(19, 24, 24, 0.5);
-  font-size: 10px;
+  font-size: var(--dien-body-size);
   white-space: nowrap;
 }
 
@@ -4351,7 +4386,7 @@ body.art-menu-lock {
   }
 
   .checkout-page__sticky-total strong {
-    font-size: 15px;
+    font-size: var(--dien-subheading-size);
     font-weight: 400;
     white-space: nowrap;
   }
@@ -4474,7 +4509,7 @@ body.art-menu-lock {
     border-radius: 4px;
     color: var(--color-primary-text);
     display: flex;
-    font-size: 14px;
+    font-size: var(--dien-subheading-size);
     height: 34px;
     justify-content: center;
     line-height: 1;
@@ -4641,12 +4676,21 @@ body#california-arts :where(.product-detail__title, .product-detail__price, .cms
   line-height: 1.12 !important;
 }
 
-body#california-arts :where(.c_header-main, .c_header-main a, .c_header-main button, .header-cart-link, .header-locale-toggle, .site-announcement, .product-detail__option-label, .product-detail__size, .product-detail__text-link, .product-detail__add-button, .product-detail__info-tab, .product-detail__accordion-trigger, .product-detail__modal-tab, .product-detail__finder-field span, .product-detail__finder-trigger, .product-detail__finder-fit-option, .product-detail__finder-submit, .product-grid__bar h2, .product-grid__bar .rte, .product-grid__bar .product-grid__bar-copy, .collection-category-bar__inner h2, .collection-category-bar__index, .shop-all-collection__bar-inner h2, .shop-all-collection__index, .collection-product-page__next-cta-button, .dien-footer__newsletter button, .contact-intake-form__submit, .checkout-page__section-head h2, .checkout-page__payment-method-title, .checkout-page__submit, .cart-drawer__checkout) {
+body#california-arts :where(.c_header-main, .c_header-main a, .c_header-main button, .header-cart-link, .header-locale-toggle, .site-announcement, .product-detail__option-label, .product-detail__size, .product-detail__text-link, .product-detail__add-button, .product-detail__info-tab, .product-detail__accordion-trigger, .product-detail__modal-tab, .product-detail__finder-field span, .product-detail__finder-trigger, .product-detail__finder-fit-option, .product-detail__finder-submit, .product-grid-title, .ca_pro-prices, .c_grid-var, .c_grid-var label, .product-grid__bar h2, .product-grid__bar .rte, .product-grid__bar .product-grid__bar-copy, .collection-category-bar__inner h2, .collection-category-bar__index, .shop-all-collection__bar-inner h2, .shop-all-collection__index, .collection-product-page__next-cta-button, .dien-footer__newsletter button, .dien-footer__links a, .contact-intake-form__submit, .checkout-page__section-head h2, .checkout-page__payment-method-title, .checkout-page__submit, .cart-drawer__checkout) {
   font-size: var(--dien-subheading-size) !important;
   line-height: 1.22 !important;
 }
 
-body#california-arts :where(.product-detail__description, .product-detail__info-panel, .product-detail__finder-result, .product-detail__finder-option, .product-detail__size-chart, .product-grid-title, .dien-footer__brand p, .dien-footer__links a, .dien-footer__newsletter input, .cms-page p, .story-page__copy p, .contact-page__hero-copy p, .contact-page__aside p, .contact-page__form-card p, .contact-intake-form__head p, .contact-intake-form__field span, .contact-intake-form input, .contact-intake-form select, .contact-intake-form textarea, .contact-intake-form__checkbox span, .contact-intake-form__message, .checkout-page__field, .checkout-page__field input, .checkout-page__field select, .checkout-page__field textarea, .checkout-page__payment-policy, .checkout-page__totals, .cart-drawer__item-copy, .cart-drawer__assistant p) {
+body#california-arts :where(.product-detail__description, .product-detail__info-panel, .product-detail__finder-result, .product-detail__finder-option, .product-detail__size-chart, .dien-footer__brand p, .dien-footer__newsletter input, .cms-page p, .story-page__copy p, .contact-page__hero-copy p, .contact-page__aside p, .contact-page__form-card p, .contact-intake-form__head p, .contact-intake-form__field span, .contact-intake-form input, .contact-intake-form select, .contact-intake-form textarea, .contact-intake-form__checkbox span, .contact-intake-form__message, .checkout-page__field, .checkout-page__field input, .checkout-page__field select, .checkout-page__field textarea, .checkout-page__payment-policy, .checkout-page__totals, .cart-drawer__item-copy, .cart-drawer__assistant p) {
   font-size: var(--dien-body-size) !important;
   line-height: 1.42 !important;
+}
+
+body#california-arts .site-header-stack :where(a, button, .header-search-toggle, .header-cart-link, .header-locale-toggle) {
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+}
+
+body#california-arts .dien-footer__brand p {
+  font-family: var(--ui-font-stack) !important;
 }
