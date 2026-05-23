@@ -91,7 +91,11 @@ body#california-arts .product-detail__add-button,
 body#california-arts .product-detail__accordion-trigger,
 body#california-arts .dien-footer__newsletter button,
 body#california-arts .newsletter-popup__dismiss,
-body#california-arts .newsletter-popup__submit {
+body#california-arts .newsletter-popup__submit,
+body#california-arts .dien-product-menu__heading,
+body#california-arts .dien-product-menu__link,
+body#california-arts .art-menu__product-heading,
+body#california-arts .art-menu__primary-link {
   font-family: var(--ui-font-stack) !important;
 }
 
@@ -2219,8 +2223,11 @@ body.art-menu-lock {
 
 .art-menu__tab {
   color: rgba(19, 24, 24, 0.44);
-  font-size: var(--dien-subheading-size);
-  line-height: 1.2;
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-heading-size);
+  font-weight: 700;
+  letter-spacing: -0.04em !important;
+  line-height: 1.06;
 }
 
 .art-menu__tab--active {
@@ -2229,14 +2236,47 @@ body.art-menu-lock {
 
 .art-menu__primary {
   display: grid;
-  gap: 12px;
+  gap: 24px;
+}
+
+.art-menu__product-group {
+  display: grid;
+  gap: 7px;
+}
+
+.art-menu__product-heading {
+  color: #131818;
+  display: block;
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size);
+  font-weight: 700;
+  letter-spacing: -0.015em !important;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.art-menu__product-list {
+  display: grid;
+  gap: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .art-menu__primary-link {
   color: #131818;
   display: block;
+  font-family: var(--ui-font-stack) !important;
   font-size: var(--dien-subheading-size);
-  line-height: 1.15;
+  font-weight: 400;
+  letter-spacing: -0.015em !important;
+  line-height: 1.12;
+}
+
+.art-menu__primary-link--disabled {
+  color: rgba(19, 24, 24, 0.42);
+  cursor: default;
+  pointer-events: none;
 }
 
 .art-menu__footer-links {
@@ -5149,13 +5189,6 @@ body#california-arts .dien-footer__links {
   gap: 12px !important;
 }
 
-body#california-arts .c_header-menu-ul > li:hover .c_megamenu-upper:not(.dien-product-menu),
-body#california-arts .c_header-menu-ul > li:hover .dien-product-menu {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
-
 body#california-arts .c_header-menu-ul > li.ca_menu-1st-c--open .c_megamenu-upper {
   opacity: 1 !important;
   pointer-events: auto !important;
@@ -5164,27 +5197,50 @@ body#california-arts .c_header-menu-ul > li.ca_menu-1st-c--open .c_megamenu-uppe
 }
 
 body#california-arts .dien-product-menu__inner {
-  gap: 24px !important;
-  min-height: 340px !important;
-  padding-bottom: 34px !important;
-  padding-top: 22px !important;
+  gap: 34px !important;
+  min-height: 376px !important;
+  padding-bottom: 42px !important;
+  padding-top: 30px !important;
 }
 
 body#california-arts .dien-product-menu__tabs {
-  gap: 52px !important;
+  gap: 76px !important;
 }
 
 body#california-arts .dien-product-menu__groups {
-  gap: 24px !important;
+  gap: 28px !important;
 }
 
-body#california-arts .dien-product-menu__heading,
 body#california-arts .dien-product-menu__tab {
-  letter-spacing: -0.035em !important;
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-heading-size) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.02 !important;
+}
+
+body#california-arts .dien-product-menu__heading {
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.08 !important;
+  padding: 0 !important;
 }
 
 body#california-arts .dien-product-menu__link {
-  letter-spacing: -0.01em !important;
+  color: #131818 !important;
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.12 !important;
+}
+
+body#california-arts .dien-product-menu__link--disabled {
+  color: rgba(19, 24, 24, 0.42) !important;
+  cursor: default !important;
+  pointer-events: none !important;
 }
 
 body#california-arts :where(a, button, input, textarea, select, summary, [role='button']):focus,

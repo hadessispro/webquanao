@@ -6,6 +6,7 @@ import { useLayout } from '@/context/LayoutContext'
 import { FooterData, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 import { BRAND_INSTAGRAM_PROFILE_URL } from '@/lib/brand'
+import { PRODUCT_MENU_GROUPS } from '@/lib/product-menu'
 
 interface MobileMenuDrawerProps {
   footer: FooterData
@@ -15,12 +16,6 @@ interface MobileMenuDrawerProps {
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
-
-const PRODUCT_LINKS = [
-  { label: 'áo', href: '/collections/coats-jackets' },
-  { label: 'quần', href: '/collections/trousers-shorts' },
-  { label: 'xem tất cả', href: '/collections/shop-all' },
-]
 
 export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawerProps) {
   const { isMobileMenuOpen, locale, setIsMobileMenuOpen } = useLayout()
@@ -82,15 +77,42 @@ export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawe
           </div>
 
           <div className="art-menu__primary">
-            {PRODUCT_LINKS.map((link) => (
-              <Link
-                className="art-menu__primary-link"
-                href={link.href}
-                key={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
+            {PRODUCT_MENU_GROUPS.map((group) => (
+              <div className="art-menu__product-group" key={group.title}>
+                {group.href ? (
+                  <Link
+                    className="art-menu__product-heading art-menu__product-heading--link"
+                    href={group.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {group.title}
+                  </Link>
+                ) : (
+                  <h2 className="art-menu__product-heading">{group.title}</h2>
+                )}
+
+                {group.items && group.items.length > 0 && (
+                  <ul className="art-menu__product-list">
+                    {group.items.map((item) => (
+                      <li key={item.label}>
+                        {item.href ? (
+                          <Link
+                            className="art-menu__primary-link"
+                            href={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ) : (
+                          <span className="art-menu__primary-link art-menu__primary-link--disabled">
+                            {item.label}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             ))}
           </div>
 

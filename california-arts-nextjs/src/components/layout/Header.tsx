@@ -7,6 +7,7 @@ import { useLayout } from '@/context/LayoutContext'
 import { BrandCurrencyText, BrandPrice } from '@/components/ui/BrandCurrency'
 import { HeaderData, HeaderMegaMenu, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
+import { PRODUCT_MENU_GROUPS } from '@/lib/product-menu'
 
 interface HeaderProps {
   header: HeaderData
@@ -104,41 +105,6 @@ type SearchResult = {
   title: string
 }
 
-type ProductMenuGroup = {
-  href?: string
-  items?: Array<{
-    href?: string
-    label: string
-  }>
-  title: string
-}
-
-const PRODUCT_MENU_GROUPS: ProductMenuGroup[] = [
-  {
-    title: 'áo',
-    items: [
-      { label: 'áo thun', href: '/collections/collection-t-shirts-tanks' },
-      { label: 'áo sơ mi' },
-      { label: 'áo khoác', href: '/collections/coats-jackets' },
-    ],
-  },
-  {
-    title: 'quần',
-    items: [
-      { label: 'quần dài', href: '/collections/trousers-shorts' },
-      { label: 'quần ngắn' },
-    ],
-  },
-  {
-    title: 'phụ kiện',
-    href: '/collections/accessories',
-  },
-  {
-    title: 'xem tất cả',
-    href: '/collections/shop-all',
-  },
-]
-
 function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div
@@ -146,9 +112,11 @@ function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
       onPointerLeave={onNavigate}
     >
       <div className="dien-product-menu__inner section-x-padding">
-        <div className="dien-product-menu__tabs" aria-hidden="true">
+        <div className="dien-product-menu__tabs">
           <span className="dien-product-menu__tab dien-product-menu__tab--active">sản phẩm</span>
-          <span className="dien-product-menu__tab">về điển</span>
+          <SmartLink className="dien-product-menu__tab" href="/pages/our-story" onClick={onNavigate}>
+            về điển
+          </SmartLink>
         </div>
 
         <div className="dien-product-menu__groups">
