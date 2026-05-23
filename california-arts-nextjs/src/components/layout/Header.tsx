@@ -56,22 +56,6 @@ function Chevron() {
   )
 }
 
-function BagIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="header-bag-icon"
-      focusable="false"
-      height="22"
-      role="presentation"
-      viewBox="0 0 24 24"
-      width="22"
-    >
-      <path d="M7.25 8.25V7a4.75 4.75 0 0 1 9.5 0v1.25h2.18l.82 12.5H4.25l.82-12.5h2.18Zm1.5 0h6.5V7a3.25 3.25 0 0 0-6.5 0v1.25Zm-2.27 1.5-.62 9.5h12.28l-.62-9.5H6.48Z" />
-    </svg>
-  )
-}
-
 function SearchIcon() {
   return (
     <svg
@@ -97,52 +81,6 @@ function MenuIcon() {
       <span />
       <span />
     </span>
-  )
-}
-
-function CartButton({
-  cartCount,
-  onClick,
-  label,
-  variant = 'icon',
-}: {
-  cartCount: number
-  label: string
-  onClick: () => void
-  variant?: 'icon' | 'text'
-}) {
-  if (variant === 'text') {
-    return (
-      <button
-        aria-label={`${label} (${cartCount})`}
-        className="header-cart-link"
-        onClick={onClick}
-        type="button"
-      >
-        <span>{label}</span>
-        <span
-          className={
-            cartCount > 0
-              ? 'header-cart-link__count header-cart-link__count--active'
-              : 'header-cart-link__count'
-          }
-        >
-          ({cartCount})
-        </span>
-      </button>
-    )
-  }
-
-  return (
-    <button
-      aria-label={`${label} (${cartCount})`}
-      className="header-bag-button"
-      onClick={onClick}
-      type="button"
-    >
-      <BagIcon />
-      {cartCount > 0 && <span className="header-bag-count">{cartCount}</span>}
-    </button>
   )
 }
 
@@ -365,7 +303,7 @@ function DesktopNavItem({
 }
 
 export default function Header({ header }: HeaderProps) {
-  const { cartCount, locale, setIsCartOpen, setIsMobileMenuOpen, t } = useLayout()
+  const { locale, setIsMobileMenuOpen, t } = useLayout()
   const pathname = usePathname()
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -610,18 +548,6 @@ export default function Header({ header }: HeaderProps) {
                           </button>
                         </div>
                       </li>
-                      <li>
-                        <div className="flex items-center justify-end text-right">
-                          <div className="c_header-cartCount whitespace-nowrap">
-                            <CartButton
-                              cartCount={cartCount}
-                              label={t('cart')}
-                              onClick={() => setIsCartOpen(true)}
-                              variant="text"
-                            />
-                          </div>
-                        </div>
-                      </li>
                     </ul>
                   </div>
                 </div>
@@ -653,13 +579,6 @@ export default function Header({ header }: HeaderProps) {
                       >
                         <SearchIcon />
                       </button>
-                    </div>
-                    <div className="c_header-cartCount whitespace-nowrap">
-                      <CartButton
-                        cartCount={cartCount}
-                        label={t('cart')}
-                        onClick={() => setIsCartOpen(true)}
-                      />
                     </div>
                   </div>
                 </div>

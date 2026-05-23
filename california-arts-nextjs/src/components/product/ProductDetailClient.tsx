@@ -412,7 +412,7 @@ export default function ProductDetailClient({
   initialVariantId?: number;
   product: Product;
 }) {
-  const { addCartItem, setIsCartOpen, t } = useLayout();
+  const { t } = useLayout();
   const colors = getProductColors(product);
   const sizes = getProductSizes(product);
   const sizeSelectorStyle = getSizeSelectorStyle(product);
@@ -483,7 +483,7 @@ export default function ProductDetailClient({
     : requiresSize && !selSize
       ? t("selectSize")
       : selectedVariantAvailable
-        ? t("addToBag")
+        ? "order qua instagram"
         : t("unavailable");
 
   const price = selVariant
@@ -492,12 +492,6 @@ export default function ProductDetailClient({
   const cmpPrice = selVariant?.compare_at_price
     ? formatPrice(selVariant.compare_at_price)
     : null;
-  const selectedImage =
-    selVariant?.featured_image?.src ||
-    imgs[0]?.src ||
-    product.images[0]?.src ||
-    product.videos?.[0]?.poster ||
-    "";
   const selectedColorLabel = selColor ? getColorLabel(product, selColor) : "";
   const displayTitle = selectedColorLabel ? `${product.title} | ${selectedColorLabel}` : product.title;
 
@@ -614,25 +608,10 @@ export default function ProductDetailClient({
     });
   };
 
-  const addSelectedVariantToCart = () => {
+  const orderSelectedVariantViaInstagram = () => {
     if (!canAddToBag || !selVariant) return;
 
-    addCartItem({
-      productId: product.id,
-      handle: product.handle,
-      title: product.title,
-      image: selectedImage,
-      variantId: selVariant.id,
-      variantTitle: selVariant.title,
-      color: selColor || undefined,
-      size: selSize || undefined,
-      sku: selVariant.sku,
-      price: Number.parseInt(selVariant.price || "0", 10) || 0,
-      compareAtPrice: selVariant.compare_at_price
-        ? Number.parseInt(selVariant.compare_at_price, 10)
-        : null,
-    });
-    setIsCartOpen(true);
+    window.open(BRAND_INSTAGRAM_PROFILE_URL, "_blank", "noopener,noreferrer");
   };
 
   const safeMobileIdx =
@@ -847,7 +826,7 @@ export default function ProductDetailClient({
             <button
               className="product-detail__add-button"
               disabled={!canAddToBag}
-              onClick={addSelectedVariantToCart}
+              onClick={orderSelectedVariantViaInstagram}
               type="button"
             >
               {buttonLabel}

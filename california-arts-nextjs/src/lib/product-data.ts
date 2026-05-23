@@ -8,6 +8,7 @@ type MediaDoc = {
   filename?: string
   alt?: string
   sourceUrl?: string
+  source_url?: string
   poster?: MediaDoc | number | string
   originalWidth?: number
   originalHeight?: number
@@ -132,7 +133,15 @@ let allProductsCache:
 
 function mediaUrl(media: MediaDoc | number | string | undefined, fallback?: string): string {
   if (media && typeof media === 'object') {
-    const src = media.url || media.sourceUrl || (media.filename ? `/media/${media.filename}` : undefined)
+    const mediaSourceUrl = media.sourceUrl || media.source_url
+    const localUploadUrl =
+      media.url && !media.url.startsWith('/api/media/file/') ? media.url : undefined
+    const src =
+      mediaSourceUrl ||
+      fallback ||
+      localUploadUrl ||
+      (media.filename ? `/media/${media.filename}` : undefined) ||
+      media.url
     if (src) return normalizeImageUrl(src)
   }
 
