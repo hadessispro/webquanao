@@ -36,9 +36,25 @@ export default function OurStoryPage() {
     <section className="story-page bg-primary-background text-primary-text">
       <div className="story-page__sections">
         {storySections.map((section, index) => (
-          <section className="story-page__section" key={section.label}>
+          <section
+            className={
+              section.media
+                ? 'story-page__section story-page__section--has-media'
+                : 'story-page__section'
+            }
+            key={section.label}
+          >
             <div className="story-page__bar">
               <p>{section.label}</p>
+            </div>
+
+            <div className="story-page__content story-page__content--right">
+              <div className="story-page__copy">
+                <h2>{section.title}</h2>
+                {section.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </div>
 
             {section.media && (
@@ -49,25 +65,10 @@ export default function OurStoryPage() {
                   height={980}
                   priority={index === 0}
                   src={section.media.src}
-                  width={1800}
+                  width={5120}
                 />
               </div>
             )}
-
-            <div
-              className={
-                index % 2 === 0
-                  ? 'story-page__content story-page__content--left'
-                  : 'story-page__content story-page__content--right'
-              }
-            >
-              <div className="story-page__copy">
-                <h2>{section.title}</h2>
-                {section.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
           </section>
         ))}
       </div>

@@ -30,6 +30,7 @@ const DESKTOP_SPAN_CLASS: Record<NonNullable<ProductCardProps["desktopSpan"]>, s
 export default function ProductCard({ product, desktopSpan = 3 }: ProductCardProps) {
   const router = useRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   const mainImage = getMainImageUrl(product);
   const hoverImage = getHoverImageUrl(product);
   const aspectRatio = getImageAspectRatio(product);
@@ -72,12 +73,16 @@ export default function ProductCard({ product, desktopSpan = 3 }: ProductCardPro
               >
                 <img
                   className="responsive-image block absolute top-0 left-0 w-full h-full transition-opacity duration-200 ease-in-out"
-                  src={mainImage}
+                  src={imageFailed ? "/media/dien-mark-black.png" : mainImage}
                   alt={product.title}
                   loading="lazy"
+                  onError={() => {
+                    setImageFailed(true);
+                    setImageLoaded(true);
+                  }}
                   onLoad={() => setImageLoaded(true)}
                   style={{
-                    objectFit: "cover",
+                    objectFit: imageFailed ? "contain" : "cover",
                     opacity: imageLoaded ? 1 : 0,
                   }}
                 />
@@ -172,7 +177,7 @@ export default function ProductCard({ product, desktopSpan = 3 }: ProductCardPro
 
               {/* Sold out indicator */}
               <div className="ca_pro-sold">
-                {soldOut && <span>Sold out</span>}
+                {soldOut && <span>hết hàng</span>}
               </div>
             </div>
           </div>

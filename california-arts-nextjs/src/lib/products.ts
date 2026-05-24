@@ -186,18 +186,29 @@ export function isProductSoldOut(product: Product): boolean {
 
 // Get main image URL (already local)
 export function getMainImageUrl(product: Product): string {
-  return product.images[0]?.src || "";
+  return (
+    product.images[0]?.src ||
+    product.variants.find((variant) => variant.featured_image?.src)?.featured_image?.src ||
+    ""
+  );
 }
 
 // Get hover image URL (second image)
 export function getHoverImageUrl(product: Product): string | null {
-  if (product.images.length < 2) return null;
-  return product.images[1]?.src || null;
+  if (product.images.length >= 2) return product.images[1]?.src || null;
+
+  const variantImage = product.variants
+    .map((variant) => variant.featured_image?.src)
+    .find((src) => src && src !== getMainImageUrl(product));
+
+  return variantImage || null;
 }
 
 // Get image aspect ratio
 export function getImageAspectRatio(product: Product): number {
-  const img = product.images[0];
+  const img =
+    product.images[0] ||
+    product.variants.find((variant) => variant.featured_image?.src)?.featured_image;
   if (!img || !img.width || !img.height) return 149.83;
   return (img.height / img.width) * 100;
 }

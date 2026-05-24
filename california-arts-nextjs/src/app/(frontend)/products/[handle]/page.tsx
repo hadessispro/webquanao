@@ -44,6 +44,10 @@ export default async function ProductDetailPage({
     notFound();
   }
 
+  const suggestedProducts = (await getAllStorefrontProducts())
+    .filter((item) => item.handle !== product.handle)
+    .slice(0, 4);
+
   const initialVariantId = Array.isArray(variantParam)
     ? Number.parseInt(variantParam[0] || "0", 10)
     : Number.parseInt(variantParam || "0", 10);
@@ -54,6 +58,7 @@ export default async function ProductDetailPage({
       initialColorParam={initialColorParam}
       initialVariantId={Number.isFinite(initialVariantId) ? initialVariantId : 0}
       product={product}
+      suggestedProducts={suggestedProducts}
     />
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import Link from "next/link";
 import { useLayout } from "@/context/LayoutContext";
 import { BrandPrice } from "@/components/ui/BrandCurrency";
 import { formatVndAmount } from "@/lib/price";
@@ -243,6 +244,12 @@ function getSizeSelectorStyle(product: Product) {
   return "text";
 }
 
+function isPantsProduct(product: Product) {
+  const text = `${product.title} ${product.handle} ${product.product_type} ${product.tags.join(" ")}`.toLowerCase();
+
+  return /\b(pant|pants|trouser|trousers|jean|jeans|short|shorts|denim)\b|quần/.test(text);
+}
+
 function formatPrice(value?: string) {
   return formatVndAmount(value);
 }
@@ -407,10 +414,12 @@ export default function ProductDetailClient({
   initialColorParam,
   initialVariantId = 0,
   product,
+  suggestedProducts = [],
 }: {
   initialColorParam?: string;
   initialVariantId?: number;
   product: Product;
+  suggestedProducts?: Product[];
 }) {
   const { t } = useLayout();
   const colors = getProductColors(product);
@@ -449,6 +458,7 @@ export default function ProductDetailClient({
   const [recommendedSize, setRecommendedSize] = useState<string | null>(null);
   const [openFinderDropdown, setOpenFinderDropdown] =
     useState<SizeFinderDropdownKey | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const imgs = useMemo(
     () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
@@ -458,6 +468,18 @@ export default function ProductDetailClient({
     () => buildProductMediaItems(product, imgs),
     [imgs, product],
   );
+  const imageMediaItems = useMemo(
+    () =>
+      mediaItems.filter(
+        (item): item is Extract<ProductDetailMediaItem, { type: "image" }> =>
+          item.type === "image",
+      ),
+    [mediaItems],
+  );
+  const lightboxItem =
+    lightboxIndex !== null ? imageMediaItems[lightboxIndex] : undefined;
+  const showFitPreference = !isPantsProduct(product);
+  const activeSizeFinderFit = showFitPreference ? desiredFit : "thoải mái";
   const colorVariants = useMemo(
     () =>
       selColor
@@ -571,7 +593,7 @@ export default function ProductDetailClient({
   };
 
   const handleFindSize = () => {
-    setRecommendedSize(resolveSizeRecommendation(desiredFit, selectedHeight, selectedWeight));
+    setRecommendedSize(resolveSizeRecommendation(activeSizeFinderFit, selectedHeight, selectedWeight));
   };
 
   const closeSizeFinder = () => {
@@ -614,6 +636,29 @@ export default function ProductDetailClient({
     window.open(BRAND_INSTAGRAM_PROFILE_URL, "_blank", "noopener,noreferrer");
   };
 
+  const openLightbox = (index: number) => {
+    if (index < 0) return;
+    setLightboxIndex(index);
+  };
+
+  const closeLightbox = () => {
+    setLightboxIndex(null);
+  };
+
+  const nextLightboxImage = () => {
+    setLightboxIndex((current) => {
+      if (current === null || imageMediaItems.length === 0) return current;
+      return current === imageMediaItems.length - 1 ? 0 : current + 1;
+    });
+  };
+
+  const prevLightboxImage = () => {
+    setLightboxIndex((current) => {
+      if (current === null || imageMediaItems.length === 0) return current;
+      return current === 0 ? imageMediaItems.length - 1 : current - 1;
+    });
+  };
+
   const safeMobileIdx =
     mediaItems.length > 0 ? Math.min(mobileIdx, mediaItems.length - 1) : 0;
   const currentMobileMedia = mediaItems[safeMobileIdx];
@@ -633,11 +678,22 @@ export default function ProductDetailClient({
                 key={item.key}
               >
                 {item.type === "image" ? (
-                  <ProductMediaImage
-                    image={item.image}
-                    index={index}
-                    title={product.title}
-                  />
+                  <button
+                    aria-label={`xem lớn ${product.title}`}
+                    className="product-detail__media-button"
+                    onClick={() =>
+                      openLightbox(
+                        imageMediaItems.findIndex((imageItem) => imageItem.key === item.key),
+                      )
+                    }
+                    type="button"
+                  >
+                    <ProductMediaImage
+                      image={item.image}
+                      index={index}
+                      title={product.title}
+                    />
+                  </button>
                 ) : (
                   <ProductMediaVideo video={item.video} />
                 )}
@@ -652,11 +708,22 @@ export default function ProductDetailClient({
           {currentMobileMedia ? (
             <div className="product-detail__mobile-frame">
               {currentMobileMedia.type === "image" ? (
-                <ProductMediaImage
-                  image={currentMobileMedia.image}
-                  index={safeMobileIdx}
-                  title={product.title}
-                />
+                <button
+                  aria-label={`xem lớn ${product.title}`}
+                  className="product-detail__media-button"
+                  onClick={() =>
+                    openLightbox(
+                      imageMediaItems.findIndex((imageItem) => imageItem.key === currentMobileMedia.key),
+                    )
+                  }
+                  type="button"
+                >
+                  <ProductMediaImage
+                    image={currentMobileMedia.image}
+                    index={safeMobileIdx}
+                    title={product.title}
+                  />
+                </button>
               ) : (
                 <ProductMediaVideo video={currentMobileMedia.video} />
               )}
@@ -717,13 +784,6 @@ export default function ProductDetailClient({
                 <BrandPrice amount={price} />
               </div>
             </div>
-
-            {product.body_html && (
-              <div
-                className="product-detail__description"
-                dangerouslySetInnerHTML={{ __html: product.body_html }}
-              />
-            )}
 
             {colors.length > 1 && (
               <div
@@ -860,6 +920,93 @@ export default function ProductDetailClient({
         </aside>
       </div>
 
+      {suggestedProducts.length > 0 && (
+        <section className="product-detail__suggestions" aria-label="sản phẩm gợi ý">
+          <div className="product-detail__suggestions-head">
+            <p>sản phẩm gợi ý</p>
+          </div>
+          <div className="product-detail__suggestions-grid">
+            {suggestedProducts.map((item) => {
+              const firstImage = item.images[0];
+              const firstVariant = item.variants[0];
+
+              return (
+                <Link
+                  className="product-detail__suggestion"
+                  href={`/products/${item.handle}`}
+                  key={item.id}
+                >
+                  {firstImage && (
+                    <img
+                      alt={firstImage.alt || item.title}
+                      className="product-detail__suggestion-image"
+                      loading="lazy"
+                      src={firstImage.src}
+                    />
+                  )}
+                  <span className="product-detail__suggestion-title">{item.title}</span>
+                  {firstVariant && (
+                    <span className="product-detail__suggestion-price">
+                      <BrandPrice amount={formatPrice(firstVariant.price)} />
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {lightboxItem && (
+        <div
+          aria-modal="true"
+          className="product-detail__lightbox"
+          onClick={closeLightbox}
+          role="dialog"
+        >
+          <button
+            aria-label="đóng ảnh"
+            className="product-detail__lightbox-close"
+            onClick={closeLightbox}
+            type="button"
+          >
+            ×
+          </button>
+          {imageMediaItems.length > 1 && (
+            <>
+              <button
+                aria-label="ảnh trước"
+                className="product-detail__lightbox-nav product-detail__lightbox-nav--prev"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  prevLightboxImage();
+                }}
+                type="button"
+              >
+                ‹
+              </button>
+              <button
+                aria-label="ảnh kế tiếp"
+                className="product-detail__lightbox-nav product-detail__lightbox-nav--next"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  nextLightboxImage();
+                }}
+                type="button"
+              >
+                ›
+              </button>
+            </>
+          )}
+          <img
+            alt={lightboxItem.image.alt || product.title}
+            className="product-detail__lightbox-image"
+            onClick={(event) => event.stopPropagation()}
+            src={lightboxItem.image.src}
+          />
+        </div>
+      )}
+
       {isSizeFinderOpen && (
         <div
           aria-hidden="true"
@@ -908,47 +1055,49 @@ export default function ProductDetailClient({
 
             {sizeFinderView === "finder" ? (
               <div className="product-detail__finder">
-                <label className="product-detail__finder-field product-detail__finder-field--full">
-                  <span>dáng sản phẩm mong muốn:</span>
-                  <div className="product-detail__finder-fit-options" role="tablist" aria-label="Dáng sản phẩm mong muốn">
-                    <button
-                      aria-selected={desiredFit === "ôm"}
-                      className={
-                        desiredFit === "ôm"
-                          ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
-                          : "product-detail__finder-fit-option"
-                      }
-                      onClick={() => {
-                        setDesiredFit("ôm");
-                        setOpenFinderDropdown(null);
-                        setSelectedWeight("");
-                        setRecommendedSize(null);
-                      }}
-                      role="tab"
-                      type="button"
-                    >
-                      ôm
-                    </button>
-                    <button
-                      aria-selected={desiredFit === "thoải mái"}
-                      className={
-                        desiredFit === "thoải mái"
-                          ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
-                          : "product-detail__finder-fit-option"
-                      }
-                      onClick={() => {
-                        setDesiredFit("thoải mái");
-                        setOpenFinderDropdown(null);
-                        setSelectedWeight("");
-                        setRecommendedSize(null);
-                      }}
-                      role="tab"
-                      type="button"
-                    >
-                      thoải mái
-                    </button>
-                  </div>
-                </label>
+                {showFitPreference && (
+                  <label className="product-detail__finder-field product-detail__finder-field--full">
+                    <span>dáng sản phẩm mong muốn:</span>
+                    <div className="product-detail__finder-fit-options" role="tablist" aria-label="Dáng sản phẩm mong muốn">
+                      <button
+                        aria-selected={desiredFit === "ôm"}
+                        className={
+                          desiredFit === "ôm"
+                            ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
+                            : "product-detail__finder-fit-option"
+                        }
+                        onClick={() => {
+                          setDesiredFit("ôm");
+                          setOpenFinderDropdown(null);
+                          setSelectedWeight("");
+                          setRecommendedSize(null);
+                        }}
+                        role="tab"
+                        type="button"
+                      >
+                        ôm
+                      </button>
+                      <button
+                        aria-selected={desiredFit === "thoải mái"}
+                        className={
+                          desiredFit === "thoải mái"
+                            ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
+                            : "product-detail__finder-fit-option"
+                        }
+                        onClick={() => {
+                          setDesiredFit("thoải mái");
+                          setOpenFinderDropdown(null);
+                          setSelectedWeight("");
+                          setRecommendedSize(null);
+                        }}
+                        role="tab"
+                        type="button"
+                      >
+                        thoải mái
+                      </button>
+                    </div>
+                  </label>
+                )}
                 <FinderDropdown
                   isOpen={openFinderDropdown === "height"}
                   label="chiều cao:"
@@ -982,7 +1131,7 @@ export default function ProductDetailClient({
                       current === "weight" ? null : "weight",
                     )
                   }
-                  options={SIZE_FINDER_CHART[desiredFit].weightRanges.map((option) => ({
+                  options={SIZE_FINDER_CHART[activeSizeFinderFit].weightRanges.map((option) => ({
                     label: option,
                     value: option,
                   }))}

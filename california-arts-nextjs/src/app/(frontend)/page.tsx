@@ -6,7 +6,6 @@ export default async function HomePage() {
   const hero = await getHomeHeroData()
   const desktopImage = hero.desktopImage
   const mobileImage = hero.mobileImage || desktopImage
-  const eyebrow = hero.eyebrowVi || hero.eyebrow
   const title = hero.titleVi || hero.title
   const body = hero.bodyVi || hero.body
   const ctaLabel = hero.ctaLabelVi || hero.ctaLabel
@@ -38,9 +37,8 @@ export default async function HomePage() {
             className="home-hero__overlay"
             style={{ opacity: hero.overlayOpacity }}
           />
-          {(eyebrow || title || body || ctaLabel) && (
+          {(title || body || ctaLabel) && (
             <span className="home-hero__content">
-              {eyebrow && <span className="home-hero__eyebrow">{eyebrow}</span>}
               {title && <span className="home-hero__title">{title}</span>}
               {body && <span className="home-hero__body">{body}</span>}
               {ctaLabel && <span className="home-hero__cta">{ctaLabel}</span>}

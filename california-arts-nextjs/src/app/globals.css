@@ -5326,3 +5326,645 @@ body#california-arts .dien-footer__brand p {
   margin-top: 2px !important;
   transform: none !important;
 }
+
+/* Latest feedback pass: hero CTA, story layout, product dividers, and product detail utilities. */
+body#california-arts .home-hero__eyebrow {
+  display: none !important;
+}
+
+body#california-arts .home-hero__cta {
+  background: #050505 !important;
+  border-color: #050505 !important;
+  border-radius: 0 !important;
+  color: #fdfcf9 !important;
+  font-family: var(--ui-font-stack) !important;
+  opacity: 0.8;
+  transition: opacity 0.16s ease, background-color 0.16s ease;
+}
+
+body#california-arts .home-hero__link:hover .home-hero__cta {
+  opacity: 1;
+}
+
+body#california-arts .story-page__section--has-media .story-page__content {
+  min-height: clamp(170px, 18vw, 260px) !important;
+}
+
+body#california-arts .story-page__content {
+  justify-content: flex-end !important;
+  padding: 38px 34px 42px !important;
+}
+
+body#california-arts .story-page__copy {
+  max-width: min(470px, 100%) !important;
+}
+
+body#california-arts .story-page__media {
+  border-bottom: 1px solid rgba(19, 24, 24, 0.16) !important;
+}
+
+body#california-arts .story-page__media-image {
+  aspect-ratio: 32 / 9 !important;
+  height: auto !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+body#california-arts .product-grid__bar section {
+  border-bottom: 0 !important;
+  border-top: 0 !important;
+  position: relative;
+}
+
+body#california-arts .product-grid__bar section::after {
+  border-bottom: 1px solid rgba(19, 24, 24, 0.24);
+  bottom: 0;
+  content: "";
+  left: clamp(24px, 3vw, 52px);
+  pointer-events: none;
+  position: absolute;
+  right: clamp(24px, 3vw, 52px);
+}
+
+body#california-arts .product-grid__bar .multi-column {
+  align-items: center !important;
+  column-gap: 24px !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  min-height: 54px !important;
+  row-gap: 2px !important;
+}
+
+body#california-arts .product-grid__bar h2 {
+  font-family: var(--ui-font-stack) !important;
+  font-weight: 700 !important;
+  grid-column: 3 / -1 !important;
+  grid-row: 1 !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  text-align: right !important;
+}
+
+body#california-arts .product-grid__bar .product-grid__bar-copy {
+  grid-column: 3 / -1 !important;
+  grid-row: 2 !important;
+  justify-content: flex-end !important;
+  justify-self: stretch !important;
+  max-width: none !important;
+  padding: 0 !important;
+  text-align: right !important;
+}
+
+body#california-arts .product-grid__bar .product-grid__bar-copy p {
+  text-align: right !important;
+  text-wrap: balance;
+}
+
+body#california-arts .product-detail__media-button {
+  background: transparent;
+  border: 0;
+  cursor: zoom-in;
+  display: block;
+  padding: 0;
+  width: 100%;
+}
+
+body#california-arts .product-detail__media-button .product-detail__image {
+  transition: filter 0.16s ease;
+}
+
+body#california-arts .product-detail__media-button:hover .product-detail__image {
+  filter: brightness(0.96);
+}
+
+body#california-arts .product-detail__lightbox {
+  align-items: center;
+  background: rgba(5, 5, 5, 0.78);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 28px;
+  position: fixed;
+  z-index: 150;
+}
+
+body#california-arts .product-detail__lightbox-image {
+  background: var(--dien-bg);
+  max-height: calc(100svh - 72px);
+  max-width: calc(100vw - 96px);
+  object-fit: contain;
+}
+
+body#california-arts .product-detail__lightbox-close,
+body#california-arts .product-detail__lightbox-nav {
+  background: transparent;
+  border: 0;
+  color: #fdfcf9;
+  cursor: pointer;
+  font-family: var(--ui-font-stack) !important;
+  line-height: 1;
+  position: fixed;
+  z-index: 151;
+}
+
+body#california-arts .product-detail__lightbox-close {
+  font-size: 30px;
+  right: 24px;
+  top: 20px;
+}
+
+body#california-arts .product-detail__lightbox-nav {
+  font-size: 46px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+body#california-arts .product-detail__lightbox-nav--prev {
+  left: 24px;
+}
+
+body#california-arts .product-detail__lightbox-nav--next {
+  right: 24px;
+}
+
+body#california-arts .product-detail__modal {
+  max-width: 430px !important;
+  padding: 18px 20px 20px !important;
+  width: min(100%, 430px) !important;
+}
+
+body#california-arts .product-detail__finder {
+  gap: 16px !important;
+}
+
+body#california-arts .product-detail__finder-trigger {
+  min-height: 44px !important;
+}
+
+body#california-arts .product-detail__finder-fit-option,
+body#california-arts .product-detail__finder-submit {
+  min-height: 42px !important;
+}
+
+body#california-arts .product-detail__size-chart-scroll {
+  overflow: visible !important;
+}
+
+body#california-arts .product-detail__size-chart table {
+  min-width: 0 !important;
+}
+
+body#california-arts .product-detail__size-chart th,
+body#california-arts .product-detail__size-chart td {
+  font-size: 12px !important;
+  padding: 5px 4px !important;
+}
+
+body#california-arts .product-detail__suggestions {
+  background: var(--dien-bg);
+  border-top: 1px solid rgba(19, 24, 24, 0.16);
+  padding: 32px 28px 44px;
+}
+
+body#california-arts .product-detail__suggestions-head p {
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size);
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+
+body#california-arts .product-detail__suggestions-grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+body#california-arts .product-detail__suggestion {
+  color: inherit;
+  display: grid;
+  gap: 8px;
+  text-decoration: none !important;
+}
+
+body#california-arts .product-detail__suggestion-image {
+  aspect-ratio: 3 / 4;
+  background: #f4f3ef;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+body#california-arts .product-detail__suggestion-title,
+body#california-arts .product-detail__suggestion-price {
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  line-height: 1.18 !important;
+}
+
+@media (max-width: 767px) {
+  body#california-arts .story-page__content {
+    justify-content: flex-start !important;
+    padding: 30px 22px 34px !important;
+  }
+
+  body#california-arts .story-page__media-image {
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  body#california-arts .product-grid__bar .multi-column {
+    grid-template-columns: 1fr !important;
+    min-height: 62px !important;
+    padding-bottom: 8px !important;
+    padding-top: 8px !important;
+  }
+
+  body#california-arts .product-grid__bar h2,
+  body#california-arts .product-grid__bar .product-grid__bar-copy {
+    grid-column: 1 !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+
+  body#california-arts .product-grid__bar .product-grid__bar-copy p {
+    text-align: left !important;
+    text-wrap: wrap;
+  }
+
+  body#california-arts .product-detail__suggestions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body#california-arts .product-detail__lightbox-image {
+    max-width: calc(100vw - 40px);
+  }
+}
+
+/* Final feedback consolidation: keep the storefront on one tone, tighten footer/pages, and clean menu/popup/product states. */
+html,
+body#california-arts {
+  background: var(--dien-bg) !important;
+  min-height: 100% !important;
+}
+
+body#california-arts #page-wrapper {
+  background: var(--dien-bg) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  min-height: 100svh !important;
+}
+
+body#california-arts #MainContent {
+  background: var(--dien-bg) !important;
+  flex: 1 0 auto !important;
+}
+
+body#california-arts #shopify-section-footer {
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+}
+
+body#california-arts :where(.cms-page, .contact-page, .cms-page__section, .contact-page__static, .cms-page--policy-static) {
+  background: var(--dien-bg) !important;
+  min-height: 0 !important;
+}
+
+body#california-arts :where(.cms-page__section--intro, .contact-page--static .contact-page__static) {
+  padding-bottom: clamp(38px, 6vw, 72px) !important;
+  padding-top: clamp(42px, 7vw, 86px) !important;
+}
+
+body#california-arts .cms-page__eyebrow {
+  color: rgba(19, 24, 24, 0.58) !important;
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  margin: 0 0 14px !important;
+}
+
+body#california-arts .cms-page h1 {
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-heading-size) !important;
+  line-height: 1.04 !important;
+  margin: 0 0 16px !important;
+}
+
+body#california-arts .cms-page p {
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  line-height: 1.34 !important;
+}
+
+body#california-arts .site-header-stack:not(.site-header-stack--home) .c_header,
+body#california-arts .site-header-stack--scrolled .c_header,
+body#california-arts .site-header-stack--search-open .c_header,
+body#california-arts .site-header-stack--menu-open .c_header {
+  background: var(--dien-bg) !important;
+  border-bottom: 1px solid rgba(19, 24, 24, 0.18) !important;
+  color: #131818 !important;
+}
+
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .c_header {
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+body#california-arts .site-header-stack--menu-open .c_header,
+body#california-arts .site-header-stack--search-open .c_header {
+  background: var(--dien-bg) !important;
+  border-bottom-color: rgba(19, 24, 24, 0.18) !important;
+  color: #131818 !important;
+}
+
+body#california-arts .site-announcement {
+  background: #050505 !important;
+  color: var(--dien-bg) !important;
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  min-height: 28px !important;
+}
+
+body#california-arts .site-header-stack--scrolled .site-announcement,
+body#california-arts .site-header-stack--search-open .site-announcement,
+body#california-arts .site-header-stack--menu-open .site-announcement,
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled) .site-announcement {
+  display: none !important;
+}
+
+body#california-arts .c_header-main a,
+body#california-arts .c_header-main button,
+body#california-arts .site-announcement,
+body#california-arts .product-detail__text-link,
+body#california-arts .product-detail__add-button,
+body#california-arts .product-detail__info-tab,
+body#california-arts .home-hero__cta,
+body#california-arts .dien-footer__newsletter button,
+body#california-arts .dien-footer__links a {
+  letter-spacing: 0 !important;
+}
+
+body#california-arts .dien-product-menu__tab {
+  font-family: var(--heading-font-stack) !important;
+  font-size: calc(var(--dien-heading-size) + 2px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+body#california-arts .dien-product-menu__heading {
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+body#california-arts .dien-product-menu__link {
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  letter-spacing: 0 !important;
+}
+
+body#california-arts .dien-product-menu__groups {
+  gap: 34px !important;
+}
+
+body#california-arts .dien-product-menu__group {
+  gap: 8px !important;
+}
+
+body#california-arts .art-menu .art-menu__tab {
+  font-family: var(--heading-font-stack) !important;
+  font-size: calc(var(--dien-heading-size) + 2px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.04 !important;
+}
+
+body#california-arts .art-menu .art-menu__primary {
+  gap: 30px !important;
+}
+
+body#california-arts .art-menu .art-menu__product-group {
+  gap: 8px !important;
+}
+
+body#california-arts .art-menu .art-menu__product-heading,
+body#california-arts .art-menu .art-menu__product-heading--link {
+  color: #131818 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.12 !important;
+}
+
+body#california-arts .art-menu .art-menu__product-list {
+  gap: 6px !important;
+}
+
+body#california-arts .art-menu .art-menu__primary-link {
+  color: #131818 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.14 !important;
+}
+
+body#california-arts .art-menu .art-menu__primary-link--disabled {
+  color: rgba(19, 24, 24, 0.42) !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+body#california-arts .newsletter-popup__panel {
+  border-radius: 0 !important;
+  gap: 16px !important;
+  padding: 26px 56px 18px !important;
+  width: min(560px, calc(100vw - 48px)) !important;
+}
+
+body#california-arts .newsletter-popup__copy {
+  align-items: center !important;
+  display: grid !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+body#california-arts .newsletter-popup__headline {
+  align-items: baseline !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 10px !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+body#california-arts .newsletter-popup__headline span {
+  font-family: var(--heading-font-stack) !important;
+  font-size: clamp(34px, 4vw, 43px) !important;
+  font-style: italic !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  line-height: 0.94 !important;
+}
+
+body#california-arts .newsletter-popup__wordmark {
+  flex: 0 0 auto !important;
+  max-width: 86px !important;
+  transform: translateY(0.06em) !important;
+  width: 86px !important;
+}
+
+body#california-arts .newsletter-popup__description {
+  color: rgba(19, 24, 24, 0.58) !important;
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  line-height: 1.32 !important;
+  margin: 2px auto 8px !important;
+  max-width: 430px !important;
+  text-align: center !important;
+}
+
+body#california-arts .newsletter-popup__form input {
+  border-bottom-color: rgba(19, 24, 24, 0.32) !important;
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  padding: 8px 0 7px !important;
+  text-align: left !important;
+}
+
+body#california-arts .newsletter-popup__actions {
+  align-items: center !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 18px !important;
+}
+
+body#california-arts .newsletter-popup__dismiss {
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  text-align: left !important;
+}
+
+body#california-arts .newsletter-popup__submit {
+  background: #050505 !important;
+  border: 1px solid #050505 !important;
+  border-radius: 0 !important;
+  color: var(--dien-bg) !important;
+  font-family: var(--ui-font-stack) !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 700 !important;
+  min-height: 34px !important;
+  min-width: 126px !important;
+}
+
+body#california-arts .newsletter-popup__privacy {
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  margin-top: -6px !important;
+}
+
+body#california-arts .product-grid__bar .multi-column {
+  align-items: center !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  min-height: 44px !important;
+}
+
+body#california-arts .product-grid__bar h2,
+body#california-arts .product-grid__bar .product-grid__bar-copy {
+  align-self: center !important;
+  grid-column: 3 / -1 !important;
+  justify-self: end !important;
+  text-align: right !important;
+}
+
+body#california-arts .product-grid__bar h2 {
+  font-size: 14px !important;
+  line-height: 1.1 !important;
+}
+
+body#california-arts .product-grid__bar .product-grid__bar-copy p {
+  font-size: 14px !important;
+  line-height: 1.16 !important;
+  max-width: min(720px, 100%) !important;
+  white-space: normal !important;
+}
+
+body#california-arts .ca_pro-item:hover,
+body#california-arts .ca_pro-item:hover .c_grid-inner,
+body#california-arts .ca_pro-item:focus-within,
+body#california-arts .ca_pro-item:focus-within .c_grid-inner,
+body#california-arts .increase-target:focus-visible {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+body#california-arts .responsive-image-placeholder {
+  background: var(--dien-bg) !important;
+}
+
+body#california-arts .dien-footer__inner {
+  align-items: end !important;
+  gap: 10px !important;
+  padding: 14px 28px 12px !important;
+}
+
+body#california-arts .dien-footer__logo img {
+  max-height: 64px !important;
+  max-width: 178px !important;
+}
+
+body#california-arts .dien-footer__brand {
+  gap: 6px !important;
+}
+
+body#california-arts .dien-footer__brand p {
+  font-family: var(--ui-font-stack) !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  margin-top: 6px !important;
+  transform: none !important;
+}
+
+body#california-arts .dien-footer__links a,
+body#california-arts .dien-footer__newsletter input,
+body#california-arts .dien-footer__newsletter button {
+  font-size: var(--dien-subheading-size) !important;
+}
+
+@media (max-width: 767px) {
+  body#california-arts .newsletter-popup__panel {
+    padding: 22px 18px 16px !important;
+    width: min(100%, calc(100vw - 20px)) !important;
+  }
+
+  body#california-arts .newsletter-popup__headline {
+    justify-content: center !important;
+  }
+
+  body#california-arts .newsletter-popup__headline span {
+    font-size: clamp(28px, 9vw, 35px) !important;
+  }
+
+  body#california-arts .newsletter-popup__wordmark {
+    max-width: 72px !important;
+    width: 72px !important;
+  }
+
+  body#california-arts .product-grid__bar .multi-column {
+    grid-template-columns: 1fr !important;
+  }
+
+  body#california-arts .product-grid__bar h2,
+  body#california-arts .product-grid__bar .product-grid__bar-copy {
+    grid-column: 1 !important;
+    justify-self: stretch !important;
+    text-align: left !important;
+  }
+
+  body#california-arts .product-grid__bar .product-grid__bar-copy p {
+    text-align: left !important;
+  }
+}
