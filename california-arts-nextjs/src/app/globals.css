@@ -6012,3 +6012,35 @@ body#california-arts .dien-footer__newsletter button {
     text-align: left !important;
   }
 }
+
+body#california-arts .product-grid__bar,
+body#california-arts .shop-all-page__intro > .c_text-columns-section,
+body#california-arts .collection-product-page__intro > .c_text-columns-section {
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  width: 100vw !important;
+}
+
+body#california-arts .product-grid__bar section,
+body#california-arts .shop-all-page__intro > .c_text-columns-section > section,
+body#california-arts .collection-product-page__intro > .c_text-columns-section > section {
+  width: 100vw !important;
+}
+
+body#california-arts .product-grid__bar section::after {
+  left: 0 !important;
+  right: 0 !important;
+}
+
+body#california-arts .story-page__media {
+  overflow: visible !important;
+}
+
+body#california-arts .story-page__media-image {
+  aspect-ratio: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  width: 100% !important;
+}

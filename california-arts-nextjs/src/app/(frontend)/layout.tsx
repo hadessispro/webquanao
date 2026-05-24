@@ -50,6 +50,9 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   return (
     <html className="js" data-scroll-behavior="auto" lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/media/d-brandmark.png?v=20260524e" type="image/png" />
+        <link rel="shortcut icon" href="/media/d-brandmark.png?v=20260524e" type="image/png" />
+        <link rel="apple-touch-icon" href="/media/d-brandmark.png?v=20260524e" />
         <link rel="stylesheet" href="/css/theme.min.css?v=20260517b" />
         <link rel="stylesheet" href="/css/component.css?v=20260517b" />
         <style dangerouslySetInnerHTML={{ __html: typographyOverride }} />
