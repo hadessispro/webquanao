@@ -5367,8 +5367,8 @@ body#california-arts .story-page__media-image {
   aspect-ratio: 32 / 9 !important;
   height: auto !important;
   max-height: none !important;
-  object-fit: cover !important;
-  object-position: center !important;
+  object-fit: contain !important;
+  object-position: center center !important;
 }
 
 body#california-arts .product-grid__bar section {
@@ -5773,6 +5773,50 @@ body#california-arts .art-menu .art-menu__primary-link--disabled {
   color: rgba(19, 24, 24, 0.42) !important;
   cursor: default !important;
   pointer-events: none !important;
+}
+
+body#california-arts .dien-product-menu__heading--link,
+body#california-arts .dien-product-menu__link,
+body#california-arts .art-menu .art-menu__product-heading--link,
+body#california-arts .art-menu .art-menu__primary-link {
+  transition: color 0.16s ease, opacity 0.16s ease !important;
+}
+
+body#california-arts .dien-product-menu__heading--link:hover,
+body#california-arts .dien-product-menu__heading--link:focus-visible,
+body#california-arts .dien-product-menu__heading--link:active,
+body#california-arts .dien-product-menu__link:not(.dien-product-menu__link--disabled):hover,
+body#california-arts .dien-product-menu__link:not(.dien-product-menu__link--disabled):focus-visible,
+body#california-arts .dien-product-menu__link:not(.dien-product-menu__link--disabled):active,
+body#california-arts .art-menu .art-menu__product-heading--link:hover,
+body#california-arts .art-menu .art-menu__product-heading--link:focus-visible,
+body#california-arts .art-menu .art-menu__product-heading--link:active,
+body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-link--disabled):hover,
+body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-link--disabled):focus-visible,
+body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-link--disabled):active {
+  color: #131818 !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+body#california-arts .dien-product-menu__heading--link:hover,
+body#california-arts .dien-product-menu__heading--link:focus-visible,
+body#california-arts .dien-product-menu__heading--link:active,
+body#california-arts .art-menu .art-menu__product-heading--link:hover,
+body#california-arts .art-menu .art-menu__product-heading--link:focus-visible,
+body#california-arts .art-menu .art-menu__product-heading--link:active {
+  font-family: var(--ui-font-stack) !important;
+  font-weight: 700 !important;
+}
+
+body#california-arts .dien-product-menu__link:not(.dien-product-menu__link--disabled):hover,
+body#california-arts .dien-product-menu__link:not(.dien-product-menu__link--disabled):focus-visible,
+body#california-arts .dien-product-menu__link:not(.dien-product-menu__link--disabled):active,
+body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-link--disabled):hover,
+body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-link--disabled):focus-visible,
+body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-link--disabled):active {
+  font-family: var(--ui-font-stack) !important;
+  font-weight: 400 !important;
 }
 
 body#california-arts .newsletter-popup__panel {

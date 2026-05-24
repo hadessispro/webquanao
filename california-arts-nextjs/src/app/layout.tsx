@@ -3,6 +3,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Điển",
   description: "Điển. Accessible design by producing less & building better.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/media/d-brandmark.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/media/d-brandmark.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
