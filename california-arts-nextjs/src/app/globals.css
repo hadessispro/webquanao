@@ -5799,6 +5799,13 @@ body#california-arts .art-menu .art-menu__primary-link:not(.art-menu__primary-li
   text-decoration: none !important;
 }
 
+body#california-arts .dien-product-menu,
+body#california-arts .dien-product-menu *,
+body#california-arts .art-menu,
+body#california-arts .art-menu * {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
 body#california-arts .newsletter-popup__panel {
   border-radius: 0 !important;
   gap: 16px !important;
