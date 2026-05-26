@@ -5212,7 +5212,7 @@ body#california-arts .dien-product-menu__groups {
 }
 
 body#california-arts .dien-product-menu__tab {
-  font-family: var(--heading-font-stack) !important;
+  font-family: var(--ui-font-stack) !important;
   font-size: var(--dien-heading-size) !important;
   font-weight: 700 !important;
   letter-spacing: -0.04em !important;
@@ -5731,7 +5731,7 @@ body#california-arts .dien-product-menu__group {
 }
 
 body#california-arts .art-menu .art-menu__tab {
-  font-family: var(--heading-font-stack) !important;
+  font-family: var(--ui-font-stack) !important;
   font-size: calc(var(--dien-heading-size) + 2px) !important;
   font-weight: 700 !important;
   letter-spacing: 0 !important;
