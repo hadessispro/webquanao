@@ -85,7 +85,7 @@ export default function ProductGrid({
           ref={barRef}
         >
           <section className={barSectionClass}>
-            <div className="px-8 lg:px-88 section-x-padding py-2">
+            <div className="section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 text-left text-base lg:text-base">
                 <div className="product-grid__bar-content">
                   <h2 className="font-body text-base">{barLabel}</h2>

@@ -6254,24 +6254,25 @@ body#california-arts .collection-page-intro__bar > section::after {
   border-bottom: 1px solid rgba(19, 24, 24, 0.22);
   bottom: 0;
   content: "";
-  left: clamp(24px, 3vw, 56px);
+  left: 16px;
   pointer-events: none;
   position: absolute;
-  right: clamp(24px, 3vw, 56px);
+  right: 16px;
 }
 
 body#california-arts .collection-page-intro__inner {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   min-height: clamp(190px, 18vw, 300px) !important;
-  padding: clamp(32px, 4vw, 68px) 28px !important;
+  padding-block: clamp(32px, 4vw, 68px) !important;
+  padding-inline: 1rem !important;
 }
 
 body#california-arts .collection-page-intro__copy {
   align-self: start !important;
   display: grid !important;
   gap: 10px !important;
-  grid-column: 2 !important;
+  grid-column: 1 !important;
   justify-self: start !important;
   max-width: min(620px, 100%) !important;
   text-align: left !important;
@@ -6305,12 +6306,7 @@ body#california-arts .product-grid__bar > section {
 }
 
 body#california-arts .product-grid__bar > section::after {
-  border-bottom: 1px solid rgba(19, 24, 24, 0.24) !important;
-  bottom: 0 !important;
-  content: "" !important;
-  left: clamp(24px, 3vw, 56px) !important;
-  position: absolute !important;
-  right: clamp(24px, 3vw, 56px) !important;
+  content: none !important;
 }
 
 body#california-arts .product-grid__bar .multi-column {
@@ -6341,8 +6337,19 @@ body#california-arts .product-grid__bar-content h2 {
   justify-content: flex-start !important;
   justify-self: stretch !important;
   line-height: 1.16 !important;
-  margin: 0 !important;
+  margin: 0 0 5px !important;
+  padding: 0 0 8px !important;
+  position: relative !important;
   text-align: left !important;
+}
+
+body#california-arts .product-grid__bar-content h2::after {
+  border-bottom: 1px solid rgba(19, 24, 24, 0.24);
+  bottom: 0;
+  content: "";
+  left: clamp(8px, 1vw, 16px);
+  position: absolute;
+  right: clamp(8px, 1vw, 16px);
 }
 
 body#california-arts .product-grid__bar-content .product-grid__bar-copy {
@@ -6396,6 +6403,20 @@ body#california-arts .newsletter-popup__dismiss:hover {
   font-weight: 700 !important;
 }
 
+body#california-arts .product-grid__bar,
+body#california-arts .shop-all-page__intro > .c_text-columns-section,
+body#california-arts .collection-product-page__intro > .c_text-columns-section {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+body#california-arts .product-grid__bar > section,
+body#california-arts .shop-all-page__intro > .c_text-columns-section > section,
+body#california-arts .collection-product-page__intro > .c_text-columns-section > section {
+  width: 100% !important;
+}
+
 @media (max-width: 767px) {
   body#california-arts .story-page__content,
   body#california-arts .collection-page-intro__inner,
@@ -6420,7 +6441,8 @@ body#california-arts .newsletter-popup__dismiss:hover {
 
   body#california-arts .collection-page-intro__inner {
     min-height: 0 !important;
-    padding: 30px 22px 36px !important;
+    padding-block: 30px 36px !important;
+    padding-inline: 0.5rem !important;
   }
 
   body#california-arts .product-grid__bar-content {
