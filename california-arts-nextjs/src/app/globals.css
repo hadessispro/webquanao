@@ -6251,13 +6251,7 @@ body#california-arts .collection-page-intro__bar > section {
 }
 
 body#california-arts .collection-page-intro__bar > section::after {
-  border-bottom: 1px solid rgba(19, 24, 24, 0.22);
-  bottom: 0;
-  content: "";
-  left: 16px;
-  pointer-events: none;
-  position: absolute;
-  right: 16px;
+  content: none !important;
 }
 
 body#california-arts .collection-page-intro__inner {
