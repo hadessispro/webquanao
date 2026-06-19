@@ -2866,9 +2866,20 @@ body.art-menu-lock {
   width: 84px;
 }
 
-.search-overlay__result span {
+.search-overlay__result > span {
   display: grid;
   gap: 6px;
+}
+
+.search-overlay__result .brand-price {
+  align-items: baseline;
+  display: inline-flex;
+  justify-self: start;
+  width: auto;
+}
+
+.search-overlay__result .brand-price > span {
+  display: inline-block;
 }
 
 .search-overlay__result strong {
@@ -5755,6 +5766,10 @@ body#california-arts .site-announcement {
   min-height: 28px !important;
 }
 
+body#california-arts .site-announcement .brand-currency-mark {
+  filter: brightness(0) invert(1) !important;
+}
+
 body#california-arts .site-header-stack--scrolled .site-announcement,
 body#california-arts .site-header-stack--search-open .site-announcement,
 body#california-arts .site-header-stack--menu-open .site-announcement,
@@ -5843,8 +5858,12 @@ body#california-arts .art-menu .art-menu__primary-link {
 
 body#california-arts .art-menu .art-menu__primary-link--disabled {
   color: rgba(19, 24, 24, 0.42) !important;
-  cursor: default !important;
+  cursor: text !important;
   pointer-events: none !important;
+}
+
+body#california-arts .dien-product-menu__link--disabled {
+  cursor: text !important;
 }
 
 body#california-arts .dien-product-menu__heading--link,
