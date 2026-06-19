@@ -6313,11 +6313,12 @@ body#california-arts .product-grid__bar .multi-column {
 body#california-arts .product-grid__bar-content {
   align-self: center !important;
   display: grid !important;
-  gap: 4px !important;
-  grid-column: 2 !important;
+  gap: 5px 0 !important;
+  grid-column: 1 / -1 !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   justify-self: stretch !important;
   min-width: 0 !important;
-  padding: 0 28px 0 14px !important;
+  padding: 0 !important;
   text-align: left !important;
 }
 
@@ -6326,24 +6327,22 @@ body#california-arts .product-grid__bar-content h2 {
   font-family: var(--heading-font-stack) !important;
   font-size: var(--dien-body-size) !important;
   font-weight: 700 !important;
-  grid-column: auto !important;
+  grid-column: 2 !important;
   grid-row: auto !important;
   justify-content: flex-start !important;
   justify-self: stretch !important;
   line-height: 1.16 !important;
-  margin: 0 0 5px !important;
-  padding: 0 0 8px !important;
-  position: relative !important;
+  margin: 0 !important;
+  padding: 0 14px !important;
   text-align: left !important;
 }
 
-body#california-arts .product-grid__bar-content h2::after {
+body#california-arts .product-grid__bar-divider {
   border-bottom: 1px solid rgba(19, 24, 24, 0.24);
-  bottom: 0;
-  content: "";
-  left: clamp(8px, 1vw, 16px);
-  position: absolute;
-  right: clamp(8px, 1vw, 16px);
+  grid-column: 1 / -1 !important;
+  height: 1px;
+  margin: 0 !important;
+  width: 100%;
 }
 
 body#california-arts .product-grid__bar-content .product-grid__bar-copy {
@@ -6351,13 +6350,13 @@ body#california-arts .product-grid__bar-content .product-grid__bar-copy {
   font-family: var(--body-font-stack) !important;
   font-size: var(--dien-body-size) !important;
   font-weight: 400 !important;
-  grid-column: auto !important;
+  grid-column: 2 !important;
   grid-row: auto !important;
   justify-self: stretch !important;
   line-height: 1.24 !important;
   margin: 0 !important;
   max-width: none !important;
-  padding: 0 !important;
+  padding: 0 14px !important;
   text-align: left !important;
 }
 
@@ -6440,6 +6439,13 @@ body#california-arts .collection-product-page__intro > .c_text-columns-section >
   }
 
   body#california-arts .product-grid__bar-content {
-    padding: 0 16px !important;
+    grid-template-columns: 1fr !important;
+    padding: 0 !important;
+  }
+
+  body#california-arts .product-grid__bar-content h2,
+  body#california-arts .product-grid__bar-content .product-grid__bar-copy {
+    grid-column: 1 !important;
+    padding-inline: 8px !important;
   }
 }

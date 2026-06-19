@@ -89,6 +89,7 @@ export default function ProductGrid({
               <div className="multi-column col-gap-lg lg:col-count-3 text-left text-base lg:text-base">
                 <div className="product-grid__bar-content">
                   <h2 className="font-body text-base">{barLabel}</h2>
+                  <div aria-hidden="true" className="product-grid__bar-divider" />
                   {barDescriptionHtml ? (
                     <div
                       className="rte text-sm product-grid__bar-copy"
