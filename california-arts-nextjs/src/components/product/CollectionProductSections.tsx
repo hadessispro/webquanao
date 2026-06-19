@@ -34,15 +34,7 @@ function productSectionTitle(product: Product, index: number) {
 }
 
 function IntroFeaturedSpacer() {
-  return (
-    <section className="featured-collection border-grid-color collection-product-page__intro-spacer">
-      <div className="py-8">
-        <div className="bg-primary-background section-x-padding px-88 py-8">
-          <ul className="grid grid-cols-2 lg:grid-cols-12 gap-gutter" />
-        </div>
-      </div>
-    </section>
-  );
+  return <div aria-hidden="true" className="collection-product-page__intro-spacer" />;
 }
 
 function getLocalizedCollectionTitle(collection: StorefrontCollection) {

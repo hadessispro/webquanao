@@ -1753,6 +1753,11 @@ body#california-arts .bg-footer-background,
   margin: 5px 0;
 }
 
+.collection-product-page__intro-spacer {
+  height: 16px;
+  margin: 0;
+}
+
 .shop-all-page__intro-spacer ul,
 .collection-product-page__intro-spacer ul {
   min-height: 1px;
@@ -6257,8 +6262,8 @@ body#california-arts .collection-page-intro__bar > section::after {
 body#california-arts .collection-page-intro__inner {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  min-height: clamp(190px, 18vw, 300px) !important;
-  padding-block: clamp(32px, 4vw, 68px) !important;
+  min-height: 0 !important;
+  padding-block: 32px !important;
   padding-inline: 1rem !important;
 }
 
