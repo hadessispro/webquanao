@@ -1,13 +1,85 @@
+@font-face {
+  font-family: "SVN Arial 3";
+  src: url("/fonts/svn-arial-3-regular.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "SVN Arial 3";
+  src: url("/fonts/svn-arial-3-italic.ttf") format("truetype");
+  font-display: swap;
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "SVN Arial 3";
+  src: url("/fonts/svn-arial-3-bold.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "SVN Arial 3";
+  src: url("/fonts/svn-arial-3-bold-italic.ttf") format("truetype");
+  font-display: swap;
+  font-style: italic;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Arial;
+  src: url("/fonts/svn-arial-3-regular.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Arial;
+  src: url("/fonts/svn-arial-3-bold.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "SVN Times New Roman 2";
+  src: local("SVN-Times New Roman 2"), local("SVN Times New Roman 2"), local("Times New Roman");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "SVN Times New Roman 2";
+  src: local("SVN-Times New Roman 2 Bold"), local("SVN Times New Roman 2 Bold"), local("Times New Roman Bold");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "SVN Times New Roman 2";
+  src: local("SVN-Times New Roman 2 Italic"), local("SVN Times New Roman 2 Italic"), local("Times New Roman Italic");
+  font-display: swap;
+  font-style: italic;
+  font-weight: 400;
+}
+
 /* === STICKY FOOTER === */
 :root {
   --dien-bg: #fdfcf9;
   --dien-heading-size: 22px;
   --dien-subheading-size: 17px;
   --dien-body-size: 16px;
-  --body-font-stack: "Times New Roman", Times, serif;
-  --serif-font-stack: "Times New Roman", Times, serif;
+  --body-font-stack: "SVN Times New Roman 2", "Times New Roman", Times, serif;
+  --serif-font-stack: "SVN Times New Roman 2", "Times New Roman", Times, serif;
   --heading-font-stack: var(--serif-font-stack);
-  --ui-font-stack: Arial, Helvetica, sans-serif;
+  --ui-font-stack: "SVN Arial 3", Arial, Helvetica, sans-serif;
   --base-font-size: var(--dien-body-size);
   --color-body-bg: var(--dien-bg);
   --color-primary-background: var(--dien-bg);
@@ -6030,4 +6102,300 @@ body#california-arts .story-page__media-image {
   object-fit: contain !important;
   object-position: center center !important;
   width: 100% !important;
+}
+
+/* SVN typography and single-tone surface guard. */
+html,
+body#california-arts,
+body#california-arts #page-wrapper,
+body#california-arts #MainContent,
+body#california-arts .site-footer,
+body#california-arts .dien-footer,
+body#california-arts :where(.cms-page, .contact-page, .story-page, .product-detail, .collection-product-page, .shop-all-page) {
+  background-color: var(--dien-bg) !important;
+}
+
+body#california-arts .site-header-stack--scrolled .c_header,
+body#california-arts .site-header-stack--search-open .c_header,
+body#california-arts .site-header-stack--menu-open .c_header,
+body#california-arts .site-header-stack:not(.site-header-stack--home) .c_header {
+  background-color: var(--dien-bg) !important;
+}
+
+body#california-arts :where(
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .home-hero__cta,
+  .cms-page__button,
+  .collection-product-page__next-cta-button,
+  .product-detail__add-button,
+  .product-detail__finder-submit,
+  .newsletter-popup__submit,
+  .newsletter-popup__dismiss,
+  .newsletter-popup__continue,
+  .contact-intake-form__submit,
+  .checkout-page__submit,
+  .cart-drawer__checkout,
+  .cart-drawer__continue,
+  .search-overlay__submit,
+  .dien-footer__newsletter button
+),
+body#california-arts :where(
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  .home-hero__cta,
+  .cms-page__button,
+  .collection-product-page__next-cta-button,
+  .product-detail__add-button,
+  .product-detail__finder-submit,
+  .newsletter-popup__submit,
+  .newsletter-popup__dismiss,
+  .newsletter-popup__continue,
+  .contact-intake-form__submit,
+  .checkout-page__submit,
+  .cart-drawer__checkout,
+  .cart-drawer__continue,
+  .search-overlay__submit,
+  .dien-footer__newsletter button
+):is(:hover, :focus, :focus-visible, :active) {
+  font-family: var(--ui-font-stack) !important;
+  font-weight: 400 !important;
+}
+
+/* Feedback pass: footer tagline, split copy, 32:9 story media, and unified product bars. */
+body#california-arts .dien-footer__brand p {
+  font-family: var(--ui-font-stack) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+}
+
+body#california-arts .story-page__content {
+  align-items: start !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  justify-content: stretch !important;
+  padding: clamp(38px, 5vw, 76px) 28px !important;
+}
+
+body#california-arts .story-page__copy {
+  grid-column: 2 !important;
+  justify-self: start !important;
+  max-width: min(520px, 100%) !important;
+  text-align: left !important;
+  width: 100% !important;
+}
+
+body#california-arts .story-page__copy h2,
+body#california-arts .story-page__copy p {
+  text-align: left !important;
+}
+
+body#california-arts .story-page__media {
+  aspect-ratio: 32 / 9 !important;
+  border-bottom: 1px solid rgba(19, 24, 24, 0.16) !important;
+  overflow: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+body#california-arts .story-page__media-image {
+  height: 100% !important;
+  inset: 0 !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  position: absolute !important;
+  width: 100% !important;
+}
+
+body#california-arts .collection-page-intro__bar {
+  background: var(--dien-bg) !important;
+  left: 0;
+  position: sticky;
+  top: var(--header-stack-height, 88px);
+  z-index: 9;
+}
+
+body#california-arts .collection-page-intro__bar > section {
+  border: 0 !important;
+  position: relative !important;
+}
+
+body#california-arts .collection-page-intro__bar > section::after {
+  border-bottom: 1px solid rgba(19, 24, 24, 0.22);
+  bottom: 0;
+  content: "";
+  left: clamp(24px, 3vw, 56px);
+  pointer-events: none;
+  position: absolute;
+  right: clamp(24px, 3vw, 56px);
+}
+
+body#california-arts .collection-page-intro__inner {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  min-height: clamp(190px, 18vw, 300px) !important;
+  padding: clamp(32px, 4vw, 68px) 28px !important;
+}
+
+body#california-arts .collection-page-intro__copy {
+  align-self: start !important;
+  display: grid !important;
+  gap: 10px !important;
+  grid-column: 2 !important;
+  justify-self: start !important;
+  max-width: min(620px, 100%) !important;
+  text-align: left !important;
+}
+
+body#california-arts .collection-page-intro__copy h1 {
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-heading-size) !important;
+  font-weight: 700 !important;
+  line-height: 1.08 !important;
+  margin: 0 !important;
+}
+
+body#california-arts .collection-page-intro__description,
+body#california-arts .collection-page-intro__description p {
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.38 !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+body#california-arts .collection-page-intro__description br {
+  display: none !important;
+}
+
+body#california-arts .product-grid__bar > section {
+  border: 0 !important;
+  position: relative !important;
+}
+
+body#california-arts .product-grid__bar > section::after {
+  border-bottom: 1px solid rgba(19, 24, 24, 0.24) !important;
+  bottom: 0 !important;
+  content: "" !important;
+  left: clamp(24px, 3vw, 56px) !important;
+  position: absolute !important;
+  right: clamp(24px, 3vw, 56px) !important;
+}
+
+body#california-arts .product-grid__bar .multi-column {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  min-height: 64px !important;
+  padding: 8px 0 10px !important;
+}
+
+body#california-arts .product-grid__bar-content {
+  align-self: center !important;
+  display: grid !important;
+  gap: 4px !important;
+  grid-column: 2 !important;
+  justify-self: stretch !important;
+  min-width: 0 !important;
+  padding: 0 28px 0 14px !important;
+  text-align: left !important;
+}
+
+body#california-arts .product-grid__bar-content h2 {
+  display: block !important;
+  font-family: var(--heading-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  font-weight: 700 !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  justify-content: flex-start !important;
+  justify-self: stretch !important;
+  line-height: 1.16 !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+body#california-arts .product-grid__bar-content .product-grid__bar-copy {
+  display: block !important;
+  font-family: var(--body-font-stack) !important;
+  font-size: var(--dien-body-size) !important;
+  font-weight: 400 !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  justify-self: stretch !important;
+  line-height: 1.24 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+body#california-arts .product-grid__bar-content .product-grid__bar-copy p {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  margin: 0 !important;
+  max-width: none !important;
+  text-align: left !important;
+  text-wrap: wrap !important;
+}
+
+body#california-arts button,
+body#california-arts [role="button"],
+body#california-arts input[type="button"],
+body#california-arts input[type="submit"],
+body#california-arts input[type="reset"],
+body#california-arts .home-hero__cta,
+body#california-arts .cms-page__button,
+body#california-arts .collection-product-page__next-cta-button,
+body#california-arts .product-detail__add-button,
+body#california-arts .product-detail__finder-submit,
+body#california-arts .newsletter-popup__submit,
+body#california-arts .newsletter-popup__dismiss,
+body#california-arts .newsletter-popup__continue,
+body#california-arts .contact-intake-form__submit,
+body#california-arts .checkout-page__submit,
+body#california-arts .cart-drawer__checkout,
+body#california-arts .cart-drawer__continue,
+body#california-arts .search-overlay__submit,
+body#california-arts .dien-footer__newsletter button {
+  font-family: var(--ui-font-stack) !important;
+  font-weight: 400 !important;
+}
+
+@media (max-width: 767px) {
+  body#california-arts .story-page__content,
+  body#california-arts .collection-page-intro__inner,
+  body#california-arts .product-grid__bar .multi-column {
+    grid-template-columns: 1fr !important;
+  }
+
+  body#california-arts .story-page__copy,
+  body#california-arts .collection-page-intro__copy,
+  body#california-arts .product-grid__bar-content {
+    grid-column: 1 !important;
+  }
+
+  body#california-arts .story-page__content {
+    padding: 32px 22px 38px !important;
+  }
+
+  body#california-arts .collection-page-intro__bar {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  body#california-arts .collection-page-intro__inner {
+    min-height: 0 !important;
+    padding: 30px 22px 36px !important;
+  }
+
+  body#california-arts .product-grid__bar-content {
+    padding: 0 16px !important;
+  }
 }

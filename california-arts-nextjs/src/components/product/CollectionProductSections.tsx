@@ -88,29 +88,19 @@ export default function CollectionProductSections({
   return (
     <>
       <div className="collection-product-page__intro">
-        <div className="c_text-columns-section">
-          <section className="bg-primary-background text-primary-text overflow-hidden border-b-grid border-grid-color">
-            <div className="px-8 lg:px-88 section-x-padding py-2">
-              <div className="multi-column col-gap-lg lg:col-count-3 space-y-2 text-left text-base lg:text-base">
-                <div className="rte px-4 text-sm">
-                  <p>{getLocalizedCollectionTitle(collection)}</p>
-                </div>
+        <div className="c_text-columns-section collection-page-intro__bar">
+          <section className="bg-primary-background text-primary-text overflow-hidden">
+            <div className="section-x-padding collection-page-intro__inner">
+              <div className="collection-page-intro__copy">
+                <h1>{getLocalizedCollectionTitle(collection)}</h1>
+                <div
+                  className="rte collection-page-intro__description"
+                  dangerouslySetInnerHTML={{ __html: introHtml }}
+                />
               </div>
             </div>
           </section>
         </div>
-
-        <section className="bg-primary-background text-primary-text overflow-hidden border-t-grid border-transparent">
-          <div className="px-8 lg:px-8 pb-4">
-            <div className="flex text-sm default text-left">
-              <div className="w-full">
-                <div className="rte font-body break-words px-4">
-                  <div dangerouslySetInnerHTML={{ __html: introHtml }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <IntroFeaturedSpacer />
       </div>

@@ -7,14 +7,18 @@ import { getFooterData, getHeaderData, getNewsletterPopupData } from '@/lib/layo
 
 const typographyOverride = `
   :root {
-    --dien-body-font-stack: "Times New Roman", Times, serif;
-    --dien-ui-font-stack: Arial, Helvetica, sans-serif;
+    --dien-body-font-stack: "SVN Times New Roman 2", "Times New Roman", Times, serif;
+    --dien-ui-font-stack: "SVN Arial 3", Arial, Helvetica, sans-serif;
+    --body-font-stack: var(--dien-body-font-stack);
+    --serif-font-stack: var(--dien-body-font-stack);
+    --heading-font-stack: var(--dien-body-font-stack);
+    --ui-font-stack: var(--dien-ui-font-stack);
   }
 
   body#california-arts,
-  body#california-arts *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.c_megamenu-upper):not(.c_megamenu-upper *):not(.dien-product-menu):not(.dien-product-menu *):not(.art-menu):not(.art-menu *),
-  body#california-arts *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.c_megamenu-upper):not(.c_megamenu-upper *):not(.dien-product-menu):not(.dien-product-menu *):not(.art-menu):not(.art-menu *)::before,
-  body#california-arts *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.c_megamenu-upper):not(.c_megamenu-upper *):not(.dien-product-menu):not(.dien-product-menu *):not(.art-menu):not(.art-menu *)::after {
+  body#california-arts *,
+  body#california-arts *::before,
+  body#california-arts *::after {
     font-family: var(--dien-body-font-stack) !important;
   }
 
@@ -36,6 +40,7 @@ const typographyOverride = `
   body#california-arts .checkout-page__submit,
   body#california-arts .cart-drawer__checkout,
   body#california-arts .cart-drawer__continue,
+  body#california-arts .dien-footer__brand p,
   body#california-arts .c_megamenu-upper,
   body#california-arts .c_megamenu-upper *,
   body#california-arts .dien-product-menu,

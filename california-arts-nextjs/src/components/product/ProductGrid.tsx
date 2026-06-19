@@ -38,8 +38,6 @@ export default function ProductGrid({
     (visibleProducts.length <= 1 ? 12 : visibleProducts.length === 2 ? 6 : visibleProducts.length === 3 ? 4 : 3);
   const barSectionClass = [
     "bg-primary-background text-primary-text overflow-hidden",
-    stickyBar && barStuck ? "" : "border-t-grid",
-    "border-b-grid border-grid-color",
   ]
     .filter(Boolean)
     .join(" ");
@@ -89,15 +87,17 @@ export default function ProductGrid({
           <section className={barSectionClass}>
             <div className="px-8 lg:px-88 section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 text-left text-base lg:text-base">
-                <h2 className="px-4 font-body text-base">{barLabel}</h2>
-                {barDescriptionHtml ? (
-                  <div
-                    className="rte px-4 text-sm product-grid__bar-copy"
-                    dangerouslySetInnerHTML={{ __html: barDescriptionHtml }}
-                  />
-                ) : (
-                  <div className="rte px-4 text-sm product-grid__bar-copy" />
-                )}
+                <div className="product-grid__bar-content">
+                  <h2 className="font-body text-base">{barLabel}</h2>
+                  {barDescriptionHtml ? (
+                    <div
+                      className="rte text-sm product-grid__bar-copy"
+                      dangerouslySetInnerHTML={{ __html: barDescriptionHtml }}
+                    />
+                  ) : (
+                    <div className="rte text-sm product-grid__bar-copy" />
+                  )}
+                </div>
               </div>
             </div>
           </section>

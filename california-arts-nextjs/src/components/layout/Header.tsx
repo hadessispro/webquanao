@@ -377,6 +377,7 @@ export default function Header({ header }: HeaderProps) {
     settleFrameId = window.requestAnimationFrame(updateHeaderState)
     settleTimerId = window.setTimeout(updateHeaderState, 120)
     window.addEventListener('scroll', queueUpdate, { passive: true })
+    document.addEventListener('scroll', queueUpdate, { capture: true, passive: true })
     window.addEventListener('resize', queueUpdate)
 
     return () => {
@@ -384,6 +385,7 @@ export default function Header({ header }: HeaderProps) {
       if (settleFrameId) window.cancelAnimationFrame(settleFrameId)
       if (settleTimerId) window.clearTimeout(settleTimerId)
       window.removeEventListener('scroll', queueUpdate)
+      document.removeEventListener('scroll', queueUpdate, true)
       window.removeEventListener('resize', queueUpdate)
       document.documentElement.style.removeProperty('--header-stack-height')
       document.documentElement.classList.remove('site-footer-near')

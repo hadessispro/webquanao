@@ -62,7 +62,7 @@ export default function OurStoryPage() {
                 <Image
                   alt={section.media.alt}
                   className="story-page__media-image"
-                  height={980}
+                  height={1080}
                   priority={index === 0}
                   src={section.media.src}
                   width={5120}
