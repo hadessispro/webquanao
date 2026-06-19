@@ -5946,7 +5946,12 @@ body#california-arts .newsletter-popup__actions {
 body#california-arts .newsletter-popup__dismiss {
   font-family: var(--body-font-stack) !important;
   font-size: var(--dien-subheading-size) !important;
+  font-weight: 400 !important;
   text-align: left !important;
+}
+
+body#california-arts .newsletter-popup__dismiss:hover {
+  font-weight: 700 !important;
 }
 
 body#california-arts .newsletter-popup__submit {
@@ -5956,7 +5961,7 @@ body#california-arts .newsletter-popup__submit {
   color: var(--dien-bg) !important;
   font-family: var(--ui-font-stack) !important;
   font-size: var(--dien-subheading-size) !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   min-height: 34px !important;
   min-width: 126px !important;
 }
@@ -6366,6 +6371,10 @@ body#california-arts .search-overlay__submit,
 body#california-arts .dien-footer__newsletter button {
   font-family: var(--ui-font-stack) !important;
   font-weight: 400 !important;
+}
+
+body#california-arts .newsletter-popup__dismiss:hover {
+  font-weight: 700 !important;
 }
 
 @media (max-width: 767px) {

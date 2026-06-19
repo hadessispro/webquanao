@@ -1,6 +1,6 @@
 'use client'
 
-import React, { FormEvent, useEffect, useMemo, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLayout } from '@/context/LayoutContext'
@@ -8,20 +8,10 @@ import type { NewsletterPopupData } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 
 const SUBSCRIBED_UNTIL_KEY = 'dien_newsletter_popup_subscribed_until_v6'
+const SEEN_THIS_SESSION_KEY = 'dien_newsletter_popup_seen_this_session_v2'
 
 function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
-}
-
-function pathMatches(pathname: string, paths: string[]) {
-  return paths.some((path) => {
-    if (!path) return false
-    if (path.endsWith('*')) {
-      return pathname.startsWith(path.slice(0, -1))
-    }
-
-    return pathname === path
-  })
 }
 
 function rememberSubscribe(days: number) {
@@ -58,27 +48,20 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     locale === 'vi'
       ? 'abc*'
       : localizedText(locale, settings.privacyText, settings.privacyTextVi)
-  const popupEnabled = settings.enabled !== false || pathname === '/'
-  const popupPaths =
-    settings.showOnPaths && settings.showOnPaths.length > 0
-      ? settings.showOnPaths
-      : ['/']
-  const canShowOnPath = useMemo(
-    () => pathMatches(pathname, popupPaths),
-    [pathname, popupPaths],
-  )
+  const popupEnabled = pathname === '/'
+  const canShowOnPath = pathname === '/'
 
   useEffect(() => {
     if (!popupEnabled || !canShowOnPath || isCartOpen || isMobileMenuOpen) return undefined
 
     try {
-      const subscribedUntil = Number(window.localStorage.getItem(SUBSCRIBED_UNTIL_KEY) || 0)
-      if (subscribedUntil > Date.now()) return undefined
+      if (window.sessionStorage.getItem(SEEN_THIS_SESSION_KEY) === '1') return undefined
     } catch {
       return undefined
     }
 
     const timer = window.setTimeout(() => {
+      window.sessionStorage.setItem(SEEN_THIS_SESSION_KEY, '1')
       setOpen(true)
     }, Math.min(420, Math.max(0, settings.delayMs || 0)))
 
@@ -169,7 +152,8 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
                   </h2>
                   <p className="newsletter-popup__description">
                     nhận quyền <em>truy cập sớm</em> cho các đợt drop tiếp theo và
-                    <em> miễn phí vận chuyển</em> cho đơn hàng đầu tiên!
+                    <br />
+                    <em>miễn phí vận chuyển</em> cho đơn hàng đầu tiên!
                   </p>
                 </>
               ) : (
