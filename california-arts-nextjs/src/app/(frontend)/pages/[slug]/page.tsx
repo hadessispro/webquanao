@@ -7,7 +7,6 @@ const fallbackPageSlugs = ['privacy-policy', 'returns-exchanges']
 
 const fallbackPages = {
   'privacy-policy': {
-    eyebrow: 'chính sách',
     title: 'chính sách bảo mật',
     body: [
       'điển chỉ thu thập những thông tin cần thiết để hỗ trợ đơn hàng, chăm sóc khách hàng và cải thiện trải nghiệm mua sắm.',
@@ -16,7 +15,6 @@ const fallbackPages = {
     ],
   },
   'returns-exchanges': {
-    eyebrow: 'hỗ trợ',
     title: 'câu hỏi thường gặp',
     body: [
       'các câu hỏi về vận chuyển, đổi trả, chọn size và chăm sóc sản phẩm sẽ được cập nhật tại đây.',
@@ -65,7 +63,6 @@ export default async function DynamicCmsPage({ params }: { params: Promise<{ slu
       <article className="cms-page cms-page--standard cms-page--policy-static">
         <section className="cms-page__section cms-page__section--intro">
           <div className="cms-page__inner cms-page__narrow">
-            <p className="cms-page__eyebrow">{fallbackPage.eyebrow}</p>
             <h1>{fallbackPage.title}</h1>
             {fallbackPage.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>

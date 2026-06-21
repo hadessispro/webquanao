@@ -179,33 +179,70 @@ function ProductMediaVideo({ video }: { video: ProductVideo }) {
 }
 
 const COLOR_MAP: Record<string, string> = {
-  black: "#1a1a1a",
   "jet black": "#0a0a0a",
   "washed black": "#2a2a2a",
-  blue: "#3b5998",
+  "vintage black": "#242424",
+  "sunfaded black": "#3a3a3a",
+  black: "#1a1a1a",
+  "charcoal grey": "#565958",
+  "charcoal melange": "#5f605d",
+  charcoal: "#414442",
+  "grey melange": "#a3a19d",
+  "sunfaded grey": "#8e918c",
+  grey: "#808080",
+  gray: "#808080",
+  "sunfaded indigo": "#51657a",
+  "french blue": "#526f8c",
   "vintage blue": "#4a6fa5",
+  "western blue": "#6c94bd",
+  "light blue": "#a8bfd1",
   "light rinse": "#8ba9c9",
+  indigo: "#304a69",
+  blue: "#3b5998",
+  navy: "#1a2744",
+  "sunfaded forest": "#586455",
+  "sunfaded green": "#737c66",
+  "khaki green": "#72745d",
+  "deep moss": "#535d45",
+  avocado: "#78885d",
+  lichen: "#8c9272",
+  moss: "#667050",
+  sage: "#929984",
+  olive: "#556b2f",
+  green: "#4a6741",
+  "sunfaded red": "#9b625d",
+  "vinyl cherry": "#601f2a",
+  "lizard merlot": "#5c292f",
+  merlot: "#722f37",
+  ganache: "#5b3330",
+  chocolate: "#57392f",
+  "brown melange": "#76685c",
+  red: "#8b2020",
+  "pepper beige": "#ae9e8c",
+  "washed beige": "#c7b7a0",
+  "natural beige": "#d2c4ad",
+  travertine: "#b7aa94",
+  "taupe melange": "#9b9288",
+  taupe: "#9b8d7c",
+  khaki: "#a59570",
+  oat: "#d1c4aa",
+  beige: "#c9b89d",
+  milk: "#f1eee5",
   white: "#f7f7f2",
   "off-white": "#f5f5f0",
   ivory: "#f5f1e3",
   cream: "#f5f0e0",
-  red: "#8b2020",
-  merlot: "#722f37",
-  sienna: "#a0522d",
-  redwood: "#6b3a3a",
-  olive: "#556b2f",
-  green: "#4a6741",
-  grey: "#808080",
-  gray: "#808080",
-  navy: "#1a2744",
-  "sunfaded black": "#3a3a3a",
 };
 
 function colorToHex(name: string): string {
-  const lower = name.toLowerCase();
-  for (const [key, hex] of Object.entries(COLOR_MAP)) {
-    if (lower.includes(key)) return hex;
-  }
+  const lower = name.toLowerCase().trim();
+  if (COLOR_MAP[lower]) return COLOR_MAP[lower];
+
+  const partialMatch = Object.keys(COLOR_MAP)
+    .sort((a, b) => b.length - a.length)
+    .find((key) => lower.includes(key));
+  if (partialMatch) return COLOR_MAP[partialMatch];
+
   return "#c9c9c9";
 }
 
@@ -505,7 +542,7 @@ export default function ProductDetailClient({
     : requiresSize && !selSize
       ? t("selectSize")
       : selectedVariantAvailable
-        ? "order qua instagram"
+        ? "order ngay"
         : t("unavailable");
 
   const price = selVariant
@@ -928,6 +965,7 @@ export default function ProductDetailClient({
           <div className="product-detail__suggestions-grid">
             {suggestedProducts.map((item) => {
               const firstImage = item.images[0];
+              const hoverImage = item.images[1];
               const firstVariant = item.variants[0];
 
               return (
@@ -937,12 +975,23 @@ export default function ProductDetailClient({
                   key={item.id}
                 >
                   {firstImage && (
-                    <img
-                      alt={firstImage.alt || item.title}
-                      className="product-detail__suggestion-image"
-                      loading="lazy"
-                      src={firstImage.src}
-                    />
+                    <span className="product-detail__suggestion-media">
+                      <img
+                        alt={firstImage.alt || item.title}
+                        className="product-detail__suggestion-image product-detail__suggestion-image--primary"
+                        loading="lazy"
+                        src={firstImage.src}
+                      />
+                      {hoverImage && (
+                        <img
+                          alt=""
+                          aria-hidden="true"
+                          className="product-detail__suggestion-image product-detail__suggestion-image--hover"
+                          loading="lazy"
+                          src={hoverImage.src}
+                        />
+                      )}
+                    </span>
                   )}
                   <span className="product-detail__suggestion-title">{item.title}</span>
                   {firstVariant && (

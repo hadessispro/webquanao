@@ -109,7 +109,6 @@ function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div
       className="c_megamenu-upper dien-product-menu absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text"
-      onPointerLeave={onNavigate}
     >
       <div className="dien-product-menu__inner section-x-padding">
         <div className="dien-product-menu__tabs">
@@ -175,7 +174,6 @@ function MegaMenu({
   return (
     <div
       className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color"
-      onPointerLeave={onNavigate}
     >
       <div className="c_megamenu-main section-x-padding text-center">
         <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center">
@@ -217,15 +215,22 @@ function DesktopNavItem({
   item,
   locale,
   onClose,
+  onLeave,
   onOpen,
 }: {
   isOpen: boolean
   item: HeaderNavItem
   locale: Locale
   onClose: () => void
+  onLeave: () => void
   onOpen: () => void
 }) {
-  const hasMegaMenu = Boolean(item.megaMenu?.enabled && (item.megaMenu.columns.length > 0 || item.megaMenu.imageCards.length > 0))
+  const hasMegaMenu = Boolean(
+    item.megaMenu?.enabled &&
+      (item.href === '/collections/shop-all' ||
+        item.megaMenu.columns.length > 0 ||
+        item.megaMenu.imageCards.length > 0),
+  )
 
   const handleBlurCapture = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -237,7 +242,7 @@ function DesktopNavItem({
     <li
       className={['ca_menu-1st-c', hasMegaMenu && isOpen ? 'ca_menu-1st-c--open' : ''].filter(Boolean).join(' ')}
       onMouseEnter={hasMegaMenu ? onOpen : undefined}
-      onMouseLeave={hasMegaMenu ? onClose : undefined}
+      onMouseLeave={hasMegaMenu ? onLeave : undefined}
     >
       <div
         className={hasMegaMenu ? 'no-js-focus-wrapper' : undefined}
@@ -274,6 +279,7 @@ export default function Header({ header }: HeaderProps) {
   const { locale, setIsMobileMenuOpen, t } = useLayout()
   const pathname = usePathname()
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
+  const megaMenuCloseTimerRef = useRef<number | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
@@ -291,10 +297,36 @@ export default function Header({ header }: HeaderProps) {
       ? 'miễn phí vận chuyển cho đơn hàng trên 950,000đ.'
       : 'complimentary shipping on orders over ₫950,000.'
 
+  const cancelMegaMenuClose = () => {
+    if (megaMenuCloseTimerRef.current !== null) {
+      window.clearTimeout(megaMenuCloseTimerRef.current)
+      megaMenuCloseTimerRef.current = null
+    }
+  }
+
+  const closeMegaMenu = () => {
+    cancelMegaMenuClose()
+    setOpenMegaMenuHref(null)
+  }
+
+  const scheduleMegaMenuClose = () => {
+    cancelMegaMenuClose()
+    megaMenuCloseTimerRef.current = window.setTimeout(() => {
+      setOpenMegaMenuHref(null)
+      megaMenuCloseTimerRef.current = null
+    }, 120)
+  }
+
+  const openMegaMenu = (href: string) => {
+    cancelMegaMenuClose()
+    setOpenMegaMenuHref(href)
+  }
+
   useEffect(() => {
     setSearchOpen(false)
     setSearchQuery('')
     setSearchResults([])
+    cancelMegaMenuClose()
     setOpenMegaMenuHref(null)
     setNearFooter(false)
     document.documentElement.classList.remove('site-footer-near')
@@ -354,9 +386,14 @@ export default function Header({ header }: HeaderProps) {
         return
       }
 
-      const footerRect = footer.getBoundingClientRect()
-      const footerRevealPoint = window.innerHeight + Math.min(120, headerHeight + 40)
-      const isNearFooter = scrollTop > 24 && footerRect.top <= footerRevealPoint && footerRect.bottom > 0
+      const footerLogo = footer.querySelector<HTMLElement>('.dien-footer__logo')
+      const footerLogoRect = footerLogo?.getBoundingClientRect()
+      const isNearFooter = Boolean(
+        scrollTop > 24 &&
+          footerLogoRect &&
+          footerLogoRect.top <= window.innerHeight - 8 &&
+          footerLogoRect.bottom >= headerHeight + 8,
+      )
 
       if (isNearFooter) {
         setSearchOpen(false)
@@ -393,30 +430,85 @@ export default function Header({ header }: HeaderProps) {
   }, [pathname, setIsMobileMenuOpen])
 
   useEffect(() => {
+    const footer = document.getElementById('shopify-section-footer')
+    const footerLogo = footer?.querySelector<HTMLElement>('.dien-footer__logo')
+
+    if (!footerLogo || typeof IntersectionObserver === 'undefined') {
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const headerHeight =
+          document.querySelector<HTMLElement>('.site-header-stack')?.getBoundingClientRect().height ||
+          90
+        const logoRect = entry.boundingClientRect
+        const isNearFooter = Boolean(
+          window.scrollY > 24 &&
+            entry.isIntersecting &&
+            logoRect.bottom >= headerHeight + 8,
+        )
+
+        if (isNearFooter) {
+          setSearchOpen(false)
+          closeMegaMenu()
+          setIsMobileMenuOpen(false)
+        }
+
+        setNearFooter(isNearFooter)
+        document.documentElement.classList.toggle('site-footer-near', isNearFooter)
+      },
+      { threshold: [0, 0.01] },
+    )
+
+    observer.observe(footerLogo)
+
+    return () => observer.disconnect()
+  }, [pathname, setIsMobileMenuOpen])
+
+  useEffect(() => {
     if (!openMegaMenuHref) return undefined
 
     const closeIfOutsideMenu = (event: Event) => {
       if (!desktopMenuRef.current?.contains(event.target as Node)) {
-        setOpenMegaMenuHref(null)
+        closeMegaMenu()
       }
+    }
+
+    const trackPointerAroundMenu = (event: PointerEvent) => {
+      if (desktopMenuRef.current?.contains(event.target as Node)) {
+        cancelMegaMenuClose()
+        return
+      }
+
+      scheduleMegaMenuClose()
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setOpenMegaMenuHref(null)
+        closeMegaMenu()
       }
     }
 
     window.addEventListener('pointerdown', closeIfOutsideMenu)
-    window.addEventListener('pointermove', closeIfOutsideMenu, { passive: true })
+    window.addEventListener('pointermove', trackPointerAroundMenu, { passive: true })
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
       window.removeEventListener('pointerdown', closeIfOutsideMenu)
-      window.removeEventListener('pointermove', closeIfOutsideMenu)
+      window.removeEventListener('pointermove', trackPointerAroundMenu)
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [openMegaMenuHref])
+
+  useEffect(
+    () => () => {
+      if (megaMenuCloseTimerRef.current !== null) {
+        window.clearTimeout(megaMenuCloseTimerRef.current)
+      }
+    },
+    [],
+  )
 
   const headerStackClass = [
     'site-header-stack',
@@ -487,10 +579,14 @@ export default function Header({ header }: HeaderProps) {
                     </SmartLink>
                   </h1>
 
-                  <div className="c_header-menu site-header__menu" onMouseLeave={() => setOpenMegaMenuHref(null)} ref={desktopMenuRef}>
+                  <div
+                    className="c_header-menu site-header__menu"
+                    onMouseEnter={cancelMegaMenuClose}
+                    onMouseLeave={scheduleMegaMenuClose}
+                    ref={desktopMenuRef}
+                  >
                     <ul
                       className="c_header-menu-ul flex flex-wrap"
-                      onMouseLeave={() => setOpenMegaMenuHref(null)}
                     >
                       {desktopNavigation.map((item) => (
                         <DesktopNavItem
@@ -498,8 +594,9 @@ export default function Header({ header }: HeaderProps) {
                           item={{ ...item, label: topNavLabel(item, locale), labelVi: topNavLabel(item, 'vi') }}
                           key={`${item.label}-${item.href}`}
                           locale={locale}
-                          onClose={() => setOpenMegaMenuHref((current) => (current === item.href ? null : current))}
-                          onOpen={() => setOpenMegaMenuHref(item.href)}
+                          onClose={closeMegaMenu}
+                          onLeave={scheduleMegaMenuClose}
+                          onOpen={() => openMegaMenu(item.href)}
                         />
                       ))}
                     </ul>

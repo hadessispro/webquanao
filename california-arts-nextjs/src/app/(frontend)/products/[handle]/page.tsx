@@ -44,9 +44,23 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const suggestedProducts = (await getAllStorefrontProducts())
-    .filter((item) => item.handle !== product.handle)
-    .slice(0, 4);
+  const allProducts = await getAllStorefrontProducts()
+  const configuredSuggestions = (product.relatedProductHandles || [])
+    .map((relatedHandle) => allProducts.find((item) => item.handle === relatedHandle))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item))
+  const fallbackSuggestions = allProducts.filter(
+    (item) =>
+      item.handle !== product.handle &&
+      (item.product_type === product.product_type ||
+        item.collections?.some((collection) => product.collections?.includes(collection))),
+  )
+  const suggestedProducts = [...configuredSuggestions, ...fallbackSuggestions]
+    .filter(
+      (item, index, products) =>
+        item.handle !== product.handle &&
+        products.findIndex((candidate) => candidate.handle === item.handle) === index,
+    )
+    .slice(0, 4)
 
   const initialVariantId = Array.isArray(variantParam)
     ? Number.parseInt(variantParam[0] || "0", 10)

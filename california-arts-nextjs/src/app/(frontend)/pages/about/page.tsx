@@ -5,7 +5,6 @@ export default function AboutPage() {
     <article className="cms-page cms-page--contact-static contact-page contact-page--static bg-primary-background text-primary-text">
       <section className="cms-page__section cms-page__section--intro contact-page__static">
         <div className="cms-page__inner cms-page__narrow contact-page__static-inner">
-          <p className="contact-page__eyebrow">liên hệ</p>
           <h1>liên hệ cùng điển</h1>
           <p>
             nếu cần hỗ trợ về đơn hàng, đổi trả, lịch drop mới hoặc những thông tin cần xác nhận

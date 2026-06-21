@@ -91,6 +91,7 @@ export interface Product {
   colorOptions?: ProductColorOption[];
   sizeOptions?: ProductSizeOption[];
   accordions?: ProductAccordion[];
+  relatedProductHandles?: string[];
   collections?: string[];
   published_at: string;
   created_at: string;

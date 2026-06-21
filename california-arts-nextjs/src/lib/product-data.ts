@@ -90,6 +90,7 @@ type PayloadProductDoc = {
     title?: string
     content?: unknown
   }>
+  relatedProducts?: Array<PayloadProductDoc | number | string>
   publishedAt?: string
   shopifyCreatedAt?: string
   shopifyUpdatedAt?: string
@@ -357,6 +358,25 @@ export function normalizePayloadProduct(
   const variants = doc.variants || []
   const images = doc.images || []
   const videos = doc.videos || []
+  const normalizedImages = images
+    .map((image, index) => {
+      const meta = mediaMeta(image.image)
+      const src = mediaUrl(image.image, image.sourceUrl)
+
+      return {
+        id: Number(image.shopifyImageId || index + 1),
+        src,
+        sourceUrl: image.sourceUrl,
+        width: image.width || meta.width || 0,
+        height: image.height || meta.height || 0,
+        position: image.position || index + 1,
+        alt: image.alt || meta.alt,
+        variant_ids: Array.isArray(image.variantIds)
+          ? image.variantIds.map((variant) => Number(variant.shopifyVariantId)).filter(Boolean)
+          : [],
+      }
+    })
+    .filter((image) => image.src)
 
   return {
     id: Number(doc.shopifyId || doc.id),
@@ -379,6 +399,11 @@ export function normalizePayloadProduct(
     variants: variants.map((variant) => {
       const featuredMeta = mediaMeta(variant.featuredImage)
       const featuredSrc = mediaUrl(variant.featuredImage, variant.featuredImageSourceUrl)
+      const matchedImage = normalizedImages.find(
+        (image) =>
+          image.src === featuredSrc ||
+          Boolean(image.sourceUrl && image.sourceUrl === variant.featuredImageSourceUrl),
+      )
 
       return {
         id: Number(variant.shopifyVariantId || variant.id || 0),
@@ -392,34 +417,17 @@ export function normalizePayloadProduct(
         available: variant.available ?? true,
         featured_image: featuredSrc
           ? {
-              id: Number(variant.shopifyVariantId || variant.id || 0),
+              id: matchedImage?.id || Number(variant.shopifyVariantId || variant.id || 0),
               src: featuredSrc,
               alt: featuredMeta.alt || null,
               width: featuredMeta.width || 0,
               height: featuredMeta.height || 0,
+              position: matchedImage?.position,
             }
           : null,
       }
     }),
-    images: images
-      .map((image, index) => {
-        const meta = mediaMeta(image.image)
-        const src = mediaUrl(image.image, image.sourceUrl)
-
-        return {
-          id: Number(image.shopifyImageId || index + 1),
-          src,
-          sourceUrl: image.sourceUrl,
-          width: image.width || meta.width || 0,
-          height: image.height || meta.height || 0,
-          position: image.position || index + 1,
-          alt: image.alt || meta.alt,
-          variant_ids: Array.isArray(image.variantIds)
-            ? image.variantIds.map((variant) => Number(variant.shopifyVariantId)).filter(Boolean)
-            : [],
-        }
-      })
-      .filter((image) => image.src),
+    images: normalizedImages,
     videos: videos
       .map((video, index) => {
         const videoMeta = mediaMeta(video.video)
@@ -484,6 +492,15 @@ export function normalizePayloadProduct(
             html: richTextToHtml(accordion.content),
           }))
           .filter((accordion) => accordion.title)
+      : [],
+    relatedProductHandles: Array.isArray(doc.relatedProducts)
+      ? doc.relatedProducts
+          .map((relatedProduct) =>
+            relatedProduct && typeof relatedProduct === 'object'
+              ? relatedProduct.handle || ''
+              : '',
+          )
+          .filter(Boolean)
       : [],
     published_at: doc.publishedAt || '',
     created_at: doc.shopifyCreatedAt || doc.createdAt || '',

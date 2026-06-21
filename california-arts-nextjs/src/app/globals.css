@@ -5634,12 +5634,35 @@ body#california-arts .product-detail__suggestion {
   text-decoration: none !important;
 }
 
-body#california-arts .product-detail__suggestion-image {
+body#california-arts .product-detail__suggestion-media {
   aspect-ratio: 3 / 4;
   background: #f4f3ef;
-  height: auto;
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+body#california-arts .product-detail__suggestion-image {
+  height: 100%;
+  inset: 0;
   object-fit: cover;
+  position: absolute;
+  transition: opacity 180ms ease;
   width: 100%;
+}
+
+body#california-arts .product-detail__suggestion-image--hover {
+  opacity: 0;
+}
+
+body#california-arts .product-detail__suggestion:hover .product-detail__suggestion-image--primary,
+body#california-arts .product-detail__suggestion:focus-visible .product-detail__suggestion-image--primary {
+  opacity: 0;
+}
+
+body#california-arts .product-detail__suggestion:hover .product-detail__suggestion-image--hover,
+body#california-arts .product-detail__suggestion:focus-visible .product-detail__suggestion-image--hover {
+  opacity: 1;
 }
 
 body#california-arts .product-detail__suggestion-title,
