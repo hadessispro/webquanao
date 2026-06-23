@@ -3,16 +3,86 @@ import '@/app/globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ClientLayout from '@/components/layout/ClientLayout'
-import { getFooterData, getHeaderData, getNewsletterPopupData } from '@/lib/layout-data'
+import {
+  getDesignSystemData,
+  getFooterData,
+  getHeaderData,
+  getNewsletterPopupData,
+} from '@/lib/layout-data'
+import type { DesignSystemData, StorefrontFont } from '@/lib/storefront-types'
 
-const typographyOverride = `
+export const dynamic = 'force-dynamic'
+
+function sanitizeFontFamily(value: string) {
+  return value.replace(/["\\\n\r{};]/g, '').trim()
+}
+
+function fontStack(font: StorefrontFont) {
+  return `"${sanitizeFontFamily(font.family)}", ${font.fallback}`
+}
+
+function fontFormat(source: string) {
+  const cleanSource = source.split('?')[0].toLowerCase()
+  if (cleanSource.endsWith('.woff2')) return 'woff2'
+  if (cleanSource.endsWith('.woff')) return 'woff'
+  if (cleanSource.endsWith('.otf')) return 'opentype'
+  return 'truetype'
+}
+
+function fontFace(font: StorefrontFont) {
+  if (!font.source) return ''
+  const safeSource = font.source.replace(/[<>\n\r]/g, '')
+
+  return `
+    @font-face {
+      font-family: "${sanitizeFontFamily(font.family)}";
+      src: url(${JSON.stringify(safeSource)}) format("${fontFormat(safeSource)}");
+      font-display: swap;
+      font-style: ${font.style};
+      font-weight: ${font.weight};
+    }
+  `
+}
+
+function createDesignSystemStyle(designSystem: DesignSystemData) {
+  const { typography, spacing } = designSystem
+  const fontFaces = Array.from(
+    new Map(
+      [typography.bodyFont, typography.headingFont, typography.uiFont]
+        .filter((font) => font.source)
+        .map((font) => [
+          `${font.family}-${font.weight}-${font.style}-${font.source}`,
+          fontFace(font),
+        ]),
+    ).values(),
+  ).join('\n')
+
+  return `
+  ${fontFaces}
+
   :root {
-    --dien-body-font-stack: "SVN Times New Roman 2", "Times New Roman", Times, serif;
-    --dien-ui-font-stack: "SVN Arial 3", Arial, Helvetica, sans-serif;
+    --dien-body-font-stack: ${fontStack(typography.bodyFont)};
+    --dien-heading-font-stack: ${fontStack(typography.headingFont)};
+    --dien-ui-font-stack: ${fontStack(typography.uiFont)};
     --body-font-stack: var(--dien-body-font-stack);
     --serif-font-stack: var(--dien-body-font-stack);
-    --heading-font-stack: var(--dien-body-font-stack);
+    --heading-font-stack: var(--dien-heading-font-stack);
     --ui-font-stack: var(--dien-ui-font-stack);
+    --dien-heading-size: ${typography.headingSize}px;
+    --dien-subheading-size: ${typography.subheadingSize}px;
+    --dien-body-size: ${typography.bodySize}px;
+    --dien-line-height: ${typography.lineHeight};
+    --dien-letter-spacing: ${typography.letterSpacing}em;
+    --dien-spacing-scale: ${spacing.scale};
+    --dien-page-padding-mobile: ${spacing.pagePaddingMobile}px;
+    --dien-page-padding-desktop: ${spacing.pagePaddingDesktop}px;
+    --dien-grid-gap: ${spacing.gridGap}px;
+    --base-font-size: var(--dien-body-size);
+    --base-line-height: var(--dien-line-height);
+    --spacing: calc(2rem * var(--dien-spacing-scale));
+    --spacing-double: calc(4rem * var(--dien-spacing-scale));
+    --spacing-half: calc(1rem * var(--dien-spacing-scale));
+    --gutter: var(--dien-grid-gap);
   }
 
   body#california-arts,
@@ -20,6 +90,23 @@ const typographyOverride = `
   body#california-arts *::before,
   body#california-arts *::after {
     font-family: var(--dien-body-font-stack) !important;
+    letter-spacing: var(--dien-letter-spacing) !important;
+  }
+
+  body#california-arts {
+    font-size: var(--dien-body-size);
+    line-height: var(--dien-line-height);
+  }
+
+  body#california-arts h1,
+  body#california-arts h2,
+  body#california-arts h3,
+  body#california-arts h4,
+  body#california-arts h5,
+  body#california-arts h6,
+  body#california-arts .font-heading,
+  body#california-arts .font-serif {
+    font-family: var(--dien-heading-font-stack) !important;
   }
 
   body#california-arts button,
@@ -49,13 +136,32 @@ const typographyOverride = `
   body#california-arts .art-menu * {
     font-family: var(--dien-ui-font-stack) !important;
   }
+
+  body#california-arts .section-x-padding {
+    padding-left: var(--dien-page-padding-mobile) !important;
+    padding-right: var(--dien-page-padding-mobile) !important;
+  }
+
+  body#california-arts .gap-gutter,
+  body#california-arts .lg\\:gap-gutter {
+    gap: var(--dien-grid-gap) !important;
+  }
+
+  @media (min-width: 1024px) {
+    body#california-arts .section-x-padding {
+      padding-left: var(--dien-page-padding-desktop) !important;
+      padding-right: var(--dien-page-padding-desktop) !important;
+    }
+  }
 `
+}
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [header, footer, newsletterPopup] = await Promise.all([
+  const [header, footer, newsletterPopup, designSystem] = await Promise.all([
     getHeaderData(),
     getFooterData(),
     getNewsletterPopupData(),
+    getDesignSystemData(),
   ])
 
   return (
@@ -66,7 +172,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <link rel="apple-touch-icon" href="/media/d-brandmark.png?v=20260524e" />
         <link rel="stylesheet" href="/css/theme.min.css?v=20260517b" />
         <link rel="stylesheet" href="/css/component.css?v=20260517b" />
-        <style dangerouslySetInnerHTML={{ __html: typographyOverride }} />
+        <style dangerouslySetInnerHTML={{ __html: createDesignSystemStyle(designSystem) }} />
       </head>
       <body id="california-arts" suppressHydrationWarning>
         <ClientLayout footer={footer} header={header} newsletterPopup={newsletterPopup}>

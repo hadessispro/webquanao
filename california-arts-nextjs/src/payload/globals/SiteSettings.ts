@@ -47,6 +47,173 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
     {
+      name: 'designSystem',
+      type: 'group',
+      label: 'Typography & Spacing',
+      admin: {
+        description:
+          'Global design controls used by the storefront. Uploaded fonts are managed in the Fonts collection.',
+      },
+      fields: [
+        {
+          name: 'typography',
+          type: 'group',
+          fields: [
+            {
+              name: 'bodyFont',
+              type: 'relationship',
+              relationTo: 'fonts',
+              admin: {
+                description:
+                  'Default copy font. When empty, the storefront keeps SVN Times New Roman 2.',
+              },
+            },
+            {
+              name: 'headingFont',
+              type: 'relationship',
+              relationTo: 'fonts',
+              admin: {
+                description:
+                  'Headings and editorial titles. When empty, the body font is used.',
+              },
+            },
+            {
+              name: 'uiFont',
+              type: 'relationship',
+              relationTo: 'fonts',
+              admin: {
+                description:
+                  'Buttons, inputs, navigation, mega menu, and other interface controls. When empty, SVN Arial 3 is used.',
+              },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'headingSize',
+                  type: 'number',
+                  defaultValue: 22,
+                  min: 16,
+                  max: 64,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Heading size in px.',
+                  },
+                },
+                {
+                  name: 'subheadingSize',
+                  type: 'number',
+                  defaultValue: 17,
+                  min: 13,
+                  max: 36,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Subheading size in px.',
+                  },
+                },
+                {
+                  name: 'bodySize',
+                  type: 'number',
+                  defaultValue: 16,
+                  min: 12,
+                  max: 24,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Body text size in px.',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'lineHeight',
+                  type: 'number',
+                  defaultValue: 1.5,
+                  min: 1,
+                  max: 2.2,
+                  admin: {
+                    width: '50%',
+                    step: 0.05,
+                    description: 'Global text line-height.',
+                  },
+                },
+                {
+                  name: 'letterSpacing',
+                  type: 'number',
+                  defaultValue: 0,
+                  min: -0.08,
+                  max: 0.12,
+                  admin: {
+                    width: '50%',
+                    step: 0.005,
+                    description: 'Global letter spacing in em.',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          name: 'spacing',
+          type: 'group',
+          fields: [
+            {
+              name: 'scale',
+              type: 'number',
+              defaultValue: 1,
+              min: 0.7,
+              max: 1.6,
+              admin: {
+                step: 0.05,
+                description:
+                  'Global spacing multiplier. 1 is the current design, 0.9 is tighter, and 1.1 is more spacious.',
+              },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'pagePaddingMobile',
+                  type: 'number',
+                  defaultValue: 16,
+                  min: 0,
+                  max: 64,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Mobile side padding in px.',
+                  },
+                },
+                {
+                  name: 'pagePaddingDesktop',
+                  type: 'number',
+                  defaultValue: 28,
+                  min: 0,
+                  max: 160,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Desktop side padding in px.',
+                  },
+                },
+                {
+                  name: 'gridGap',
+                  type: 'number',
+                  defaultValue: 16,
+                  min: 0,
+                  max: 80,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Product and layout grid gap in px.',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: 'productPhilosophy',
       type: 'group',
       fields: [

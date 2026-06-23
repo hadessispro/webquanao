@@ -3,6 +3,8 @@ import {
   DEFAULT_HEADER,
   DEFAULT_HOME_HERO,
   DEFAULT_NEWSLETTER_POPUP,
+  DEFAULT_DESIGN_SYSTEM,
+  DesignSystemData,
   FooterColumn,
   FooterData,
   HeaderData,
@@ -11,6 +13,7 @@ import {
   HeaderNavItem,
   HomeHeroData,
   NewsletterPopupData,
+  StorefrontFont,
   StorefrontImage,
 } from './storefront-types'
 import { getPayloadClient } from './payload-client'
@@ -23,6 +26,20 @@ type MediaLike =
       alt?: string
       filename?: string
       sourceUrl?: string
+    }
+  | null
+  | undefined
+
+type FontLike =
+  | number
+  | string
+  | {
+      url?: string
+      filename?: string
+      fontFamily?: string
+      weight?: number | string
+      style?: string
+      fallback?: string
     }
   | null
   | undefined
@@ -42,6 +59,35 @@ function mediaToImage(media: MediaLike, fallbackAlt?: string): StorefrontImage |
   return {
     src,
     alt: media.alt || fallbackAlt,
+  }
+}
+
+function clampNumber(value: unknown, fallback: number, min: number, max: number) {
+  if (value === null || value === undefined || value === '') return fallback
+  const parsed = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(parsed)) return fallback
+  return Math.min(max, Math.max(min, parsed))
+}
+
+function normalizeFont(font: FontLike, fallback: StorefrontFont): StorefrontFont {
+  if (!font || typeof font === 'number' || typeof font === 'string') return fallback
+
+  const family = font.fontFamily?.trim() || fallback.family
+  const source = ensureAbsoluteUrl(
+    font.url || (font.filename ? `/api/fonts/file/${encodeURIComponent(font.filename)}` : undefined),
+  )
+  const style = font.style === 'italic' ? 'italic' : 'normal'
+  const fontFallback =
+    font.fallback === 'serif' || font.fallback === 'monospace' || font.fallback === 'sans-serif'
+      ? font.fallback
+      : fallback.fallback
+
+  return {
+    family,
+    source,
+    weight: clampNumber(font.weight, fallback.weight, 100, 900),
+    style,
+    fallback: fontFallback,
   }
 }
 
@@ -303,6 +349,113 @@ function normalizeFooterColumns(columns: unknown): FooterColumn[] {
     .filter((column) => column.title || column.links.length > 0)
 
   return normalized.length > 0 ? normalized : DEFAULT_FOOTER.columns
+}
+
+export async function getDesignSystemData(): Promise<DesignSystemData> {
+  try {
+    const payload = await getPayloadClient()
+    const settings = (await payload.findGlobal({
+      slug: 'site-settings',
+      depth: 2,
+    })) as {
+      designSystem?: {
+        typography?: {
+          bodyFont?: FontLike
+          headingFont?: FontLike
+          uiFont?: FontLike
+          headingSize?: number
+          subheadingSize?: number
+          bodySize?: number
+          lineHeight?: number
+          letterSpacing?: number
+        }
+        spacing?: {
+          scale?: number
+          pagePaddingMobile?: number
+          pagePaddingDesktop?: number
+          gridGap?: number
+        }
+      }
+    }
+
+    const typography = settings.designSystem?.typography
+    const spacing = settings.designSystem?.spacing
+    const bodyFont = normalizeFont(
+      typography?.bodyFont,
+      DEFAULT_DESIGN_SYSTEM.typography.bodyFont,
+    )
+    const headingFont = normalizeFont(typography?.headingFont, bodyFont)
+    const uiFont = normalizeFont(
+      typography?.uiFont,
+      DEFAULT_DESIGN_SYSTEM.typography.uiFont,
+    )
+
+    return {
+      typography: {
+        bodyFont,
+        headingFont,
+        uiFont,
+        headingSize: clampNumber(
+          typography?.headingSize,
+          DEFAULT_DESIGN_SYSTEM.typography.headingSize,
+          16,
+          64,
+        ),
+        subheadingSize: clampNumber(
+          typography?.subheadingSize,
+          DEFAULT_DESIGN_SYSTEM.typography.subheadingSize,
+          13,
+          36,
+        ),
+        bodySize: clampNumber(
+          typography?.bodySize,
+          DEFAULT_DESIGN_SYSTEM.typography.bodySize,
+          12,
+          24,
+        ),
+        lineHeight: clampNumber(
+          typography?.lineHeight,
+          DEFAULT_DESIGN_SYSTEM.typography.lineHeight,
+          1,
+          2.2,
+        ),
+        letterSpacing: clampNumber(
+          typography?.letterSpacing,
+          DEFAULT_DESIGN_SYSTEM.typography.letterSpacing,
+          -0.08,
+          0.12,
+        ),
+      },
+      spacing: {
+        scale: clampNumber(
+          spacing?.scale,
+          DEFAULT_DESIGN_SYSTEM.spacing.scale,
+          0.7,
+          1.6,
+        ),
+        pagePaddingMobile: clampNumber(
+          spacing?.pagePaddingMobile,
+          DEFAULT_DESIGN_SYSTEM.spacing.pagePaddingMobile,
+          0,
+          64,
+        ),
+        pagePaddingDesktop: clampNumber(
+          spacing?.pagePaddingDesktop,
+          DEFAULT_DESIGN_SYSTEM.spacing.pagePaddingDesktop,
+          0,
+          160,
+        ),
+        gridGap: clampNumber(
+          spacing?.gridGap,
+          DEFAULT_DESIGN_SYSTEM.spacing.gridGap,
+          0,
+          80,
+        ),
+      },
+    }
+  } catch {
+    return DEFAULT_DESIGN_SYSTEM
+  }
 }
 
 export async function getHeaderData(): Promise<HeaderData> {

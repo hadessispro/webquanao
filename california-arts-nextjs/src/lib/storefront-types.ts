@@ -133,6 +133,67 @@ export interface NewsletterPopupData {
   privacyHref: string
 }
 
+export interface StorefrontFont {
+  family: string
+  source?: string
+  weight: number
+  style: 'normal' | 'italic'
+  fallback: 'serif' | 'sans-serif' | 'monospace'
+}
+
+export interface DesignSystemData {
+  typography: {
+    bodyFont: StorefrontFont
+    headingFont: StorefrontFont
+    uiFont: StorefrontFont
+    headingSize: number
+    subheadingSize: number
+    bodySize: number
+    lineHeight: number
+    letterSpacing: number
+  }
+  spacing: {
+    scale: number
+    pagePaddingMobile: number
+    pagePaddingDesktop: number
+    gridGap: number
+  }
+}
+
+export const DEFAULT_DESIGN_SYSTEM: DesignSystemData = {
+  typography: {
+    bodyFont: {
+      family: 'SVN Times New Roman 2',
+      weight: 400,
+      style: 'normal',
+      fallback: 'serif',
+    },
+    headingFont: {
+      family: 'SVN Times New Roman 2',
+      weight: 400,
+      style: 'normal',
+      fallback: 'serif',
+    },
+    uiFont: {
+      family: 'SVN Arial 3',
+      weight: 400,
+      style: 'normal',
+      fallback: 'sans-serif',
+    },
+    headingSize: 22,
+    subheadingSize: 17,
+    bodySize: 16,
+    lineHeight: 1.5,
+    letterSpacing: 0,
+  },
+  spacing: {
+    scale: 1,
+    pagePaddingMobile: 16,
+    pagePaddingDesktop: 28,
+    gridGap: 16,
+  },
+}
+
 export const DEFAULT_HEADER: HeaderData = {
   logoText: 'điển',
   logoHref: '/',

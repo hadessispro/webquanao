@@ -7,6 +7,7 @@ import sharp from 'sharp'
 
 // Collections
 import { Media } from './src/payload/collections/Media'
+import { Fonts } from './src/payload/collections/Fonts'
 import { ProductVideos } from './src/payload/collections/ProductVideos'
 import { Products } from './src/payload/collections/Products'
 import { ProductCollections } from './src/payload/collections/ProductCollections'
@@ -50,6 +51,7 @@ export default buildConfig({
       ],
     },
     Media,
+    Fonts,
     ProductVideos,
     Products,
     ProductCollections,
