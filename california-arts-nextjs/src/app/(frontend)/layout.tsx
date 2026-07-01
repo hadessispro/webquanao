@@ -85,10 +85,15 @@ function createDesignSystemStyle(designSystem: DesignSystemData) {
     --gutter: var(--dien-grid-gap);
   }
 
-  body#california-arts,
-  body#california-arts *,
-  body#california-arts *::before,
-  body#california-arts *::after {
+  body#california-arts {
+    font-family: var(--dien-body-font-stack) !important;
+    letter-spacing: var(--dien-letter-spacing) !important;
+  }
+
+  body#california-arts main,
+  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']),
+  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button'])::before,
+  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button'])::after {
     font-family: var(--dien-body-font-stack) !important;
     letter-spacing: var(--dien-letter-spacing) !important;
   }
@@ -137,6 +142,52 @@ function createDesignSystemStyle(designSystem: DesignSystemData) {
     font-family: var(--dien-ui-font-stack) !important;
   }
 
+  body#california-arts .site-header-stack,
+  body#california-arts .site-header-stack *,
+  body#california-arts .c_header-main,
+  body#california-arts .c_header-main *,
+  body#california-arts .c_megamenu-upper,
+  body#california-arts .c_megamenu-upper *,
+  body#california-arts .dien-product-menu,
+  body#california-arts .dien-product-menu *,
+  body#california-arts .art-menu,
+  body#california-arts .art-menu *,
+  body#california-arts .search-overlay,
+  body#california-arts .search-overlay *,
+  body#california-arts .dien-footer__brand p,
+  body#california-arts .dien-footer__newsletter,
+  body#california-arts .dien-footer__newsletter *,
+  body#california-arts .dien-footer__links,
+  body#california-arts .dien-footer__links * {
+    font-family: var(--dien-ui-font-stack) !important;
+    letter-spacing: 0 !important;
+  }
+
+  body#california-arts .site-header-stack,
+  body#california-arts .site-header-stack *,
+  body#california-arts .c_header-main,
+  body#california-arts .c_header-main *,
+  body#california-arts .c_megamenu-upper,
+  body#california-arts .c_megamenu-upper *,
+  body#california-arts .dien-product-menu,
+  body#california-arts .dien-product-menu *,
+  body#california-arts .art-menu,
+  body#california-arts .art-menu *,
+  body#california-arts .search-overlay,
+  body#california-arts .search-overlay * {
+    font-family: "SVN Arial 3", Arial, Helvetica, sans-serif !important;
+  }
+
+  body#california-arts :where(.site-header-stack, .mobile-menu-drawer) :where(.c_megamenu-upper, .dien-product-menu, .art-menu),
+  body#california-arts :where(.site-header-stack, .mobile-menu-drawer) :where(.c_megamenu-upper, .dien-product-menu, .art-menu) :where(a, button, span, div, h1, h2, h3, h4, p, li, ul, small) {
+    font-family: "SVN Arial 3", Arial, Helvetica, sans-serif !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  body#california-arts :where(.site-header-stack, .mobile-menu-drawer) :where(.dien-product-menu__tab, .dien-product-menu__heading, .dien-product-menu__link, .art-menu__tab, .art-menu__group-title, .art-menu__link) {
+    font-family: "SVN Arial 3", Arial, Helvetica, sans-serif !important;
+  }
+
   body#california-arts .section-x-padding {
     padding-left: var(--dien-page-padding-mobile) !important;
     padding-right: var(--dien-page-padding-mobile) !important;
@@ -167,9 +218,9 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   return (
     <html className="js" data-scroll-behavior="auto" lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/media/d-brandmark.png?v=20260524e" type="image/png" />
-        <link rel="shortcut icon" href="/media/d-brandmark.png?v=20260524e" type="image/png" />
-        <link rel="apple-touch-icon" href="/media/d-brandmark.png?v=20260524e" />
+        <link rel="icon" href="/icon.png?v=20260701b" type="image/png" />
+        <link rel="shortcut icon" href="/icon.png?v=20260701b" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png?v=20260701b" />
         <link rel="stylesheet" href="/css/theme.min.css?v=20260517b" />
         <link rel="stylesheet" href="/css/component.css?v=20260517b" />
         <style dangerouslySetInnerHTML={{ __html: createDesignSystemStyle(designSystem) }} />

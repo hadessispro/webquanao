@@ -24,7 +24,7 @@ export default function ProductGrid({
   productLimit,
   sectionTitle,
   sectionSubtitle,
-  showSectionTitle = true,
+  showSectionTitle = false,
   stickyBar = false,
 }: ProductGridProps) {
   const barRef = React.useRef<HTMLDivElement>(null);
@@ -88,8 +88,9 @@ export default function ProductGrid({
             <div className="section-x-padding py-2">
               <div className="multi-column col-gap-lg lg:col-count-3 text-left text-base lg:text-base">
                 <div className="product-grid__bar-content">
-                  <h2 className="font-body text-base">{barLabel}</h2>
-                  <div aria-hidden="true" className="product-grid__bar-divider" />
+                  <div className="product-grid__bar-heading">
+                    <h2 className="font-body text-base">{barLabel}</h2>
+                  </div>
                   {barDescriptionHtml ? (
                     <div
                       className="rte text-sm product-grid__bar-copy"

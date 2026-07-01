@@ -55,6 +55,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     if (!popupEnabled || !canShowOnPath || isCartOpen || isMobileMenuOpen) return undefined
 
     try {
+      if (!window.matchMedia('(min-width: 768px)').matches) return undefined
       if (window.sessionStorage.getItem(SEEN_THIS_SESSION_KEY) === '1') return undefined
     } catch {
       return undefined

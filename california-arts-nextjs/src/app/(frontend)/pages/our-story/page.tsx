@@ -44,9 +44,11 @@ export default function OurStoryPage() {
             }
             key={section.label}
           >
-            <div className="story-page__bar">
-              <p>{section.label}</p>
-            </div>
+            {index > 0 && (
+              <div className="story-page__bar">
+                <p>{section.label}</p>
+              </div>
+            )}
 
             <div className="story-page__content story-page__content--right">
               <div className="story-page__copy">

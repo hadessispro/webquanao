@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   description: "Điển. Accessible design by producing less & building better.",
   icons: {
     icon: [
-      { url: "/media/d-brandmark.png", type: "image/png" },
-      { url: "/favicon.ico" },
+      { url: "/icon.png?v=20260701b", type: "image/png" },
+      { url: "/favicon.ico?v=20260701b" },
     ],
-    shortcut: "/media/d-brandmark.png",
-    apple: "/media/d-brandmark.png",
+    shortcut: "/icon.png?v=20260701b",
+    apple: "/apple-icon.png?v=20260701b",
   },
 };
 
