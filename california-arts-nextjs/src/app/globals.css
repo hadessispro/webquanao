@@ -9823,12 +9823,24 @@ body#california-arts .product-grid__bar-content {
 }
 
 body#california-arts .product-grid__bar-heading {
-  border-bottom: 1px solid rgba(19, 24, 24, 0.32) !important;
-  display: block !important;
-  grid-column: 2 !important;
+  border-bottom: 0 !important;
+  display: grid !important;
+  grid-column: 1 / -1 !important;
+  grid-template-columns: minmax(0, 1fr) minmax(520px, calc(100vw - 50vw - clamp(24px, 2.5vw, 48px))) !important;
   justify-self: stretch !important;
   padding: 0 0 5px !important;
+  position: relative !important;
   width: 100% !important;
+}
+
+body#california-arts .product-grid__bar-heading::after {
+  border-bottom: 1px solid rgba(19, 24, 24, 0.32) !important;
+  bottom: 0 !important;
+  content: "" !important;
+  left: 50% !important;
+  position: absolute !important;
+  transform: translateX(-50%) !important;
+  width: 100vw !important;
 }
 
 body#california-arts .product-grid__bar-content h2 {
@@ -9836,6 +9848,7 @@ body#california-arts .product-grid__bar-content h2 {
   font-family: var(--dien-copy-final) !important;
   font-size: var(--dien-body-size) !important;
   font-weight: 700 !important;
+  grid-column: 2 !important;
   line-height: 1.1 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -9901,7 +9914,7 @@ body#california-arts .story-page__media {
 
 body#california-arts .story-page__media-image {
   height: 100% !important;
-  object-fit: contain !important;
+  object-fit: cover !important;
   object-position: center !important;
   width: 100% !important;
 }
@@ -9920,7 +9933,7 @@ body#california-arts .dien-footer__brand {
 body#california-arts .dien-footer__brand p {
   font-family: var(--dien-ui-final) !important;
   line-height: 0.88 !important;
-  margin-top: -7px !important;
+  margin-top: -2px !important;
 }
 
 body#california-arts .search-overlay :where(.brand-price, .search-overlay__result-price) {
@@ -9965,5 +9978,9 @@ body#california-arts .site-announcement .brand-currency-mark {
     grid-column: auto !important;
     text-align: left !important;
     width: 100% !important;
+  }
+
+  body#california-arts .product-grid__bar-heading {
+    display: block !important;
   }
 }
