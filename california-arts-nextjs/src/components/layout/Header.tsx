@@ -294,8 +294,8 @@ export default function Header({ header }: HeaderProps) {
     .slice(0, 2)
   const shippingText =
     locale === 'vi'
-      ? 'miễn phí vận chuyển cho đơn hàng trên 950.000 đ .'
-      : 'complimentary shipping on orders over 950.000 đ .'
+      ? 'miễn phí vận chuyển cho đơn hàng trên 950.000đ.'
+      : 'complimentary shipping on orders over 950.000đ.'
 
   const cancelMegaMenuClose = () => {
     if (megaMenuCloseTimerRef.current !== null) {
