@@ -54,7 +54,7 @@ export default function Footer({ footer }: { footer: FooterData }) {
                     {link.label}
                   </a>
                 ) : (
-                  <Link href={link.href} key={link.label}>
+                  <Link href={link.href} key={link.label} prefetch={false}>
                     {link.label}
                   </Link>
                 ),

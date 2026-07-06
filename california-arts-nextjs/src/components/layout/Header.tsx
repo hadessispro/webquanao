@@ -41,7 +41,7 @@ function SmartLink({
   }
 
   return (
-    <Link href={href} className={className} target={target} rel={rel} onClick={onClick}>
+    <Link href={href} className={className} target={target} rel={rel} onClick={onClick} prefetch={false}>
       {children}
     </Link>
   )
