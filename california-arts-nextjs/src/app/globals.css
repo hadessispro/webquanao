@@ -9770,8 +9770,8 @@ body#california-arts .newsletter-popup__description {
 body#california-arts .newsletter-popup__headline {
   align-items: baseline !important;
   display: flex !important;
-  font-size: clamp(33px, 3.35vw, 45px) !important;
-  gap: 0.08em !important;
+  font-size: clamp(34px, 3.45vw, 46px) !important;
+  gap: 0.1em !important;
   justify-content: center !important;
   line-height: 0.92 !important;
   margin: 0 0 15px !important;
@@ -9786,8 +9786,11 @@ body#california-arts .newsletter-popup__headline span {
 }
 
 body#california-arts .newsletter-popup__wordmark {
-  height: 0.7em !important;
-  transform: translateY(0.05em) !important;
+  display: inline-block !important;
+  height: 1.03em !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  transform: translateY(0.09em) !important;
   width: auto !important;
 }
 
