@@ -9984,3 +9984,100 @@ body#california-arts .site-announcement .brand-currency-mark {
     display: block !important;
   }
 }
+
+/* Final feedback pass: keep popup centered, CTA buttons consistent, and scroll/header calm. */
+html {
+  scroll-behavior: auto !important;
+}
+
+body#california-arts .newsletter-popup {
+  align-items: center !important;
+  display: flex !important;
+  inset: 0 !important;
+  justify-content: center !important;
+  padding: 24px !important;
+  pointer-events: auto !important;
+}
+
+body#california-arts .newsletter-popup__panel {
+  margin: 0 auto !important;
+  transform: none !important;
+}
+
+body#california-arts .newsletter-popup__dismiss,
+body#california-arts .newsletter-popup__dismiss:hover {
+  font-family: var(--dien-ui-final) !important;
+  font-weight: 400 !important;
+}
+
+body#california-arts .newsletter-popup__dismiss {
+  text-decoration: none !important;
+}
+
+body#california-arts .newsletter-popup__dismiss:hover {
+  text-decoration: underline !important;
+  text-underline-offset: 0.16em !important;
+}
+
+body#california-arts :where(
+  .home-hero__cta,
+  .cms-page__button,
+  .collection-product-page__next-cta-button,
+  .product-detail__add-button,
+  .search-overlay__submit,
+  .contact-intake-form__submit,
+  .checkout-page__submit,
+  .cart-drawer__checkout,
+  .cart-drawer__continue,
+  .newsletter-popup__submit,
+  .newsletter-popup__continue
+) {
+  border-radius: 0 !important;
+  font-family: var(--dien-ui-final) !important;
+  font-size: var(--dien-body-size) !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  min-height: 46px !important;
+  padding: 0 42px !important;
+}
+
+body#california-arts :where(
+  .home-hero__cta,
+  .cms-page__button,
+  .collection-product-page__next-cta-button
+) {
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+body#california-arts .newsletter-popup__submit {
+  min-height: 36px !important;
+  padding: 0 34px !important;
+}
+
+body#california-arts :where(
+  .home-hero__cta,
+  .cms-page__button,
+  .collection-product-page__next-cta-button,
+  .product-detail__add-button,
+  .search-overlay__submit,
+  .contact-intake-form__submit,
+  .checkout-page__submit,
+  .cart-drawer__checkout,
+  .cart-drawer__continue,
+  .newsletter-popup__submit,
+  .newsletter-popup__continue
+):hover {
+  opacity: 0.76 !important;
+}
+
+body#california-arts .site-header-stack,
+body#california-arts .site-header-stack :where(.c_header, .c_header-main, .site-announcement, .mega-menu-panel) {
+  transition-duration: 0s !important;
+}
+
+@media (max-width: 767px) {
+  body#california-arts .newsletter-popup {
+    display: none !important;
+  }
+}
