@@ -111,43 +111,53 @@ function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
       className="c_megamenu-upper dien-product-menu absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text"
     >
       <div className="dien-product-menu__inner section-x-padding">
-        <div className="dien-product-menu__tabs">
-          <span className="dien-product-menu__tab dien-product-menu__tab--active">sản phẩm</span>
-          <SmartLink className="dien-product-menu__tab" href="/pages/our-story" onClick={onNavigate}>
-            về điển
-          </SmartLink>
-        </div>
-
         <div className="dien-product-menu__groups">
-          {PRODUCT_MENU_GROUPS.map((group) => (
-            <div className="dien-product-menu__group" key={group.title}>
-              {group.href ? (
-                <SmartLink className="dien-product-menu__heading dien-product-menu__heading--link" href={group.href} onClick={onNavigate}>
-                  {group.title}
-                </SmartLink>
-              ) : (
-                <h2 className="dien-product-menu__heading">{group.title}</h2>
-              )}
+          {PRODUCT_MENU_GROUPS.map((group) => {
+            const hasProductLink = Boolean(group.href || group.items?.some((item) => item.href))
 
-              {group.items && group.items.length > 0 && (
-                <ul className="dien-product-menu__list">
-                  {group.items.map((item) => (
-                    <li key={item.label}>
-                      {item.href ? (
-                        <SmartLink className="dien-product-menu__link" href={item.href} onClick={onNavigate}>
-                          {item.label}
-                        </SmartLink>
-                      ) : (
-                        <span className="dien-product-menu__link dien-product-menu__link--disabled" aria-disabled="true">
-                          {item.label}
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+            return (
+              <div className="dien-product-menu__group" key={group.title}>
+                {group.title !== 'áo' && group.title !== 'quần' && (
+                  group.href ? (
+                    <SmartLink
+                      className="dien-product-menu__heading dien-product-menu__heading--link dien-product-menu__heading--has-products"
+                      href={group.href}
+                      onClick={onNavigate}
+                    >
+                      {group.title === 'xem tất cả' ? '→ ' : ''}{group.title}
+                    </SmartLink>
+                  ) : (
+                    <h2
+                      className={[
+                        'dien-product-menu__heading',
+                        hasProductLink ? 'dien-product-menu__heading--has-products' : 'dien-product-menu__heading--empty',
+                      ].join(' ')}
+                    >
+                      {group.title}
+                    </h2>
+                  )
+                )}
+
+                {group.items && group.items.length > 0 && (
+                  <ul className="dien-product-menu__list">
+                    {group.items.map((item) => (
+                      <li key={item.label}>
+                        {item.href ? (
+                          <SmartLink className="dien-product-menu__link" href={item.href} onClick={onNavigate}>
+                            {item.label}
+                          </SmartLink>
+                        ) : (
+                          <span className="dien-product-menu__link dien-product-menu__link--disabled" aria-disabled="true">
+                            {item.label}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>
@@ -241,13 +251,13 @@ function DesktopNavItem({
   return (
     <li
       className={['ca_menu-1st-c', hasMegaMenu && isOpen ? 'ca_menu-1st-c--open' : ''].filter(Boolean).join(' ')}
-      onMouseEnter={hasMegaMenu ? onOpen : undefined}
+      onMouseEnter={hasMegaMenu ? onOpen : onClose}
       onMouseLeave={hasMegaMenu ? onLeave : undefined}
     >
       <div
         className={hasMegaMenu ? 'no-js-focus-wrapper' : undefined}
         onBlurCapture={hasMegaMenu ? handleBlurCapture : undefined}
-        onFocusCapture={hasMegaMenu ? onOpen : undefined}
+        onFocusCapture={hasMegaMenu ? onOpen : onClose}
       >
         {hasMegaMenu ? (
           <button
@@ -280,6 +290,7 @@ export default function Header({ header }: HeaderProps) {
   const pathname = usePathname()
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const megaMenuCloseTimerRef = useRef<number | null>(null)
+  const justNavigatedHome = useRef(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
@@ -366,6 +377,16 @@ export default function Header({ header }: HeaderProps) {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0)
+    setScrolled(false)
+    if (pathname === '/') {
+      justNavigatedHome.current = true
+    } else {
+      justNavigatedHome.current = false
+    }
+  }, [pathname])
+
+  useEffect(() => {
     let frameId = 0
     let settleFrameId = 0
     let settleTimerId = 0
@@ -373,10 +394,21 @@ export default function Header({ header }: HeaderProps) {
     const updateHeaderState = () => {
       frameId = 0
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
-      setScrolled(scrollTop > 18)
+      
+      if (justNavigatedHome.current) {
+        if (scrollTop === 0) {
+          justNavigatedHome.current = false
+        }
+        setScrolled(false)
+      } else {
+        setScrolled(scrollTop > 18)
+      }
 
       const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
-      const headerHeight = headerEl?.getBoundingClientRect().height || 90
+      let headerHeight = headerEl?.getBoundingClientRect().height || 90
+      if (scrollTop > 18 && !isHome) {
+        headerHeight -= 28
+      }
       document.documentElement.style.setProperty('--header-stack-height', `${Math.round(headerHeight)}px`)
 
       const footer = document.getElementById('shopify-section-footer')
@@ -439,9 +471,12 @@ export default function Header({ header }: HeaderProps) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const headerHeight =
+        let headerHeight =
           document.querySelector<HTMLElement>('.site-header-stack')?.getBoundingClientRect().height ||
           90
+        if (window.scrollY > 18 && !isHome) {
+          headerHeight -= 28
+        }
         const logoRect = entry.boundingClientRect
         const isNearFooter = Boolean(
           window.scrollY > 24 &&
@@ -609,6 +644,8 @@ export default function Header({ header }: HeaderProps) {
                           <button
                             aria-label={t('openSearch')}
                             onClick={() => setSearchOpen((open) => !open)}
+                            onFocus={closeMegaMenu}
+                            onMouseEnter={closeMegaMenu}
                             className="header-search-toggle"
                           >
                             {t('search')}

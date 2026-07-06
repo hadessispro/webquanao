@@ -91,9 +91,9 @@ function createDesignSystemStyle(designSystem: DesignSystemData) {
   }
 
   body#california-arts main,
-  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']),
-  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button'])::before,
-  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button'])::after {
+  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss),
+  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss)::before,
+  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss)::after {
     font-family: var(--dien-body-font-stack) !important;
     letter-spacing: var(--dien-letter-spacing) !important;
   }

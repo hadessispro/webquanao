@@ -232,6 +232,8 @@ const COLOR_MAP: Record<string, string> = {
   "off-white": "#f5f5f0",
   ivory: "#f5f1e3",
   cream: "#f5f0e0",
+  glacier: "#c6dbe1",
+  smoke: "#9fa4a6",
 };
 
 function colorToHex(name: string): string {
