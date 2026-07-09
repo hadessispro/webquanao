@@ -1094,8 +1094,8 @@ body#california-arts .dien-footer__brand p {
 }
 
 .site-header-stack--scrolled.site-header-stack--home .site-announcement,
-.site-header-stack--search-open .site-announcement,
-.site-header-stack--menu-open .site-announcement {
+.site-header-stack--search-open.site-header-stack--home .site-announcement,
+.site-header-stack--menu-open.site-header-stack--home .site-announcement {
   height: 0;
   min-height: 0;
   opacity: 0;
@@ -5869,7 +5869,11 @@ body#california-arts .site-announcement {
   color: var(--dien-bg) !important;
   font-family: var(--body-font-stack) !important;
   font-size: var(--dien-body-size) !important;
-  min-height: 28px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  line-height: 30px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
 body#california-arts .site-announcement .brand-currency-mark {
@@ -5877,8 +5881,8 @@ body#california-arts .site-announcement .brand-currency-mark {
 }
 
 body#california-arts .site-header-stack--scrolled.site-header-stack--home .site-announcement,
-body#california-arts .site-header-stack--search-open .site-announcement,
-body#california-arts .site-header-stack--menu-open .site-announcement,
+body#california-arts .site-header-stack--search-open.site-header-stack--home .site-announcement,
+body#california-arts .site-header-stack--menu-open.site-header-stack--home .site-announcement,
 body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled) .site-announcement {
   display: none !important;
 }
@@ -10884,6 +10888,6 @@ body#california-arts :is(a, button, span, input, select, textarea).newsletter-po
 
 /* 7. Smoothly translate header up on scroll instead of collapsing announcement bar (prevents layout jitter) */
 body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) {
-  transform: translateY(-28px) !important;
+  transform: translateY(-30px) !important;
 }
 

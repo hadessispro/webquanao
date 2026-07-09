@@ -407,7 +407,7 @@ export default function Header({ header }: HeaderProps) {
       const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
       let headerHeight = headerEl?.getBoundingClientRect().height || 90
       if (scrollTop > 18 && !isHome) {
-        headerHeight -= 28
+        headerHeight -= 30
       }
       document.documentElement.style.setProperty('--header-stack-height', `${Math.round(headerHeight)}px`)
 
@@ -475,7 +475,7 @@ export default function Header({ header }: HeaderProps) {
           document.querySelector<HTMLElement>('.site-header-stack')?.getBoundingClientRect().height ||
           90
         if (window.scrollY > 18 && !isHome) {
-          headerHeight -= 28
+          headerHeight -= 30
         }
         const logoRect = entry.boundingClientRect
         const isNearFooter = Boolean(
