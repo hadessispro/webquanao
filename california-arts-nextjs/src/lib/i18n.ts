@@ -204,7 +204,7 @@ const DICTIONARY: Record<Locale, Record<TranslationKey, string>> = {
     savedAfterCheckout: 'chỉ dùng để xác nhận đơn',
     savedCustomerLoaded: 'Đã điền sẵn thông tin liên hệ của bạn.',
     savedDetailsNextVisit: 'Thông tin liên hệ của bạn đã được ghi nhận.',
-    search: 'Tìm kiếm',
+    search: 'tìm kiếm',
     secureCheckout: 'Đặt hàng thủ công',
     addToBag: 'Thêm vào túi',
     shipping: 'Vận chuyển',
