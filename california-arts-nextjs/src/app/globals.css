@@ -10843,13 +10843,15 @@ body#california-arts .site-header-stack .dien-product-menu {
   border: 0 !important;
   border-bottom: 1px solid rgba(19, 24, 24, 0.18) !important;
   box-shadow: none !important;
+  padding-top: 10px !important;
+  padding-bottom: 18px !important;
 }
 
 body#california-arts .dien-product-menu__inner {
   padding-left: clamp(22px, 2.6vw, 48px) !important;
   padding-right: clamp(22px, 2.6vw, 48px) !important;
-  padding-bottom: 6px !important;
-  padding-top: 6px !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
   min-height: 0 !important;
 }
 
@@ -10864,6 +10866,14 @@ body#california-arts .dien-product-menu__group {
 
 body#california-arts .dien-product-menu__list {
   gap: 4px !important;
+}
+
+body#california-arts .site-header-stack .dien-product-menu .dien-product-menu__heading--link,
+body#california-arts .site-header-stack .dien-product-menu .dien-product-menu__heading--has-products {
+  font-weight: 400 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
 }
 
 /* 5. Footer links hover: add underline */
