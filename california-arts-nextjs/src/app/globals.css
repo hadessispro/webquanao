@@ -10600,7 +10600,8 @@ body#california-arts .product-grid__bar-content .product-grid__bar-copy {
   grid-column: 3 !important;
   line-height: 1.18 !important;
   margin: 0 !important;
-  max-width: none !important;
+  margin-left: auto !important;
+  max-width: min(450px, 100%) !important;
   padding: 7px 0 0 !important;
   text-align: right !important;
   width: 100% !important;
@@ -10624,7 +10625,7 @@ body#california-arts .collection-page-intro__inner {
 
 body#california-arts .collection-page-intro__copy {
   margin-left: 0 !important;
-  max-width: 620px !important;
+  max-width: min(450px, 100%) !important;
   text-align: left !important;
 }
 
