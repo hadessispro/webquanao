@@ -10593,7 +10593,7 @@ body#california-arts .product-grid__bar-content h2 {
   width: 100% !important;
 }
 
-body#california-arts .product-grid__bar-copy {
+body#california-arts .product-grid__bar-content .product-grid__bar-copy {
   font-family: var(--dien-copy-final) !important;
   font-size: var(--dien-body-size) !important;
   font-weight: 400 !important;
@@ -10606,7 +10606,7 @@ body#california-arts .product-grid__bar-copy {
   width: 100% !important;
 }
 
-body#california-arts .product-grid__bar-copy p {
+body#california-arts .product-grid__bar-content .product-grid__bar-copy p {
   margin: 0 !important;
   text-align: right !important;
   white-space: normal !important;
