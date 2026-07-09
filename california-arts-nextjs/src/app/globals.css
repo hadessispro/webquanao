@@ -6366,7 +6366,7 @@ body#california-arts .collection-page-intro__bar > section::after {
 
 body#california-arts .collection-page-intro__inner {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   min-height: 0 !important;
   padding-block: 32px !important;
   padding-inline: 1rem !important;
@@ -10553,7 +10553,7 @@ body#california-arts .product-grid__bar .multi-column {
 body#california-arts .product-grid__bar-content {
   align-items: start !important;
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) minmax(520px, calc(100vw - 50vw - clamp(24px, 2.5vw, 48px))) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   margin: 0 !important;
   padding: 8px 0 16px !important;
   width: 100% !important;
@@ -10563,7 +10563,7 @@ body#california-arts .product-grid__bar-heading {
   border-bottom: 0 !important;
   display: grid !important;
   grid-column: 1 / -1 !important;
-  grid-template-columns: minmax(0, 1fr) minmax(520px, calc(100vw - 50vw - clamp(24px, 2.5vw, 48px))) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   justify-self: stretch !important;
   padding: 0 0 5px !important;
   position: relative !important;
@@ -10585,7 +10585,7 @@ body#california-arts .product-grid__bar-content h2 {
   font-family: var(--dien-copy-final) !important;
   font-size: var(--dien-body-size) !important;
   font-weight: 700 !important;
-  grid-column: 2 !important;
+  grid-column: 3 !important;
   line-height: 1.1 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -10597,7 +10597,7 @@ body#california-arts .product-grid__bar-copy {
   font-family: var(--dien-copy-final) !important;
   font-size: var(--dien-body-size) !important;
   font-weight: 400 !important;
-  grid-column: 2 !important;
+  grid-column: 3 !important;
   line-height: 1.18 !important;
   margin: 0 !important;
   max-width: none !important;
