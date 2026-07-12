@@ -106,58 +106,42 @@ type SearchResult = {
 }
 
 function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
+  const flatMenuItems = PRODUCT_MENU_GROUPS.flatMap((group) => {
+    if (group.items && group.items.length > 0) {
+      return group.items.map((item) => ({
+        label: item.label,
+        href: item.href,
+      }))
+    }
+    return [
+      {
+        label: group.title === 'xem tất cả' ? '→ ' + group.title : group.title,
+        href: group.href,
+      },
+    ]
+  })
+
   return (
     <div
       className="c_megamenu-upper dien-product-menu absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text"
     >
       <div className="dien-product-menu__inner section-x-padding">
         <div className="dien-product-menu__groups">
-          {PRODUCT_MENU_GROUPS.map((group) => {
-            const hasProductLink = Boolean(group.href || group.items?.some((item) => item.href))
-
-            return (
-              <div className="dien-product-menu__group" key={group.title}>
-                {group.title !== 'áo' && group.title !== 'quần' && (
-                  group.href ? (
-                    <SmartLink
-                      className="dien-product-menu__heading dien-product-menu__heading--link dien-product-menu__heading--has-products"
-                      href={group.href}
-                      onClick={onNavigate}
-                    >
-                      {group.title === 'xem tất cả' ? '→ ' : ''}{group.title}
-                    </SmartLink>
-                  ) : (
-                    <h2
-                      className={[
-                        'dien-product-menu__heading',
-                        hasProductLink ? 'dien-product-menu__heading--has-products' : 'dien-product-menu__heading--empty',
-                      ].join(' ')}
-                    >
-                      {group.title}
-                    </h2>
-                  )
+          <ul className="dien-product-menu__list">
+            {flatMenuItems.map((item) => (
+              <li key={item.label}>
+                {item.href ? (
+                  <SmartLink className="dien-product-menu__link" href={item.href} onClick={onNavigate}>
+                    {item.label}
+                  </SmartLink>
+                ) : (
+                  <span className="dien-product-menu__link dien-product-menu__link--disabled" aria-disabled="true">
+                    {item.label}
+                  </span>
                 )}
-
-                {group.items && group.items.length > 0 && (
-                  <ul className="dien-product-menu__list">
-                    {group.items.map((item) => (
-                      <li key={item.label}>
-                        {item.href ? (
-                          <SmartLink className="dien-product-menu__link" href={item.href} onClick={onNavigate}>
-                            {item.label}
-                          </SmartLink>
-                        ) : (
-                          <span className="dien-product-menu__link dien-product-menu__link--disabled" aria-disabled="true">
-                            {item.label}
-                          </span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )
-          })}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
