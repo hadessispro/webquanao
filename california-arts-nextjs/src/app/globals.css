@@ -10902,3 +10902,26 @@ body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) 
   transform: translateY(-30px) !important;
 }
 
+/* 9. Align left menu items (sản phẩm, về điển) vertically with logo and search toggle */
+body#california-arts .c_header-menu-ul {
+  display: flex !important;
+  align-items: center !important;
+}
+
+body#california-arts .c_header-menu-ul > li {
+  display: flex !important;
+  align-items: center !important;
+}
+
+body#california-arts .c_header-menu-ul > li > div {
+  display: flex !important;
+  align-items: center !important;
+}
+
+body#california-arts .site-header-stack .ca_menu-1st-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 28px !important; /* Match the height of the search toggle */
+  padding: 0 !important;
+}
+
