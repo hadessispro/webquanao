@@ -10925,3 +10925,9 @@ body#california-arts .site-header-stack .ca_menu-1st-button {
   padding: 0 !important;
 }
 
+/* 10. Force announcement bar text and link color to remain light under all header states */
+body#california-arts .site-announcement,
+body#california-arts .site-announcement * {
+  color: var(--dien-bg) !important;
+}
+
