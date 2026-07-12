@@ -6,6 +6,19 @@ export const SiteSettings: GlobalConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    afterChange: [
+      async () => {
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+          console.log('Revalidated site settings layout cache')
+        } catch (err) {
+          console.error('Failed to revalidate layout:', err)
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'siteName',

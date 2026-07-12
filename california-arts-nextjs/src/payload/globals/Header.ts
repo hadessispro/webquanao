@@ -6,6 +6,19 @@ export const Header: GlobalConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    afterChange: [
+      async () => {
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+          console.log('Revalidated header layout cache')
+        } catch (err) {
+          console.error('Failed to revalidate layout:', err)
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'logoText',
