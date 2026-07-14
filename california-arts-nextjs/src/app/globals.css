@@ -7422,7 +7422,7 @@ body#california-arts .site-header-stack .ca_menu-1st-button,
 body#california-arts .site-header-stack .header-search-toggle,
 body#california-arts .site-header-stack .header-cart-link {
   font-family: var(--dien-header-menu-font) !important;
-  font-size: 14px !important;
+  font-size: var(--dien-subheading-size) !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
   line-height: 1.1 !important;
@@ -7546,7 +7546,7 @@ body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-
 body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-toggle, .header-cart-link):is(:hover, :focus-visible),
 body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-toggle, .header-cart-link) * {
   font-family: var(--dien-ui-menu-final) !important;
-  font-size: 14px !important;
+  font-size: var(--dien-subheading-size) !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
   line-height: 1 !important;
@@ -8881,9 +8881,6 @@ html body#california-arts {
   --dien-page-tone: #fdfcf9;
   --dien-ui-final: "SVN Arial 3", Arial, Helvetica, sans-serif;
   --dien-copy-final: "SVN Times New Roman 2", "Times New Roman", Times, serif;
-  --dien-body-size: 15px;
-  --dien-sub-size: 16px;
-  --dien-heading-size: 24px;
   background: var(--dien-page-tone) !important;
   letter-spacing: -0.012em !important;
 }
@@ -9248,9 +9245,6 @@ body#california-arts {
   --dien-page-tone: #fdfcf9;
   --dien-ui-final: "SVN Arial 3", Arial, Helvetica, sans-serif;
   --dien-copy-final: "SVN Times New Roman 2", "Times New Roman", Times, serif;
-  --dien-body-size: 16px;
-  --dien-sub-size: 18px;
-  --dien-heading-size: 26px;
   background: var(--dien-page-tone) !important;
 }
 
@@ -10823,7 +10817,7 @@ body#california-arts .site-header-stack :where(.c_header, .c_header-main, .site-
 /* User Specific Layout Polish (2026-07-07) */
 /* 1. Header links font size increased to 14px */
 body#california-arts .site-header-stack :where(.ca_menu-1st-button, .header-search-toggle) {
-  font-size: 14px !important;
+  font-size: var(--dien-subheading-size) !important;
 }
 
 /* 2. Transparent header elements: must be white when not hovered */
