@@ -44,11 +44,11 @@ function fontFace(font: StorefrontFont) {
   `
 }
 
-function createDesignSystemStyle(designSystem: DesignSystemData) {
-  const { typography, spacing } = designSystem
+function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: StorefrontFont[] }) {
+  const { typography, spacing, allFonts = [] } = designSystem
   const fontFaces = Array.from(
     new Map(
-      [typography.bodyFont, typography.headingFont, typography.uiFont]
+      [typography.bodyFont, typography.headingFont, typography.uiFont, ...allFonts]
         .filter((font) => font.source)
         .map((font) => [
           `${font.family}-${font.weight}-${font.style}-${font.source}`,

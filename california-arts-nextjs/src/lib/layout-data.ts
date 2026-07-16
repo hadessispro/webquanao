@@ -351,9 +351,23 @@ function normalizeFooterColumns(columns: unknown): FooterColumn[] {
   return normalized.length > 0 ? normalized : DEFAULT_FOOTER.columns
 }
 
-export async function getDesignSystemData(): Promise<DesignSystemData> {
+export async function getDesignSystemData(): Promise<DesignSystemData & { allFonts?: StorefrontFont[] }> {
   try {
     const payload = await getPayloadClient()
+    let allFonts: StorefrontFont[] = []
+    try {
+      const fontsRes = await payload.find({
+        collection: 'fonts',
+        limit: 100,
+        depth: 1,
+      })
+      allFonts = fontsRes.docs.map((font) =>
+        normalizeFont(font, DEFAULT_DESIGN_SYSTEM.typography.bodyFont),
+      )
+    } catch (err) {
+      console.error('Failed to fetch fonts:', err)
+    }
+
     const settings = (await payload.findGlobal({
       slug: 'site-settings',
       depth: 2,
@@ -452,6 +466,7 @@ export async function getDesignSystemData(): Promise<DesignSystemData> {
           80,
         ),
       },
+      allFonts,
     }
   } catch {
     return DEFAULT_DESIGN_SYSTEM
