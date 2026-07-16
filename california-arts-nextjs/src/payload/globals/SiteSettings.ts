@@ -82,6 +82,25 @@ export const SiteSettings: GlobalConfig = {
               },
             },
             {
+              type: 'row',
+              fields: [
+                {
+                  name: 'bodyBold',
+                  type: 'checkbox',
+                  label: 'Body Font Bold',
+                  defaultValue: false,
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'bodyItalic',
+                  type: 'checkbox',
+                  label: 'Body Font Italic',
+                  defaultValue: false,
+                  admin: { width: '50%' },
+                },
+              ],
+            },
+            {
               name: 'headingFont',
               type: 'relationship',
               relationTo: 'fonts',
@@ -91,6 +110,25 @@ export const SiteSettings: GlobalConfig = {
               },
             },
             {
+              type: 'row',
+              fields: [
+                {
+                  name: 'headingBold',
+                  type: 'checkbox',
+                  label: 'Heading Font Bold',
+                  defaultValue: false,
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'headingItalic',
+                  type: 'checkbox',
+                  label: 'Heading Font Italic',
+                  defaultValue: false,
+                  admin: { width: '50%' },
+                },
+              ],
+            },
+            {
               name: 'uiFont',
               type: 'relationship',
               relationTo: 'fonts',
@@ -98,6 +136,25 @@ export const SiteSettings: GlobalConfig = {
                 description:
                   'Buttons, inputs, navigation, mega menu, and other interface controls. When empty, SVN Arial 3 is used.',
               },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'uiBold',
+                  type: 'checkbox',
+                  label: 'UI Font Bold',
+                  defaultValue: false,
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'uiItalic',
+                  type: 'checkbox',
+                  label: 'UI Font Italic',
+                  defaultValue: false,
+                  admin: { width: '50%' },
+                },
+              ],
             },
             {
               type: 'row',

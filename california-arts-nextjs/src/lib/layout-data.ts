@@ -375,8 +375,14 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
       designSystem?: {
         typography?: {
           bodyFont?: FontLike
+          bodyBold?: boolean
+          bodyItalic?: boolean
           headingFont?: FontLike
+          headingBold?: boolean
+          headingItalic?: boolean
           uiFont?: FontLike
+          uiBold?: boolean
+          uiItalic?: boolean
           headingSize?: number
           subheadingSize?: number
           bodySize?: number
@@ -407,8 +413,14 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
     return {
       typography: {
         bodyFont,
+        bodyBold: !!typography?.bodyBold,
+        bodyItalic: !!typography?.bodyItalic,
         headingFont,
+        headingBold: !!typography?.headingBold,
+        headingItalic: !!typography?.headingItalic,
         uiFont,
+        uiBold: !!typography?.uiBold,
+        uiItalic: !!typography?.uiItalic,
         headingSize: clampNumber(
           typography?.headingSize,
           DEFAULT_DESIGN_SYSTEM.typography.headingSize,

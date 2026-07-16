@@ -144,8 +144,14 @@ export interface StorefrontFont {
 export interface DesignSystemData {
   typography: {
     bodyFont: StorefrontFont
+    bodyBold?: boolean
+    bodyItalic?: boolean
     headingFont: StorefrontFont
+    headingBold?: boolean
+    headingItalic?: boolean
     uiFont: StorefrontFont
+    uiBold?: boolean
+    uiItalic?: boolean
     headingSize: number
     subheadingSize: number
     bodySize: number
@@ -168,18 +174,24 @@ export const DEFAULT_DESIGN_SYSTEM: DesignSystemData = {
       style: 'normal',
       fallback: 'serif',
     },
+    bodyBold: false,
+    bodyItalic: false,
     headingFont: {
       family: 'SVN Times New Roman 2',
       weight: 400,
       style: 'normal',
       fallback: 'serif',
     },
+    headingBold: false,
+    headingItalic: false,
     uiFont: {
       family: 'SVN Arial 3',
       weight: 400,
       style: 'normal',
       fallback: 'sans-serif',
     },
+    uiBold: false,
+    uiItalic: false,
     headingSize: 22,
     subheadingSize: 17,
     bodySize: 16,

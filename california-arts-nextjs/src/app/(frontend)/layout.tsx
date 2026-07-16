@@ -88,6 +88,8 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
   body#california-arts {
     font-family: var(--dien-body-font-stack) !important;
     letter-spacing: var(--dien-letter-spacing) !important;
+    font-weight: ${typography.bodyBold ? 'bold' : 'normal'} !important;
+    font-style: ${typography.bodyItalic ? 'italic' : 'normal'} !important;
   }
 
   body#california-arts main,
@@ -96,6 +98,8 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
   body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss)::after {
     font-family: var(--dien-body-font-stack) !important;
     letter-spacing: var(--dien-letter-spacing) !important;
+    font-weight: ${typography.bodyBold ? 'bold' : 'normal'} !important;
+    font-style: ${typography.bodyItalic ? 'italic' : 'normal'} !important;
   }
 
   body#california-arts {
@@ -112,6 +116,8 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
   body#california-arts .font-heading,
   body#california-arts .font-serif {
     font-family: var(--dien-heading-font-stack) !important;
+    font-weight: ${typography.headingBold ? 'bold' : 'normal'} !important;
+    font-style: ${typography.headingItalic ? 'italic' : 'normal'} !important;
   }
 
   body#california-arts button,
@@ -140,6 +146,8 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
   body#california-arts .art-menu,
   body#california-arts .art-menu * {
     font-family: var(--dien-ui-font-stack) !important;
+    font-weight: ${typography.uiBold ? 'bold' : 'normal'} !important;
+    font-style: ${typography.uiItalic ? 'italic' : 'normal'} !important;
   }
 
   body#california-arts .site-header-stack,
@@ -161,6 +169,8 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
   body#california-arts .dien-footer__links * {
     font-family: var(--dien-ui-font-stack) !important;
     letter-spacing: 0 !important;
+    font-weight: ${typography.uiBold ? 'bold' : 'normal'} !important;
+    font-style: ${typography.uiItalic ? 'italic' : 'normal'} !important;
   }
 
   body#california-arts .site-header-stack,
