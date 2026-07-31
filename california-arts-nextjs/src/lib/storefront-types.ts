@@ -105,6 +105,103 @@ export interface HomeHeroData {
   eyebrowVi?: string
   title?: string
   titleVi?: string
+
+export interface HeaderLink {
+  label: string
+  labelVi?: string
+  href: string
+}
+
+export interface HeaderMegaColumn {
+  heading: string
+  headingVi?: string
+  headingHref?: string
+  links: HeaderLink[]
+}
+
+export interface HeaderMegaImageCard {
+  caption?: string
+  captionVi?: string
+  href?: string
+  image?: StorefrontImage
+}
+
+export interface HeaderMegaMenu {
+  enabled: boolean
+  columns: HeaderMegaColumn[]
+  imageCards: HeaderMegaImageCard[]
+}
+
+export interface HeaderNavItem {
+  label: string
+  labelVi?: string
+  href: string
+  openInNewTab?: boolean
+  megaMenu?: HeaderMegaMenu
+}
+
+export interface HeaderData {
+  logoText: string
+  logoHref: string
+  logoAlt: string
+  logo?: StorefrontImage
+  shippingBar: {
+    enabled: boolean
+    text: string
+    textVi?: string
+    href?: string
+  }
+  countrySelector: {
+    enabled: boolean
+    label: string
+    labelVi?: string
+  }
+  navigation: HeaderNavItem[]
+}
+
+export interface FooterLink {
+  label: string
+  labelVi?: string
+  href: string
+  openInNewTab?: boolean
+}
+
+export interface FooterColumn {
+  title: string
+  titleVi?: string
+  links: FooterLink[]
+}
+
+export interface FooterData {
+  desktopLogo?: StorefrontImage
+  mobileLogo?: StorefrontImage
+  columns: FooterColumn[]
+  newsletter: {
+    title: string
+    titleVi?: string
+    description: string
+    descriptionVi?: string
+    placeholder: string
+    placeholderVi?: string
+    buttonLabel: string
+    buttonLabelVi?: string
+    privacyText: string
+    privacyTextVi?: string
+    privacyHref: string
+  }
+  copyright: string
+  locationText: string
+}
+
+export interface HomeHeroData {
+  enabled: boolean
+  href: string
+  desktopImage?: StorefrontImage
+  mobileImage?: StorefrontImage
+  eyebrow?: string
+  eyebrowVi?: string
+  title?: string
+  titleVi?: string
   body?: string
   bodyVi?: string
   ctaLabel?: string
@@ -112,6 +209,7 @@ export interface HomeHeroData {
   textPosition: 'bottom-left' | 'bottom-center' | 'bottom-right' | 'center'
   textTheme: 'light' | 'dark'
   overlayOpacity: number
+  imageOpacity?: number
 }
 
 export interface NewsletterPopupData {
@@ -320,6 +418,7 @@ export const DEFAULT_HOME_HERO: HomeHeroData = {
   textPosition: 'bottom-right',
   textTheme: 'light',
   overlayOpacity: 0.08,
+  imageOpacity: 0.7,
 }
 
 export const DEFAULT_NEWSLETTER_POPUP: NewsletterPopupData = {

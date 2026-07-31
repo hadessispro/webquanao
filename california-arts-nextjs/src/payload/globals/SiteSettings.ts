@@ -422,6 +422,17 @@ export const SiteSettings: GlobalConfig = {
             description: '0 keeps the image clean. Use up to 0.6 only when text needs contrast.',
           },
         },
+        {
+          name: 'imageOpacity',
+          type: 'number',
+          defaultValue: 0.7,
+          min: 0.1,
+          max: 1,
+          admin: {
+            step: 0.05,
+            description: 'Opacity of the hero banner image (e.g. 0.7 = 70% opacity) so logo & text stand out clearly.',
+          },
+        },
       ],
     },
     {

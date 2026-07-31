@@ -228,6 +228,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
   return (
     <html className="js" data-scroll-behavior="auto" lang="en" suppressHydrationWarning>
       <head>
+        <meta name="theme-color" content="#181818" />
         <link rel="icon" href="/icon.png?v=20260701b" type="image/png" />
         <link rel="shortcut icon" href="/icon.png?v=20260701b" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-icon.png?v=20260701b" />

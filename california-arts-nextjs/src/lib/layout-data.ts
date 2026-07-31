@@ -628,6 +628,7 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
         textPosition?: HomeHeroData['textPosition']
         textTheme?: HomeHeroData['textTheme']
         overlayOpacity?: number
+        imageOpacity?: number
       }
     }
 
@@ -668,6 +669,7 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
       textPosition: hero.textPosition || DEFAULT_HOME_HERO.textPosition,
       textTheme: hero.textTheme || DEFAULT_HOME_HERO.textTheme,
       overlayOpacity: hero.overlayOpacity ?? DEFAULT_HOME_HERO.overlayOpacity,
+      imageOpacity: hero.imageOpacity ?? DEFAULT_HOME_HERO.imageOpacity ?? 0.7,
     }
   } catch {
     return DEFAULT_HOME_HERO

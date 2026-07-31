@@ -24,7 +24,7 @@ export default async function HomePage() {
         ].join(' ')}
       >
         <Link aria-label={ctaLabel || title || 'xem tất cả'} className="home-hero__link" href={hero.href}>
-          <picture className="home-hero__picture">
+          <picture className="home-hero__picture" style={{ opacity: hero.imageOpacity ?? 0.7 }}>
             {mobileImage && <source media="(max-width: 767px)" srcSet={mobileImage.src} />}
             <img
               alt={desktopImage.alt || title || 'điển'}
