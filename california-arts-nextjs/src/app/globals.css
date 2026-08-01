@@ -10978,3 +10978,20 @@ body#california-arts .home-hero__image {
 }
 
 
+
+/* Footer text & links font size: 14px */
+body#california-arts .site-footer,
+body#california-arts .dien-footer,
+body#california-arts .dien-footer a,
+body#california-arts .dien-footer p,
+body#california-arts .dien-footer span,
+body#california-arts .dien-footer button,
+body#california-arts .dien-footer input {
+  font-size: var(--dien-footer-font-size, 14px) !important;
+}
+
+/* Smooth slide transition for sticky header */
+body#california-arts .site-header-stack {
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease !important;
+  will-change: transform;
+}

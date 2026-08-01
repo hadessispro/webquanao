@@ -100,11 +100,13 @@ export interface HomeHeroData {
   enabled: boolean
   href: string
   desktopImage?: StorefrontImage
+  tabletImage?: StorefrontImage
   mobileImage?: StorefrontImage
   eyebrow?: string
   eyebrowVi?: string
   title?: string
   titleVi?: string
+  heroOpacity?: number
 }
 
 export interface HeaderLink {

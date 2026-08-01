@@ -340,6 +340,19 @@ export const SiteSettings: GlobalConfig = {
           },
         },
         {
+          name: 'tabletImage',
+          type: 'upload',
+          relationTo: 'media',
+        },
+        {
+          name: 'tabletSourceUrl',
+          type: 'text',
+          defaultValue: '/media/nha-trang-6h.webp',
+          admin: {
+            description: 'External tablet image fallback when no Payload image is selected.',
+          },
+        },
+        {
           name: 'mobileImage',
           type: 'upload',
           relationTo: 'media',

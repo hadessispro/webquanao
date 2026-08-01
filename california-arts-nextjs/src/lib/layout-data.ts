@@ -615,6 +615,8 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
         href?: string
         desktopImage?: MediaLike
         desktopSourceUrl?: string
+        tabletImage?: MediaLike
+        tabletSourceUrl?: string
         mobileImage?: MediaLike
         mobileSourceUrl?: string
         eyebrow?: string
@@ -646,6 +648,14 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
               alt: hero.title || DEFAULT_HOME_HERO.desktopImage?.alt,
             }
           : DEFAULT_HOME_HERO.desktopImage),
+      tabletImage:
+        mediaToImage(hero.tabletImage, hero.title || DEFAULT_HOME_HERO.desktopImage?.alt) ||
+        (hero.tabletSourceUrl
+          ? {
+              src: ensureAbsoluteUrl(hero.tabletSourceUrl) || hero.tabletSourceUrl,
+              alt: hero.title || DEFAULT_HOME_HERO.desktopImage?.alt,
+            }
+          : undefined),
       mobileImage:
         mediaToImage(hero.mobileImage, hero.title || DEFAULT_HOME_HERO.mobileImage?.alt) ||
         (hero.mobileSourceUrl

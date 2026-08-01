@@ -102,6 +102,11 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
     font-style: ${typography.bodyItalic ? 'italic' : 'normal'} !important;
   }
 
+  html {
+    background-color: #131818 !important;
+    color-scheme: dark !important;
+  }
+
   body#california-arts {
     font-size: var(--dien-body-size);
     line-height: var(--dien-line-height);
