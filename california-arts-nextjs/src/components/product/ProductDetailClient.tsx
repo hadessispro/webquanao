@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLayout } from "@/context/LayoutContext";
 import { BrandPrice } from "@/components/ui/BrandCurrency";
@@ -498,6 +498,8 @@ export default function ProductDetailClient({
   const [openFinderDropdown, setOpenFinderDropdown] =
     useState<SizeFinderDropdownKey | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const mobileGalleryRef = useRef<HTMLDivElement>(null);
+  const lightboxGalleryRef = useRef<HTMLDivElement>(null);
 
   const imgs = useMemo(
     () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
@@ -554,7 +556,7 @@ export default function ProductDetailClient({
     ? formatPrice(selVariant.compare_at_price)
     : null;
   const selectedColorLabel = selColor ? getColorLabel(product, selColor) : "";
-  const displayTitle = selectedColorLabel ? `${product.title} | ${selectedColorLabel}` : product.title;
+  const displayTitle = selectedColorLabel ? `${product.title} (${selectedColorLabel})` : product.title;
 
   const accordions = useMemo(() => {
     const orderedTitles = [
@@ -643,6 +645,7 @@ export default function ProductDetailClient({
   const pickColor = (color: string) => {
     setSelColor(color);
     setMobileIdx(0);
+    mobileGalleryRef.current?.scrollTo({ behavior: "auto", left: 0 });
     setSelSize((currentSize) => {
       const stillAvailable = product.variants.some(
         (variant) =>
@@ -655,18 +658,35 @@ export default function ProductDetailClient({
     });
   };
 
+  const goToMobileImage = (index: number, behavior: ScrollBehavior = "smooth") => {
+    if (mediaItems.length === 0) return;
+
+    const nextIndex = (index + mediaItems.length) % mediaItems.length;
+    setMobileIdx(nextIndex);
+
+    const gallery = mobileGalleryRef.current;
+    if (gallery) {
+      gallery.scrollTo({ behavior, left: gallery.clientWidth * nextIndex });
+    }
+  };
+
   const nextMobileImage = () => {
-    setMobileIdx((current) => {
-      const bounded = Math.min(current, mediaItems.length - 1);
-      return bounded === mediaItems.length - 1 ? 0 : bounded + 1;
-    });
+    goToMobileImage(mobileIdx + 1);
   };
 
   const prevMobileImage = () => {
-    setMobileIdx((current) => {
-      const bounded = Math.min(current, mediaItems.length - 1);
-      return bounded === 0 ? mediaItems.length - 1 : bounded - 1;
-    });
+    goToMobileImage(mobileIdx - 1);
+  };
+
+  const handleMobileGalleryScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const gallery = event.currentTarget;
+    if (gallery.clientWidth === 0) return;
+
+    const nextIndex = Math.max(
+      0,
+      Math.min(mediaItems.length - 1, Math.round(gallery.scrollLeft / gallery.clientWidth)),
+    );
+    setMobileIdx(nextIndex);
   };
 
   const orderSelectedVariantViaInstagram = () => {
@@ -678,29 +698,51 @@ export default function ProductDetailClient({
   const openLightbox = (index: number) => {
     if (index < 0) return;
     setLightboxIndex(index);
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const gallery = lightboxGalleryRef.current;
+        gallery?.scrollTo({ behavior: "auto", left: gallery.clientWidth * index });
+      });
+    });
   };
 
   const closeLightbox = () => {
     setLightboxIndex(null);
   };
 
+  const goToLightboxImage = (index: number) => {
+    if (imageMediaItems.length === 0) return;
+
+    const nextIndex = (index + imageMediaItems.length) % imageMediaItems.length;
+    setLightboxIndex(nextIndex);
+
+    const gallery = lightboxGalleryRef.current;
+    if (gallery) {
+      gallery.scrollTo({ behavior: "smooth", left: gallery.clientWidth * nextIndex });
+    }
+  };
+
   const nextLightboxImage = () => {
-    setLightboxIndex((current) => {
-      if (current === null || imageMediaItems.length === 0) return current;
-      return current === imageMediaItems.length - 1 ? 0 : current + 1;
-    });
+    if (lightboxIndex === null) return;
+    goToLightboxImage(lightboxIndex + 1);
   };
 
   const prevLightboxImage = () => {
-    setLightboxIndex((current) => {
-      if (current === null || imageMediaItems.length === 0) return current;
-      return current === 0 ? imageMediaItems.length - 1 : current - 1;
-    });
+    if (lightboxIndex === null) return;
+    goToLightboxImage(lightboxIndex - 1);
   };
 
-  const safeMobileIdx =
-    mediaItems.length > 0 ? Math.min(mobileIdx, mediaItems.length - 1) : 0;
-  const currentMobileMedia = mediaItems[safeMobileIdx];
+  const handleLightboxGalleryScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const gallery = event.currentTarget;
+    if (gallery.clientWidth === 0) return;
+
+    const nextIndex = Math.max(
+      0,
+      Math.min(imageMediaItems.length - 1, Math.round(gallery.scrollLeft / gallery.clientWidth)),
+    );
+    setLightboxIndex(nextIndex);
+  };
 
   return (
     <section className="product-detail bg-primary-background text-primary-text">
@@ -744,28 +786,38 @@ export default function ProductDetailClient({
         </div>
 
         <div className="product-detail__mobile-gallery">
-          {currentMobileMedia ? (
+          {mediaItems.length > 0 ? (
             <div className="product-detail__mobile-frame">
-              {currentMobileMedia.type === "image" ? (
-                <button
-                  aria-label={`xem lớn ${product.title}`}
-                  className="product-detail__media-button"
-                  onClick={() =>
-                    openLightbox(
-                      imageMediaItems.findIndex((imageItem) => imageItem.key === currentMobileMedia.key),
-                    )
-                  }
-                  type="button"
-                >
-                  <ProductMediaImage
-                    image={currentMobileMedia.image}
-                    index={safeMobileIdx}
-                    title={product.title}
-                  />
-                </button>
-              ) : (
-                <ProductMediaVideo video={currentMobileMedia.video} />
-              )}
+              <div
+                className="product-detail__mobile-track"
+                onScroll={handleMobileGalleryScroll}
+                ref={mobileGalleryRef}
+              >
+                {mediaItems.map((item, index) => (
+                  <div className="product-detail__mobile-slide" key={item.key}>
+                    {item.type === "image" ? (
+                      <button
+                        aria-label={`xem lớn ${product.title}`}
+                        className="product-detail__media-button"
+                        onClick={() =>
+                          openLightbox(
+                            imageMediaItems.findIndex((imageItem) => imageItem.key === item.key),
+                          )
+                        }
+                        type="button"
+                      >
+                        <ProductMediaImage
+                          image={item.image}
+                          index={index}
+                          title={product.title}
+                        />
+                      </button>
+                    ) : (
+                      <ProductMediaVideo video={item.video} />
+                    )}
+                  </div>
+                ))}
+              </div>
 
               {mediaItems.length > 1 && (
                 <>
@@ -775,7 +827,7 @@ export default function ProductDetailClient({
                     onClick={prevMobileImage}
                     type="button"
                   >
-                    {"<"}
+                    ‹
                   </button>
                   <button
                     aria-label="Ảnh sản phẩm kế tiếp"
@@ -783,23 +835,8 @@ export default function ProductDetailClient({
                     onClick={nextMobileImage}
                     type="button"
                   >
-                    {">"}
+                    ›
                   </button>
-                  <div className="product-detail__dots" aria-hidden="true">
-                    {mediaItems.map((item, index) => (
-                      <button
-                        className={
-                          index === safeMobileIdx
-                            ? "product-detail__dot product-detail__dot--active"
-                            : "product-detail__dot"
-                        }
-                        key={item.key}
-                        onClick={() => setMobileIdx(index)}
-                        tabIndex={-1}
-                        type="button"
-                      />
-                    ))}
-                  </div>
                 </>
               )}
             </div>
@@ -1049,12 +1086,22 @@ export default function ProductDetailClient({
               </button>
             </>
           )}
-          <img
-            alt={lightboxItem.image.alt || product.title}
-            className="product-detail__lightbox-image"
+          <div
+            className="product-detail__lightbox-track"
             onClick={(event) => event.stopPropagation()}
-            src={lightboxItem.image.src}
-          />
+            onScroll={handleLightboxGalleryScroll}
+            ref={lightboxGalleryRef}
+          >
+            {imageMediaItems.map((item) => (
+              <div className="product-detail__lightbox-slide" key={item.key}>
+                <img
+                  alt={item.image.alt || product.title}
+                  className="product-detail__lightbox-image"
+                  src={item.image.src}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

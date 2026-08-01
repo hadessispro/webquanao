@@ -69,23 +69,28 @@ function clampNumber(value: unknown, fallback: number, min: number, max: number)
   return Math.min(max, Math.max(min, parsed))
 }
 
-function normalizeFont(font: FontLike, fallback: StorefrontFont): StorefrontFont {
-  if (!font || typeof font === 'number' || typeof font === 'string') return fallback
+function normalizeFont(font: unknown, fallback: StorefrontFont): StorefrontFont {
+  if (!font || typeof font !== 'object' || Array.isArray(font)) return fallback
 
-  const family = font.fontFamily?.trim() || fallback.family
+  const value = font as Exclude<FontLike, number | string | null | undefined>
+
+  const family = value.fontFamily?.trim() || fallback.family
   const source = ensureAbsoluteUrl(
-    font.url || (font.filename ? `/api/fonts/file/${encodeURIComponent(font.filename)}` : undefined),
+    value.url ||
+      (value.filename ? `/api/fonts/file/${encodeURIComponent(value.filename)}` : undefined),
   )
-  const style = font.style === 'italic' ? 'italic' : 'normal'
+  const style = value.style === 'italic' ? 'italic' : 'normal'
   const fontFallback =
-    font.fallback === 'serif' || font.fallback === 'monospace' || font.fallback === 'sans-serif'
-      ? font.fallback
+    value.fallback === 'serif' ||
+    value.fallback === 'monospace' ||
+    value.fallback === 'sans-serif'
+      ? value.fallback
       : fallback.fallback
 
   return {
     family,
     source,
-    weight: clampNumber(font.weight, fallback.weight, 100, 900),
+    weight: clampNumber(value.weight, fallback.weight, 100, 900),
     style,
     fallback: fontFallback,
   }

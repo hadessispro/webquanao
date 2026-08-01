@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useLayout } from '@/context/LayoutContext'
 import { FooterData, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
-import { BRAND_INSTAGRAM_PROFILE_URL } from '@/lib/brand'
 import { PRODUCT_MENU_GROUPS } from '@/lib/product-menu'
 
 interface MobileMenuDrawerProps {
@@ -17,11 +16,31 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
 
-export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawerProps) {
+const MOBILE_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
+  if (group.items && group.items.length > 0) {
+    return group.items.map((item) => ({
+      href: item.href,
+      label: item.label,
+    }))
+  }
+
+  return [
+    {
+      href: group.href,
+      label: group.title === 'xem tất cả' ? `→ ${group.title}` : group.title,
+    },
+  ]
+})
+
+export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) {
   const { isMobileMenuOpen, locale, setIsMobileMenuOpen } = useLayout()
+  const [productsOpen, setProductsOpen] = useState(false)
   const aboutLink = navigation.find((item) => item.href === '/pages/our-story')
-  const newsletterPlaceholder =
-    localizedText(locale, footer.newsletter.placeholder, footer.newsletter.placeholderVi) || 'đăng ký newsletter'
+
+  const closeMenu = () => {
+    setProductsOpen(false)
+    setIsMobileMenuOpen(false)
+  }
 
   useEffect(() => {
     if (!isMobileMenuOpen) return undefined
@@ -42,7 +61,7 @@ export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawe
       <button
         aria-label="close menu"
         className="art-menu__scrim"
-        onClick={() => setIsMobileMenuOpen(false)}
+        onClick={closeMenu}
         type="button"
       />
       <aside className="art-menu__panel">
@@ -51,99 +70,49 @@ export default function MobileMenuDrawer({ footer, navigation }: MobileMenuDrawe
             <button
               aria-label="close menu"
               className="art-menu__close"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={closeMenu}
               type="button"
             >
               <span />
             </button>
-            <div className="art-menu__tabs">
-              <Link
-                className="art-menu__tab art-menu__tab--active"
-                href="/collections/shop-all"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                sản phẩm
-              </Link>
-              {aboutLink && (
-                <Link
-                  className="art-menu__tab"
-                  href={aboutLink.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {localizedText(locale, aboutLink.label, aboutLink.labelVi) || 'về điển'}
-                </Link>
-              )}
-            </div>
           </div>
 
           <div className="art-menu__primary">
-            {PRODUCT_MENU_GROUPS.map((group) => (
-              <div className="art-menu__product-group" key={group.title}>
-                {group.href ? (
-                  <Link
-                    className="art-menu__product-heading art-menu__product-heading--link"
-                    href={group.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {group.title}
-                  </Link>
-                ) : (
-                  <h2 className="art-menu__product-heading">{group.title}</h2>
-                )}
-
-                {group.items && group.items.length > 0 && (
-                  <ul className="art-menu__product-list">
-                    {group.items.map((item) => (
-                      <li key={item.label}>
-                        {item.href ? (
-                          <Link
-                            className="art-menu__primary-link"
-                            href={item.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
-                            {item.label}
-                          </Link>
-                        ) : (
-                          <span className="art-menu__primary-link art-menu__primary-link--disabled">
-                            {item.label}
-                          </span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="art-menu__social">
-            <a
-              className="art-menu__footer-link"
-              href={BRAND_INSTAGRAM_PROFILE_URL}
-              rel="noreferrer"
-              target="_blank"
+            <button
+              aria-controls="art-menu-products"
+              aria-expanded={productsOpen}
+              className="art-menu__product-toggle"
+              onClick={() => setProductsOpen((current) => !current)}
+              type="button"
             >
-              instagram
-            </a>
+              <span>sản phẩm</span>
+              <span aria-hidden="true" className="art-menu__chevron" />
+            </button>
+
+            {productsOpen && (
+              <ul className="art-menu__accordion" id="art-menu-products">
+                {MOBILE_PRODUCT_ITEMS.map((item) => (
+                  <li key={item.label}>
+                    {item.href ? (
+                      <Link className="art-menu__primary-link" href={item.href} onClick={closeMenu}>
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <span className="art-menu__primary-link art-menu__primary-link--disabled">
+                        {item.label}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <Link className="art-menu__about-link" href={aboutLink?.href || '/pages/our-story'} onClick={closeMenu}>
+              {localizedText(locale, aboutLink?.label, aboutLink?.labelVi) || 'về điển'}
+            </Link>
           </div>
 
-          <form className="art-menu__newsletter">
-            <label className="art-menu__newsletter-label" htmlFor="art-menu-email">
-              đăng ký newsletter
-            </label>
-            <div className="art-menu__newsletter-row">
-              <input id="art-menu-email" name="email" placeholder={newsletterPlaceholder} type="email" />
-              <button type="submit">gửi</button>
-            </div>
-            <p>*nhận thông báo về quyền truy cập website sớm hơn cho các đợt drop; miễn phí vận chuyển cho đơn hàng đầu tiên.</p>
-          </form>
-
-          <footer className="art-menu__footer">
-            <div className="art-menu__meta">
-              <span>{footer.locationText}</span>
-              <span>{footer.copyright}</span>
-            </div>
-          </footer>
+          <p className="art-menu__slogan">điển, you already know</p>
         </div>
       </aside>
     </nav>

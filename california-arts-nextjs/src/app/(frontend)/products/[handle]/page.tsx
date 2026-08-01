@@ -60,7 +60,7 @@ export default async function ProductDetailPage({
         item.handle !== product.handle &&
         products.findIndex((candidate) => candidate.handle === item.handle) === index,
     )
-    .slice(0, 4)
+    .slice(0, 8)
 
   const initialVariantId = Array.isArray(variantParam)
     ? Number.parseInt(variantParam[0] || "0", 10)

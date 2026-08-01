@@ -91,6 +91,7 @@ export default function ProductGrid({
                   <div className="product-grid__bar-heading">
                     <h2 className="font-body text-base">{barLabel}</h2>
                   </div>
+                  <div aria-hidden="true" className="product-grid__bar-divider" />
                   {barDescriptionHtml ? (
                     <div
                       className="rte text-sm product-grid__bar-copy"

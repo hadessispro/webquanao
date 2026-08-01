@@ -203,6 +203,14 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
     font-family: "SVN Arial 3", Arial, Helvetica, sans-serif !important;
   }
 
+  body#california-arts .site-header-stack .dien-product-menu .dien-product-menu__slogan,
+  body#california-arts .art-menu .art-menu__slogan {
+    font-family: "SVN Times New Roman 2", "Times New Roman", Times, serif !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+    letter-spacing: 0 !important;
+  }
+
   body#california-arts .section-x-padding {
     padding-left: var(--dien-page-padding-mobile) !important;
     padding-right: var(--dien-page-padding-mobile) !important;
@@ -248,7 +256,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
             <main role="main" id="MainContent">
               {children}
             </main>
-            <Footer footer={footer} />
+            <Footer />
           </div>
         </ClientLayout>
       </body>

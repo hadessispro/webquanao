@@ -143,6 +143,7 @@ function ProductMegaMenu({ onNavigate }: { onNavigate?: () => void }) {
             ))}
           </ul>
         </div>
+        <p className="dien-product-menu__slogan">điển, you already know</p>
       </div>
     </div>
   )
@@ -280,7 +281,6 @@ export default function Header({ header }: HeaderProps) {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [searchLoading, setSearchLoading] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [nearFooter, setNearFooter] = useState(false)
   const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
   const logoAlt = header.logo?.alt || header.logoAlt || 'điển'
   const isHome = pathname === '/'
@@ -289,8 +289,8 @@ export default function Header({ header }: HeaderProps) {
     .slice(0, 2)
   const shippingText =
     locale === 'vi'
-      ? 'miễn phí vận chuyển cho đơn hàng trên 950.000đ.'
-      : 'complimentary shipping on orders over 950.000đ.'
+      ? 'miễn phí vận chuyển cho đơn hàng trên 950.000đ'
+      : 'complimentary shipping on orders over 950.000đ'
 
   const cancelMegaMenuClose = () => {
     if (megaMenuCloseTimerRef.current !== null) {
@@ -318,13 +318,16 @@ export default function Header({ header }: HeaderProps) {
   }
 
   useEffect(() => {
-    setSearchOpen(false)
-    setSearchQuery('')
-    setSearchResults([])
     cancelMegaMenuClose()
-    setOpenMegaMenuHref(null)
-    setNearFooter(false)
-    document.documentElement.classList.remove('site-footer-near')
+
+    const timer = window.setTimeout(() => {
+      setSearchOpen(false)
+      setSearchQuery('')
+      setSearchResults([])
+      setOpenMegaMenuHref(null)
+    }, 0)
+
+    return () => window.clearTimeout(timer)
   }, [pathname])
 
   useEffect(() => {
@@ -340,7 +343,7 @@ export default function Header({ header }: HeaderProps) {
         if (!response.ok) throw new Error('search failed')
         const data = (await response.json()) as { results?: SearchResult[] }
         setSearchResults(Array.isArray(data.results) ? data.results : [])
-      } catch (error) {
+      } catch {
         if (!controller.signal.aborted) setSearchResults([])
       } finally {
         if (!controller.signal.aborted) setSearchLoading(false)
@@ -362,12 +365,15 @@ export default function Header({ header }: HeaderProps) {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    setScrolled(false)
     if (pathname === '/') {
       justNavigatedHome.current = true
     } else {
       justNavigatedHome.current = false
     }
+
+    const timer = window.setTimeout(() => setScrolled(false), 0)
+
+    return () => window.clearTimeout(timer)
   }, [pathname])
 
   useEffect(() => {
@@ -394,31 +400,6 @@ export default function Header({ header }: HeaderProps) {
         headerHeight -= 30
       }
       document.documentElement.style.setProperty('--header-stack-height', `${Math.round(headerHeight)}px`)
-
-      const footer = document.getElementById('shopify-section-footer')
-      if (!footer) {
-        setNearFooter(false)
-        document.documentElement.classList.remove('site-footer-near')
-        return
-      }
-
-      const footerLogo = footer.querySelector<HTMLElement>('.dien-footer__logo')
-      const footerLogoRect = footerLogo?.getBoundingClientRect()
-      const isNearFooter = Boolean(
-        scrollTop > 24 &&
-          footerLogoRect &&
-          footerLogoRect.top <= window.innerHeight - 8 &&
-          footerLogoRect.bottom >= headerHeight + 8,
-      )
-
-      if (isNearFooter) {
-        setSearchOpen(false)
-        setOpenMegaMenuHref(null)
-        setIsMobileMenuOpen(false)
-      }
-
-      setNearFooter(isNearFooter)
-      document.documentElement.classList.toggle('site-footer-near', isNearFooter)
     }
 
     const queueUpdate = () => {
@@ -441,49 +422,8 @@ export default function Header({ header }: HeaderProps) {
       document.removeEventListener('scroll', queueUpdate, true)
       window.removeEventListener('resize', queueUpdate)
       document.documentElement.style.removeProperty('--header-stack-height')
-      document.documentElement.classList.remove('site-footer-near')
     }
-  }, [pathname, setIsMobileMenuOpen])
-
-  useEffect(() => {
-    const footer = document.getElementById('shopify-section-footer')
-    const footerLogo = footer?.querySelector<HTMLElement>('.dien-footer__logo')
-
-    if (!footerLogo || typeof IntersectionObserver === 'undefined') {
-      return undefined
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        let headerHeight =
-          document.querySelector<HTMLElement>('.site-header-stack')?.getBoundingClientRect().height ||
-          90
-        if (window.scrollY > 18 && !isHome) {
-          headerHeight -= 30
-        }
-        const logoRect = entry.boundingClientRect
-        const isNearFooter = Boolean(
-          window.scrollY > 24 &&
-            entry.isIntersecting &&
-            logoRect.bottom >= headerHeight + 8,
-        )
-
-        if (isNearFooter) {
-          setSearchOpen(false)
-          closeMegaMenu()
-          setIsMobileMenuOpen(false)
-        }
-
-        setNearFooter(isNearFooter)
-        document.documentElement.classList.toggle('site-footer-near', isNearFooter)
-      },
-      { threshold: [0, 0.01] },
-    )
-
-    observer.observe(footerLogo)
-
-    return () => observer.disconnect()
-  }, [pathname, setIsMobileMenuOpen])
+  }, [isHome])
 
   useEffect(() => {
     if (!openMegaMenuHref) return undefined
@@ -533,7 +473,6 @@ export default function Header({ header }: HeaderProps) {
     'site-header-stack',
     isHome ? 'site-header-stack--home' : '',
     scrolled ? 'site-header-stack--scrolled' : '',
-    nearFooter ? 'site-header-stack--footer-near' : '',
     openMegaMenuHref ? 'site-header-stack--menu-open' : '',
     searchOpen ? 'site-header-stack--search-open' : '',
   ]
@@ -678,7 +617,6 @@ export default function Header({ header }: HeaderProps) {
             <div className="search-overlay search-overlay--drawer anim-fade" onClick={() => setSearchOpen(false)}>
               <aside className="search-overlay__panel" onClick={(event) => event.stopPropagation()}>
                 <div className="search-overlay__head">
-                  <p>tìm kiếm</p>
                   <button aria-label={t('closeSearch')} className="search-overlay__close" onClick={() => setSearchOpen(false)} type="button">
                     <span />
                   </button>
