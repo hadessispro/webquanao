@@ -105,6 +105,7 @@ export interface HomeHeroData {
   eyebrowVi?: string
   title?: string
   titleVi?: string
+}
 
 export interface HeaderLink {
   label: string
