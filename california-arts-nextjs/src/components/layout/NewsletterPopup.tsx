@@ -42,7 +42,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
       : localizedText(locale, settings.placeholder, settings.placeholderVi)
   const submitLabel =
     locale === 'vi'
-      ? 'tham gia!'
+      ? 'tham gia'
       : localizedText(locale, settings.buttonLabel, settings.buttonLabelVi)
   const privacyText =
     locale === 'vi'
