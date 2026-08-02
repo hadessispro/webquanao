@@ -79,6 +79,12 @@ export default function ProductGrid({
 
   return (
     <>
+      {barLabel && stickyBar && (
+        <div className="product-grid__mobile-sticky-title">
+          <h2>{barLabel}</h2>
+        </div>
+      )}
+
       {barLabel && (
         <div
           className={`c_text-columns-section product-grid__bar${stickyBar ? " product-grid__bar--sticky" : ""}${stickyBar && barStuck ? " product-grid__bar--stuck" : ""}`}

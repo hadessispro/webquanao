@@ -2,6 +2,7 @@
 
 import React, { useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLayout } from "@/context/LayoutContext";
 import { BrandPrice } from "@/components/ui/BrandCurrency";
 import { formatVndAmount } from "@/lib/price";
@@ -460,6 +461,7 @@ export default function ProductDetailClient({
   product: Product;
   suggestedProducts?: Product[];
 }) {
+  const router = useRouter();
   const { t } = useLayout();
   const colors = getProductColors(product);
   const sizes = getProductSizes(product);
@@ -488,6 +490,7 @@ export default function ProductDetailClient({
   const [selColor, setSelColor] = useState(resolvedInitialColor);
   const [selSize, setSelSize] = useState(initialSize);
   const [mobileIdx, setMobileIdx] = useState(0);
+  const [isDraggingSuggestions, setIsDraggingSuggestions] = useState(false);
   const [activeInfoTab, setActiveInfoTab] = useState<ProductInfoTab>("details");
   const [isSizeFinderOpen, setIsSizeFinderOpen] = useState(false);
   const [sizeFinderView, setSizeFinderView] = useState<SizeFinderView>("finder");
@@ -499,7 +502,20 @@ export default function ProductDetailClient({
     useState<SizeFinderDropdownKey | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
+  const mobileGalleryGestureRef = useRef<{
+    startedOnFirstImage: boolean;
+    x: number;
+    y: number;
+  } | null>(null);
+  const isLeavingProductRef = useRef(false);
   const lightboxGalleryRef = useRef<HTMLDivElement>(null);
+  const suggestionsDragRef = useRef<{
+    moved: boolean;
+    pointerId: number;
+    scrollLeft: number;
+    x: number;
+  } | null>(null);
+  const suppressSuggestionClickRef = useRef(false);
 
   const imgs = useMemo(
     () => colorImageMap[selColor] || Object.values(colorImageMap)[0] || [],
@@ -661,7 +677,7 @@ export default function ProductDetailClient({
   const goToMobileImage = (index: number, behavior: ScrollBehavior = "smooth") => {
     if (mediaItems.length === 0) return;
 
-    const nextIndex = (index + mediaItems.length) % mediaItems.length;
+    const nextIndex = Math.max(0, Math.min(mediaItems.length - 1, index));
     setMobileIdx(nextIndex);
 
     const gallery = mobileGalleryRef.current;
@@ -675,7 +691,104 @@ export default function ProductDetailClient({
   };
 
   const prevMobileImage = () => {
+    if (mobileIdx === 0) {
+      leaveProductDetail();
+      return;
+    }
+
     goToMobileImage(mobileIdx - 1);
+  };
+
+  const leaveProductDetail = () => {
+    if (isLeavingProductRef.current) return;
+    isLeavingProductRef.current = true;
+
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/collections/shop-all");
+  };
+
+  const handleMobileGalleryTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    mobileGalleryGestureRef.current = {
+      startedOnFirstImage: event.currentTarget.scrollLeft <= 4,
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+  };
+
+  const handleMobileGalleryTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    const gesture = mobileGalleryGestureRef.current;
+    const touch = event.changedTouches[0];
+    mobileGalleryGestureRef.current = null;
+    if (!gesture || !touch || !gesture.startedOnFirstImage) return;
+
+    const distanceX = touch.clientX - gesture.x;
+    const distanceY = touch.clientY - gesture.y;
+    const isBackSwipe = distanceX >= 72 && distanceX > Math.abs(distanceY) * 1.35;
+
+    if (isBackSwipe) leaveProductDetail();
+  };
+
+  const handleMobileGalleryTouchCancel = () => {
+    mobileGalleryGestureRef.current = null;
+  };
+
+  const handleSuggestionsPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    suggestionsDragRef.current = {
+      moved: false,
+      pointerId: event.pointerId,
+      scrollLeft: event.currentTarget.scrollLeft,
+      x: event.clientX,
+    };
+    setIsDraggingSuggestions(true);
+  };
+
+  const handleSuggestionsPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = suggestionsDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const distanceX = event.clientX - drag.x;
+    if (Math.abs(distanceX) < 4) return;
+
+    drag.moved = true;
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.scrollLeft - distanceX;
+  };
+
+  const finishSuggestionsPointerDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = suggestionsDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    suggestionsDragRef.current = null;
+    setIsDraggingSuggestions(false);
+
+    if (drag.moved) {
+      suppressSuggestionClickRef.current = true;
+      window.setTimeout(() => {
+        suppressSuggestionClickRef.current = false;
+      }, 0);
+    }
+  };
+
+  const handleSuggestionClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!suppressSuggestionClickRef.current) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    suppressSuggestionClickRef.current = false;
   };
 
   const handleMobileGalleryScroll = (event: React.UIEvent<HTMLDivElement>) => {
@@ -791,6 +904,9 @@ export default function ProductDetailClient({
               <div
                 className="product-detail__mobile-track"
                 onScroll={handleMobileGalleryScroll}
+                onTouchCancel={handleMobileGalleryTouchCancel}
+                onTouchEnd={handleMobileGalleryTouchEnd}
+                onTouchStart={handleMobileGalleryTouchStart}
                 ref={mobileGalleryRef}
               >
                 {mediaItems.map((item, index) => (
@@ -1001,7 +1117,15 @@ export default function ProductDetailClient({
           <div className="product-detail__suggestions-head">
             <p>sản phẩm gợi ý</p>
           </div>
-          <div className="product-detail__suggestions-grid">
+          <div
+            className="product-detail__suggestions-grid"
+            data-dragging={isDraggingSuggestions || undefined}
+            onClickCapture={handleSuggestionClickCapture}
+            onPointerCancel={finishSuggestionsPointerDrag}
+            onPointerDown={handleSuggestionsPointerDown}
+            onPointerMove={handleSuggestionsPointerMove}
+            onPointerUp={finishSuggestionsPointerDrag}
+          >
             {suggestedProducts.map((item) => {
               const firstImage = item.images[0];
               const hoverImage = item.images[1];
@@ -1010,6 +1134,7 @@ export default function ProductDetailClient({
               return (
                 <Link
                   className="product-detail__suggestion"
+                  draggable={false}
                   href={`/products/${item.handle}`}
                   key={item.id}
                 >
@@ -1018,6 +1143,7 @@ export default function ProductDetailClient({
                       <img
                         alt={firstImage.alt || item.title}
                         className="product-detail__suggestion-image product-detail__suggestion-image--primary"
+                        draggable={false}
                         loading="lazy"
                         src={firstImage.src}
                       />
@@ -1026,6 +1152,7 @@ export default function ProductDetailClient({
                           alt=""
                           aria-hidden="true"
                           className="product-detail__suggestion-image product-detail__suggestion-image--hover"
+                          draggable={false}
                           loading="lazy"
                           src={hoverImage.src}
                         />

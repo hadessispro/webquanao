@@ -27,7 +27,10 @@ const DESKTOP_SPAN_CLASS: Record<NonNullable<ProductCardProps["desktopSpan"]>, s
   12: "lg:col-span-12",
 };
 
-export default function ProductCard({ product, desktopSpan = 3 }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  desktopSpan = 3,
+}: ProductCardProps) {
   const router = useRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);

@@ -3,6 +3,7 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { createPortal } from 'react-dom'
 import { useLayout } from '@/context/LayoutContext'
 import { BrandCurrencyText, BrandPrice } from '@/components/ui/BrandCurrency'
 import { HeaderData, HeaderMegaMenu, HeaderNavItem } from '@/lib/storefront-types'
@@ -356,6 +357,34 @@ export default function Header({ header }: HeaderProps) {
     }
   }, [searchOpen, searchQuery])
 
+  useEffect(() => {
+    if (!searchOpen) return undefined
+
+    const scrollY = window.scrollY
+    const previousBodyStyles = {
+      overflow: document.body.style.overflow,
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+    }
+    const previousHtmlOverflow = document.documentElement.style.overflow
+
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow
+      document.body.style.overflow = previousBodyStyles.overflow
+      document.body.style.position = previousBodyStyles.position
+      document.body.style.top = previousBodyStyles.top
+      document.body.style.width = previousBodyStyles.width
+      window.scrollTo(0, scrollY)
+    }
+  }, [searchOpen])
+
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (searchResults[0]?.href) {
@@ -613,7 +642,7 @@ export default function Header({ header }: HeaderProps) {
             </header>
           </section>
 
-          {searchOpen && (
+          {searchOpen && createPortal(
             <div className="search-overlay search-overlay--drawer anim-fade" onClick={() => setSearchOpen(false)}>
               <aside className="search-overlay__panel" onClick={(event) => event.stopPropagation()}>
                 <div className="search-overlay__head">
@@ -657,7 +686,8 @@ export default function Header({ header }: HeaderProps) {
                     ))}
                 </div>
               </aside>
-            </div>
+            </div>,
+            document.body,
           )}
         </div>
       </div>
