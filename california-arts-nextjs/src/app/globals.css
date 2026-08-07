@@ -11847,13 +11847,7 @@ body#california-arts .product-grid__mobile-sticky-title {
     padding: 8px 0 14px !important;
   }
 
-  body#california-arts .product-grid__bar-content .product-grid__bar-heading {
-    display: block !important;
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    padding: 0 8px 0 12px !important;
-  }
-
+  body#california-arts .product-grid__bar-content .product-grid__bar-heading,
   body#california-arts .product-grid__bar-divider {
     display: none !important;
   }
