@@ -11105,8 +11105,38 @@ body#california-arts .site-header-stack--footer-near:not(.site-header-stack--sea
   transform: none !important;
 }
 
+/* Smooth desktop & tablet sticky section bar transition (no choppy scroll jerk) */
+body#california-arts .product-grid__bar {
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+
+body#california-arts .product-grid__bar .product-grid__bar-content {
+  transition: padding 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body#california-arts .product-grid__bar-copy {
+  max-height: 240px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  will-change: max-height, opacity, transform;
+}
+
 body#california-arts .product-grid__bar--stuck .product-grid__bar-copy {
-  display: none !important;
+  display: block !important;
+  max-height: 0 !important;
+  opacity: 0 !important;
+  transform: translateY(-8px) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  pointer-events: none !important;
 }
 
 body#california-arts .product-grid__bar--stuck .product-grid__bar-content {
@@ -11123,13 +11153,17 @@ body#california-arts .product-grid__bar--stuck .product-grid__bar-heading {
   width: 100% !important;
 }
 
+body#california-arts .product-grid__bar-heading h2 {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 body#california-arts .product-grid__bar--stuck .product-grid__bar-heading h2 {
-  transform: translateY(-7px) !important;
+  transform: translateY(-2px) !important;
 }
 
 body#california-arts .product-grid__bar:not(.product-grid__bar--stuck) .product-grid__bar-copy {
   padding-top: 0 !important;
-  transform: translateY(-1px) !important;
+  transform: translateY(0) !important;
 }
 
 /* === Final homepage and navigation feedback === */
