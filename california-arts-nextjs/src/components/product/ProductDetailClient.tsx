@@ -503,6 +503,7 @@ export default function ProductDetailClient({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
   const mobileGalleryGestureRef = useRef<{
+    isLeftEdge: boolean;
     startedOnFirstImage: boolean;
     x: number;
     y: number;
@@ -687,16 +688,21 @@ export default function ProductDetailClient({
   };
 
   const nextMobileImage = () => {
-    goToMobileImage(mobileIdx + 1);
+    if (mediaItems.length === 0) return;
+    if (mobileIdx >= mediaItems.length - 1) {
+      goToMobileImage(0);
+    } else {
+      goToMobileImage(mobileIdx + 1);
+    }
   };
 
   const prevMobileImage = () => {
+    if (mediaItems.length === 0) return;
     if (mobileIdx === 0) {
-      leaveProductDetail();
-      return;
+      goToMobileImage(mediaItems.length - 1);
+    } else {
+      goToMobileImage(mobileIdx - 1);
     }
-
-    goToMobileImage(mobileIdx - 1);
   };
 
   const leaveProductDetail = () => {
@@ -715,10 +721,15 @@ export default function ProductDetailClient({
     const touch = event.touches[0];
     if (!touch) return;
 
+    const startX = touch.clientX;
+    const startY = touch.clientY;
+    const isLeftEdge = startX <= 48 || startX <= window.innerWidth * 0.18;
+
     mobileGalleryGestureRef.current = {
-      startedOnFirstImage: event.currentTarget.scrollLeft <= 4,
-      x: touch.clientX,
-      y: touch.clientY,
+      isLeftEdge,
+      startedOnFirstImage: mobileIdx === 0 || event.currentTarget.scrollLeft <= 4,
+      x: startX,
+      y: startY,
     };
   };
 
@@ -726,13 +737,32 @@ export default function ProductDetailClient({
     const gesture = mobileGalleryGestureRef.current;
     const touch = event.changedTouches[0];
     mobileGalleryGestureRef.current = null;
-    if (!gesture || !touch || !gesture.startedOnFirstImage) return;
+    if (!gesture || !touch) return;
 
     const distanceX = touch.clientX - gesture.x;
     const distanceY = touch.clientY - gesture.y;
-    const isBackSwipe = distanceX >= 72 && distanceX > Math.abs(distanceY) * 1.35;
 
-    if (isBackSwipe) leaveProductDetail();
+    if (Math.abs(distanceX) < 32 || Math.abs(distanceX) < Math.abs(distanceY) * 1.2) {
+      return;
+    }
+
+    if (distanceX > 0) {
+      // Swiping Right (Previous image gesture)
+      if (gesture.isLeftEdge && gesture.startedOnFirstImage) {
+        leaveProductDetail();
+      } else if (mobileIdx === 0) {
+        goToMobileImage(mediaItems.length - 1);
+      } else {
+        goToMobileImage(mobileIdx - 1);
+      }
+    } else {
+      // Swiping Left (Next image gesture)
+      if (mobileIdx >= mediaItems.length - 1) {
+        goToMobileImage(0);
+      } else {
+        goToMobileImage(mobileIdx + 1);
+      }
+    }
   };
 
   const handleMobileGalleryTouchCancel = () => {

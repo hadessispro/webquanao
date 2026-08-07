@@ -97,15 +97,7 @@ export default function CollectionProductSections({
         <IntroFeaturedSpacer />
       </div>
 
-      <div className="collection-product-page__mobile-products">
-        <ProductGrid
-          cardDesktopSpan={3}
-          products={collection.products}
-          showSectionTitle={false}
-        />
-      </div>
-
-      <div className="collection-product-page__sections collection-product-page__sections--desktop">
+      <div className="collection-product-page__sections">
         {collection.products.map((product, index) => (
           <section className="collection-product-section" id={`product-${product.handle}`} key={product.handle}>
             <ProductGrid

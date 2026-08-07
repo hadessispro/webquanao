@@ -11782,9 +11782,8 @@ body#california-arts .product-detail__lightbox-nav svg {
   }
 }
 
-/* Mobile collection UX: two distinct products per viewport and stable, title-only sticky bars. */
-body#california-arts .product-grid__mobile-sticky-title,
-body#california-arts .collection-product-page__mobile-products {
+/* Mobile collection UX: 2-column multi-row grid with section titles & descriptions intact. */
+body#california-arts .product-grid__mobile-sticky-title {
   display: none !important;
 }
 
@@ -11799,14 +11798,6 @@ body#california-arts .collection-product-page__mobile-products {
   body#california-arts .collection-product-section,
   body#california-arts .shop-all-collection {
     position: relative;
-  }
-
-  body#california-arts .collection-product-page__mobile-products {
-    display: block !important;
-  }
-
-  body#california-arts .collection-product-page__sections--desktop {
-    display: none !important;
   }
 
   body#california-arts .product-grid__mobile-sticky-title {
@@ -11856,7 +11847,13 @@ body#california-arts .collection-product-page__mobile-products {
     padding: 8px 0 14px !important;
   }
 
-  body#california-arts .product-grid__bar-content .product-grid__bar-heading,
+  body#california-arts .product-grid__bar-content .product-grid__bar-heading {
+    display: block !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    padding: 0 8px 0 12px !important;
+  }
+
   body#california-arts .product-grid__bar-divider {
     display: none !important;
   }
