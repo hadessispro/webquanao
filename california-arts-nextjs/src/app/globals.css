@@ -11739,16 +11739,15 @@ body#california-arts .product-detail__lightbox-nav svg {
   }
 
   body#california-arts .product-grid__items {
-    -ms-overflow-style: none;
-    display: flex !important;
-    gap: 12px !important;
-    grid-template-columns: none !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    padding: 0 12px 8px !important;
-    scroll-padding-left: 12px !important;
-    scroll-snap-type: x mandatory !important;
-    scrollbar-width: none;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 12px !important;
+    row-gap: 20px !important;
+    padding: 0 10px 16px !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    scroll-snap-type: none !important;
+    width: 100% !important;
   }
 
   body#california-arts .product-grid__items::-webkit-scrollbar {
@@ -11756,9 +11755,11 @@ body#california-arts .product-detail__lightbox-nav svg {
   }
 
   body#california-arts .product-grid__items > .ca_pro-item {
-    flex: 0 0 58vw !important;
-    scroll-snap-align: start !important;
-    scroll-snap-stop: always !important;
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
   }
 
   body#california-arts .ca_pro-item .c_grid-content {
@@ -11863,17 +11864,24 @@ body#california-arts .product-grid__mobile-sticky-title {
   }
 
   body#california-arts .product-grid__items {
-    column-gap: 16px !important;
-    padding: 0 10px 8px !important;
-    row-gap: 10px !important;
-    scroll-padding-left: 10px !important;
-    scroll-snap-type: x proximity !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 12px !important;
+    row-gap: 20px !important;
+    padding: 0 10px 16px !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    scroll-snap-type: none !important;
+    width: 100% !important;
   }
 
   body#california-arts .product-grid__items > .ca_pro-item {
-    flex: 0 0 calc((100% - 16px) / 2) !important;
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    scroll-snap-align: none !important;
     scroll-snap-stop: normal !important;
   }
 
