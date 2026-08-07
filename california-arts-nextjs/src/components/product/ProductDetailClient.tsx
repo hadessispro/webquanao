@@ -943,7 +943,9 @@ export default function ProductDetailClient({
                     onClick={prevMobileImage}
                     type="button"
                   >
-                    ‹
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="miter">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
                   </button>
                   <button
                     aria-label="Ảnh sản phẩm kế tiếp"
@@ -951,7 +953,9 @@ export default function ProductDetailClient({
                     onClick={nextMobileImage}
                     type="button"
                   >
-                    ›
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="miter">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
                   </button>
                 </>
               )}
@@ -1198,7 +1202,9 @@ export default function ProductDetailClient({
                 }}
                 type="button"
               >
-                ‹
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="miter">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
               </button>
               <button
                 aria-label="ảnh kế tiếp"
@@ -1209,7 +1215,9 @@ export default function ProductDetailClient({
                 }}
                 type="button"
               >
-                ›
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="miter">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
               </button>
             </>
           )}
