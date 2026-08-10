@@ -11899,6 +11899,21 @@ body#california-arts .search-overlay__result strong {
   line-height: 1.22 !important;
 }
 
+body#california-arts .header-search-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: currentColor;
+  display: inline-flex;
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  height: 28px;
+  line-height: 1;
+  padding: 0 !important;
+  transform: none !important;
+}
+
 /* Search is portalled outside the sticky header and always covers the live viewport. */
 body#california-arts .search-overlay {
   height: 100dvh;
