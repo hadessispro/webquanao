@@ -11880,7 +11880,7 @@ body#california-arts .product-grid__mobile-sticky-title {
   body#california-arts .ca_pro-item .product-grid-title {
     font-size: 12px !important;
     line-height: 1.2 !important;
-    min-height: 2.4em !important;
+    min-height: 0 !important;
   }
 
   body#california-arts .ca_pro-item .ca_pro-prices {
@@ -11889,6 +11889,14 @@ body#california-arts .product-grid__mobile-sticky-title {
     margin-top: 3px !important;
     white-space: nowrap;
   }
+}
+
+/* Ensure search result product title font matches product grid 100% (weight 400, no extra bold) */
+body#california-arts .search-overlay__result strong {
+  font-family: var(--dien-ui-final) !important;
+  font-size: var(--dien-subheading-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.22 !important;
 }
 
 /* Search is portalled outside the sticky header and always covers the live viewport. */

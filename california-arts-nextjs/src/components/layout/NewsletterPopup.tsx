@@ -48,7 +48,7 @@ export default function NewsletterPopup({ settings }: { settings: NewsletterPopu
     locale === 'vi'
       ? 'abc*'
       : localizedText(locale, settings.privacyText, settings.privacyTextVi)
-  const popupEnabled = pathname === '/'
+  const popupEnabled = false
   const canShowOnPath = pathname === '/'
 
   useEffect(() => {
