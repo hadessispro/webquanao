@@ -526,6 +526,27 @@ export default function ProductDetailClient({
     () => buildProductMediaItems(product, imgs),
     [imgs, product],
   );
+  const loopMediaItems = useMemo(() => {
+    if (mediaItems.length <= 1) return mediaItems;
+    const lastItem = mediaItems[mediaItems.length - 1];
+    const firstItem = mediaItems[0];
+    return [
+      { ...lastItem, key: `clone-last-${lastItem.key}` },
+      ...mediaItems,
+      { ...firstItem, key: `clone-first-${firstItem.key}` },
+    ];
+  }, [mediaItems]);
+
+  useEffect(() => {
+    if (mediaItems.length > 1 && mobileGalleryRef.current) {
+      const gallery = mobileGalleryRef.current;
+      if (gallery.clientWidth > 0) {
+        gallery.scrollTo({ behavior: "auto", left: gallery.clientWidth * 1 });
+        setMobileIdx(0);
+      }
+    }
+  }, [selColor, mediaItems.length]);
+
   const imageMediaItems = useMemo(
     () =>
       mediaItems.filter(
@@ -678,30 +699,70 @@ export default function ProductDetailClient({
   const goToMobileImage = (index: number, behavior: ScrollBehavior = "smooth") => {
     if (mediaItems.length === 0) return;
 
-    const nextIndex = Math.max(0, Math.min(mediaItems.length - 1, index));
-    setMobileIdx(nextIndex);
+    if (mediaItems.length <= 1) {
+      setMobileIdx(0);
+      return;
+    }
+
+    const nextRealIdx = (index + mediaItems.length) % mediaItems.length;
+    setMobileIdx(nextRealIdx);
 
     const gallery = mobileGalleryRef.current;
-    if (gallery) {
-      gallery.scrollTo({ behavior, left: gallery.clientWidth * nextIndex });
+    if (gallery && gallery.clientWidth > 0) {
+      const targetTrackIdx = nextRealIdx + 1;
+      gallery.scrollTo({ behavior, left: gallery.clientWidth * targetTrackIdx });
     }
   };
 
   const nextMobileImage = () => {
-    if (mediaItems.length === 0) return;
-    if (mobileIdx >= mediaItems.length - 1) {
-      goToMobileImage(0);
+    if (mediaItems.length <= 1) return;
+
+    const gallery = mobileGalleryRef.current;
+    if (!gallery || gallery.clientWidth === 0) return;
+
+    const slideWidth = gallery.clientWidth;
+    const currentTrackIdx = Math.round(gallery.scrollLeft / slideWidth);
+
+    if (currentTrackIdx >= mediaItems.length) {
+      gallery.scrollTo({ behavior: "smooth", left: slideWidth * (mediaItems.length + 1) });
+      setMobileIdx(0);
+
+      setTimeout(() => {
+        if (mobileGalleryRef.current && mobileGalleryRef.current.clientWidth > 0) {
+          mobileGalleryRef.current.scrollTo({ behavior: "auto", left: mobileGalleryRef.current.clientWidth * 1 });
+        }
+      }, 310);
     } else {
-      goToMobileImage(mobileIdx + 1);
+      const targetTrackIdx = currentTrackIdx + 1;
+      const realIdx = (targetTrackIdx - 1) % mediaItems.length;
+      gallery.scrollTo({ behavior: "smooth", left: slideWidth * targetTrackIdx });
+      setMobileIdx(realIdx);
     }
   };
 
   const prevMobileImage = () => {
-    if (mediaItems.length === 0) return;
-    if (mobileIdx === 0) {
-      goToMobileImage(mediaItems.length - 1);
+    if (mediaItems.length <= 1) return;
+
+    const gallery = mobileGalleryRef.current;
+    if (!gallery || gallery.clientWidth === 0) return;
+
+    const slideWidth = gallery.clientWidth;
+    const currentTrackIdx = Math.round(gallery.scrollLeft / slideWidth);
+
+    if (currentTrackIdx <= 1) {
+      gallery.scrollTo({ behavior: "smooth", left: 0 });
+      setMobileIdx(mediaItems.length - 1);
+
+      setTimeout(() => {
+        if (mobileGalleryRef.current && mobileGalleryRef.current.clientWidth > 0) {
+          mobileGalleryRef.current.scrollTo({ behavior: "auto", left: mobileGalleryRef.current.clientWidth * mediaItems.length });
+        }
+      }, 310);
     } else {
-      goToMobileImage(mobileIdx - 1);
+      const targetTrackIdx = currentTrackIdx - 1;
+      const realIdx = targetTrackIdx - 1;
+      gallery.scrollTo({ behavior: "smooth", left: slideWidth * targetTrackIdx });
+      setMobileIdx(realIdx);
     }
   };
 
@@ -727,7 +788,7 @@ export default function ProductDetailClient({
 
     mobileGalleryGestureRef.current = {
       isLeftEdge,
-      startedOnFirstImage: mobileIdx === 0 || event.currentTarget.scrollLeft <= 4,
+      startedOnFirstImage: mobileIdx === 0,
       x: startX,
       y: startY,
     };
@@ -750,18 +811,28 @@ export default function ProductDetailClient({
       // Swiping Right (Previous image gesture)
       if (gesture.isLeftEdge && gesture.startedOnFirstImage) {
         leaveProductDetail();
-      } else if (mobileIdx === 0) {
-        goToMobileImage(mediaItems.length - 1);
       } else {
-        goToMobileImage(mobileIdx - 1);
+        prevMobileImage();
       }
     } else {
       // Swiping Left (Next image gesture)
-      if (mobileIdx >= mediaItems.length - 1) {
-        goToMobileImage(0);
-      } else {
-        goToMobileImage(mobileIdx + 1);
-      }
+      nextMobileImage();
+    }
+  };
+
+  const handleMobileGalleryScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const gallery = event.currentTarget;
+    if (gallery.clientWidth === 0 || mediaItems.length <= 1) return;
+
+    const slideWidth = gallery.clientWidth;
+    const trackIdx = Math.round(gallery.scrollLeft / slideWidth);
+
+    if (trackIdx === 0) {
+      setMobileIdx(mediaItems.length - 1);
+    } else if (trackIdx === mediaItems.length + 1) {
+      setMobileIdx(0);
+    } else {
+      setMobileIdx(trackIdx - 1);
     }
   };
 
@@ -821,16 +892,7 @@ export default function ProductDetailClient({
     suppressSuggestionClickRef.current = false;
   };
 
-  const handleMobileGalleryScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const gallery = event.currentTarget;
-    if (gallery.clientWidth === 0) return;
 
-    const nextIndex = Math.max(
-      0,
-      Math.min(mediaItems.length - 1, Math.round(gallery.scrollLeft / gallery.clientWidth)),
-    );
-    setMobileIdx(nextIndex);
-  };
 
   const orderSelectedVariantViaInstagram = () => {
     if (!canAddToBag || !selVariant) return;
@@ -939,30 +1001,33 @@ export default function ProductDetailClient({
                 onTouchStart={handleMobileGalleryTouchStart}
                 ref={mobileGalleryRef}
               >
-                {mediaItems.map((item, index) => (
-                  <div className="product-detail__mobile-slide" key={item.key}>
-                    {item.type === "image" ? (
-                      <button
-                        aria-label={`xem lớn ${product.title}`}
-                        className="product-detail__media-button"
-                        onClick={() =>
-                          openLightbox(
-                            imageMediaItems.findIndex((imageItem) => imageItem.key === item.key),
-                          )
-                        }
-                        type="button"
-                      >
-                        <ProductMediaImage
-                          image={item.image}
-                          index={index}
-                          title={product.title}
-                        />
-                      </button>
-                    ) : (
-                      <ProductMediaVideo video={item.video} />
-                    )}
-                  </div>
-                ))}
+                {loopMediaItems.map((item, index) => {
+                  const rawKey = item.key.replace(/^clone-(first|last)-/, "");
+                  return (
+                    <div className="product-detail__mobile-slide" key={item.key}>
+                      {item.type === "image" ? (
+                        <button
+                          aria-label={`xem lớn ${product.title}`}
+                          className="product-detail__media-button"
+                          onClick={() =>
+                            openLightbox(
+                              imageMediaItems.findIndex((imageItem) => imageItem.key === rawKey),
+                            )
+                          }
+                          type="button"
+                        >
+                          <ProductMediaImage
+                            image={item.image}
+                            index={index}
+                            title={product.title}
+                          />
+                        </button>
+                      ) : (
+                        <ProductMediaVideo video={item.video} />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {mediaItems.length > 1 && (
