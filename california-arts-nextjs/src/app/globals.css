@@ -1308,7 +1308,7 @@ body#california-arts .dien-footer__brand p {
   }
 
 .site-header__mobile-actions .header-search-toggle {
-    font-size: var(--dien-subheading-size);
+    font-size: 14px;
     height: 24px;
   }
 
@@ -1462,11 +1462,13 @@ body#california-arts .dien-footer__brand p {
   border: 0;
   color: currentColor;
   display: inline-flex;
-  font-family: var(--heading-font-stack) !important;
-  font-size: var(--dien-subheading-size);
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   height: 28px;
   line-height: 1;
   padding: 0 !important;
+  transform: none !important;
 }
 
 .header-search-toggle--icon {
@@ -5163,7 +5165,7 @@ body#california-arts :where(.product-detail__description, .product-detail__info-
   line-height: 1.42 !important;
 }
 
-body#california-arts .site-header-stack :where(a, button, .header-search-toggle, .header-cart-link, .header-locale-toggle) {
+body#california-arts .site-header-stack :where(a, button, .header-cart-link, .header-locale-toggle) {
   font-family: var(--heading-font-stack) !important;
   font-size: var(--dien-subheading-size) !important;
 }
@@ -7419,7 +7421,6 @@ body#california-arts:not(.home-at-top) .site-header-stack :where(.c_header, .c_h
 }
 
 body#california-arts .site-header-stack .ca_menu-1st-button,
-body#california-arts .site-header-stack .header-search-toggle,
 body#california-arts .site-header-stack .header-cart-link {
   font-family: var(--dien-header-menu-font) !important;
   font-size: var(--dien-subheading-size) !important;
@@ -7430,12 +7431,31 @@ body#california-arts .site-header-stack .header-cart-link {
   text-transform: none !important;
 }
 
+body#california-arts .site-header-stack .header-search-toggle {
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.1 !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  transform: none !important;
+}
+
 body#california-arts .site-header-stack .ca_menu-1st-button:is(:hover, :focus-visible, [aria-expanded="true"]),
-body#california-arts .site-header-stack .header-search-toggle:is(:hover, :focus-visible),
 body#california-arts .site-header-stack .header-cart-link:is(:hover, :focus-visible) {
   font-family: var(--dien-header-menu-font) !important;
   text-decoration: underline !important;
   text-underline-offset: 0.18em !important;
+}
+
+body#california-arts .site-header-stack .header-search-toggle:is(:hover, :focus-visible) {
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 0.18em !important;
+  transform: none !important;
 }
 
 body#california-arts .site-header-stack .dien-product-menu {
@@ -7542,14 +7562,25 @@ body#california-arts .site-header-stack:not(.site-header-stack--home) :is(.c_hea
   color: #111 !important;
 }
 
-body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-toggle, .header-cart-link),
-body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-toggle, .header-cart-link):is(:hover, :focus-visible),
-body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-toggle, .header-cart-link) * {
+body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-cart-link),
+body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-cart-link):is(:hover, :focus-visible),
+body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-cart-link) * {
   font-family: var(--dien-ui-menu-final) !important;
   font-size: var(--dien-subheading-size) !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
   line-height: 1 !important;
+}
+
+body#california-arts .site-header-stack :is(.header-search-toggle),
+body#california-arts .site-header-stack :is(.header-search-toggle):is(:hover, :focus-visible),
+body#california-arts .site-header-stack :is(.header-search-toggle) * {
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+  transform: none !important;
 }
 
 body#california-arts .site-header-stack :is(.ca_menu-1st-button, .header-search-toggle, .header-cart-link) {
@@ -7847,9 +7878,7 @@ body#california-arts .site-header-stack:not(.site-header-stack--home) .site-head
 }
 
 body#california-arts .site-header-stack .ca_menu-1st-button,
-body#california-arts .site-header-stack .header-search-toggle,
-body#california-arts .site-header-stack .ca_menu-1st-button *,
-body#california-arts .site-header-stack .header-search-toggle * {
+body#california-arts .site-header-stack .ca_menu-1st-button * {
   font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
   font-size: 14px !important;
   font-weight: 400 !important;
@@ -7858,12 +7887,30 @@ body#california-arts .site-header-stack .header-search-toggle * {
   text-underline-offset: 0.16em !important;
 }
 
+body#california-arts .site-header-stack .header-search-toggle,
+body#california-arts .site-header-stack .header-search-toggle * {
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+  text-underline-offset: 0.16em !important;
+  transform: none !important;
+}
+
 body#california-arts .site-header-stack .ca_menu-1st-button:hover,
-body#california-arts .site-header-stack .ca_menu-1st-button:focus-visible,
+body#california-arts .site-header-stack .ca_menu-1st-button:focus-visible {
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  text-decoration: underline !important;
+}
+
 body#california-arts .site-header-stack .header-search-toggle:hover,
 body#california-arts .site-header-stack .header-search-toggle:focus-visible {
   font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   text-decoration: underline !important;
+  transform: none !important;
 }
 
 body#california-arts .site-header-stack .dien-product-menu,
@@ -10816,8 +10863,11 @@ body#california-arts .site-header-stack :where(.c_header, .c_header-main, .site-
 
 /* User Specific Layout Polish (2026-07-07) */
 /* 1. Header links font size increased to 14px */
-body#california-arts .site-header-stack :where(.ca_menu-1st-button, .header-search-toggle) {
+body#california-arts .site-header-stack :where(.ca_menu-1st-button) {
   font-size: var(--dien-subheading-size) !important;
+}
+body#california-arts .site-header-stack .header-search-toggle {
+  font-size: 14px !important;
 }
 
 /* 2. Transparent header elements: must be white when not hovered */
