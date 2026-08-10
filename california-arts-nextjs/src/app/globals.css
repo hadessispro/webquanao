@@ -11914,3 +11914,27 @@ body#california-arts .search-overlay__panel {
   min-height: 100%;
   overscroll-behavior: contain;
 }
+
+/* 🔒 ABSOLUTE LOCK: Header Search Toggle and Menu Buttons hover must NEVER change font-size, font-weight, transform, or scale. ONLY 1px underline. */
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link),
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link):hover,
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link):focus,
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link):focus-visible,
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link):active {
+  font-family: var(--dien-ui-final, "SVN Arial 3", Arial, Helvetica, sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+  transform: none !important;
+  scale: none !important;
+  zoom: normal !important;
+  transition: none !important;
+}
+
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link):hover,
+body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-cart-link):focus-visible {
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 0.18em !important;
+}
