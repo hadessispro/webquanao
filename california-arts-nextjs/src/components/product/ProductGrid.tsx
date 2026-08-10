@@ -27,8 +27,6 @@ export default function ProductGrid({
   showSectionTitle = false,
   stickyBar = false,
 }: ProductGridProps) {
-  const barRef = React.useRef<HTMLDivElement>(null);
-  const [barStuck, setBarStuck] = React.useState(false);
   const visibleProducts =
     typeof productLimit === "number" && productLimit > 0
       ? products.slice(0, productLimit)
@@ -36,46 +34,7 @@ export default function ProductGrid({
   const desktopSpan =
     cardDesktopSpan ??
     (visibleProducts.length <= 1 ? 12 : visibleProducts.length === 2 ? 6 : visibleProducts.length === 3 ? 4 : 3);
-  const barSectionClass = [
-    "bg-primary-background text-primary-text overflow-hidden",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  React.useEffect(() => {
-    if (!stickyBar || !barLabel) {
-      return;
-    }
-
-    let frame = 0;
-
-    const update = () => {
-      const bar = barRef.current;
-      if (!bar) return;
-
-      const headerHeight = Number.parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue("--header-stack-height"),
-      ) || 88;
-      const rect = bar.getBoundingClientRect();
-
-      setBarStuck(rect.top <= headerHeight + 1 && rect.bottom > headerHeight);
-    };
-
-    const queueUpdate = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(update);
-    };
-
-    queueUpdate();
-    window.addEventListener("scroll", queueUpdate, { passive: true });
-    window.addEventListener("resize", queueUpdate);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", queueUpdate);
-      window.removeEventListener("resize", queueUpdate);
-    };
-  }, [barLabel, stickyBar]);
+  const barSectionClass = "bg-primary-background text-primary-text overflow-hidden";
 
   return (
     <>
@@ -87,8 +46,7 @@ export default function ProductGrid({
 
       {barLabel && (
         <div
-          className={`c_text-columns-section product-grid__bar${stickyBar ? " product-grid__bar--sticky" : ""}${stickyBar && barStuck ? " product-grid__bar--stuck" : ""}`}
-          ref={barRef}
+          className={`c_text-columns-section product-grid__bar${stickyBar ? " product-grid__bar--sticky" : ""}`}
         >
           <section className={barSectionClass}>
             <div className="section-x-padding py-2">
