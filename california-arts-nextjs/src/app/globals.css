@@ -11948,12 +11948,16 @@ body#california-arts .product-grid__mobile-sticky-title {
   }
 }
 
-/* Ensure search result product title font matches product grid 100% (weight 400, no extra bold) */
+/* Ensure search result product title font matches product detail title (heading font, weight 400) */
 body#california-arts .search-overlay__result strong {
-  font-family: var(--dien-ui-final) !important;
+  font-family: var(--heading-font-stack) !important;
   font-size: var(--dien-subheading-size) !important;
   font-weight: 400 !important;
   line-height: 1.22 !important;
+}
+
+body#california-arts .search-overlay__result .brand-price {
+  font-family: var(--heading-font-stack) !important;
 }
 
 body#california-arts .header-search-toggle {
