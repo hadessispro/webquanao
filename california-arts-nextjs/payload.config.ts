@@ -25,6 +25,31 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  onInit: async () => {
+    try {
+      const dbUrl = process.env.DATABASE_URI || 'file:./database.db'
+      const { createClient } = await import('@libsql/client')
+      const db = createClient({ url: dbUrl })
+
+      const expectedSiteSettingsColumns = [
+        ['home_hero_tablet_image_id', 'INTEGER'],
+        ['home_hero_tablet_source_url', 'TEXT'],
+        ['home_hero_image_opacity', 'NUMERIC'],
+      ]
+
+      const tableInfo = await db.execute('PRAGMA table_info(site_settings)')
+      const existingCols = new Set(tableInfo.rows.map((r) => String(r.name)))
+
+      for (const [colName, colType] of expectedSiteSettingsColumns) {
+        if (!existingCols.has(colName)) {
+          await db.execute(`ALTER TABLE site_settings ADD COLUMN ${colName} ${colType}`)
+          console.log(`[Payload Init] Auto-migrated missing column: ${colName}`)
+        }
+      }
+    } catch (err) {
+      console.error('[Payload Init] DB auto-migration check note:', err)
+    }
+  },
   admin: {
     user: 'users',
     importMap: {
