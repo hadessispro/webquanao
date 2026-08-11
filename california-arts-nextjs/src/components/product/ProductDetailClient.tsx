@@ -502,6 +502,7 @@ export default function ProductDetailClient({
     useState<SizeFinderDropdownKey | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
+  const scrollEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mobileGalleryGestureRef = useRef<{
     isLeftEdge: boolean;
     startedOnFirstImage: boolean;
@@ -683,7 +684,12 @@ export default function ProductDetailClient({
   const pickColor = (color: string) => {
     setSelColor(color);
     setMobileIdx(0);
-    mobileGalleryRef.current?.scrollTo({ behavior: "auto", left: 0 });
+    const gallery = mobileGalleryRef.current;
+    if (gallery && gallery.clientWidth > 0 && mediaItems.length > 1) {
+      gallery.scrollTo({ behavior: "auto", left: gallery.clientWidth * 1 });
+    } else if (gallery) {
+      gallery.scrollTo({ behavior: "auto", left: 0 });
+    }
     setSelSize((currentSize) => {
       const stillAvailable = product.variants.some(
         (variant) =>
@@ -704,13 +710,32 @@ export default function ProductDetailClient({
       return;
     }
 
-    const nextRealIdx = (index + mediaItems.length) % mediaItems.length;
+    const nextRealIdx = ((index % mediaItems.length) + mediaItems.length) % mediaItems.length;
     setMobileIdx(nextRealIdx);
 
     const gallery = mobileGalleryRef.current;
     if (gallery && gallery.clientWidth > 0) {
       const targetTrackIdx = nextRealIdx + 1;
       gallery.scrollTo({ behavior, left: gallery.clientWidth * targetTrackIdx });
+    }
+  };
+
+  const snapToCloneIfNeeded = () => {
+    if (mediaItems.length <= 1) return;
+    const gallery = mobileGalleryRef.current;
+    if (!gallery || gallery.clientWidth === 0) return;
+
+    const slideWidth = gallery.clientWidth;
+    const trackIdx = Math.round(gallery.scrollLeft / slideWidth);
+
+    if (trackIdx === 0) {
+      gallery.scrollTo({ behavior: "auto", left: slideWidth * mediaItems.length });
+      setMobileIdx(mediaItems.length - 1);
+    } else if (trackIdx >= mediaItems.length + 1) {
+      gallery.scrollTo({ behavior: "auto", left: slideWidth * 1 });
+      setMobileIdx(0);
+    } else {
+      setMobileIdx(trackIdx - 1);
     }
   };
 
@@ -722,21 +747,21 @@ export default function ProductDetailClient({
 
     const slideWidth = gallery.clientWidth;
     const currentTrackIdx = Math.round(gallery.scrollLeft / slideWidth);
+    const nextTrackIdx = currentTrackIdx + 1;
 
-    if (currentTrackIdx >= mediaItems.length) {
-      gallery.scrollTo({ behavior: "smooth", left: slideWidth * (mediaItems.length + 1) });
-      setMobileIdx(0);
+    gallery.scrollTo({ behavior: "smooth", left: slideWidth * nextTrackIdx });
 
+    const realIdx = nextTrackIdx <= mediaItems.length
+      ? (nextTrackIdx - 1) % mediaItems.length
+      : 0;
+    setMobileIdx(realIdx);
+
+    if (nextTrackIdx >= mediaItems.length + 1) {
       setTimeout(() => {
         if (mobileGalleryRef.current && mobileGalleryRef.current.clientWidth > 0) {
           mobileGalleryRef.current.scrollTo({ behavior: "auto", left: mobileGalleryRef.current.clientWidth * 1 });
         }
-      }, 310);
-    } else {
-      const targetTrackIdx = currentTrackIdx + 1;
-      const realIdx = (targetTrackIdx - 1) % mediaItems.length;
-      gallery.scrollTo({ behavior: "smooth", left: slideWidth * targetTrackIdx });
-      setMobileIdx(realIdx);
+      }, 350);
     }
   };
 
@@ -748,21 +773,21 @@ export default function ProductDetailClient({
 
     const slideWidth = gallery.clientWidth;
     const currentTrackIdx = Math.round(gallery.scrollLeft / slideWidth);
+    const prevTrackIdx = currentTrackIdx - 1;
 
-    if (currentTrackIdx <= 1) {
-      gallery.scrollTo({ behavior: "smooth", left: 0 });
-      setMobileIdx(mediaItems.length - 1);
+    gallery.scrollTo({ behavior: "smooth", left: slideWidth * prevTrackIdx });
 
+    const realIdx = prevTrackIdx >= 1
+      ? prevTrackIdx - 1
+      : mediaItems.length - 1;
+    setMobileIdx(realIdx);
+
+    if (prevTrackIdx <= 0) {
       setTimeout(() => {
         if (mobileGalleryRef.current && mobileGalleryRef.current.clientWidth > 0) {
           mobileGalleryRef.current.scrollTo({ behavior: "auto", left: mobileGalleryRef.current.clientWidth * mediaItems.length });
         }
-      }, 310);
-    } else {
-      const targetTrackIdx = currentTrackIdx - 1;
-      const realIdx = targetTrackIdx - 1;
-      gallery.scrollTo({ behavior: "smooth", left: slideWidth * targetTrackIdx });
-      setMobileIdx(realIdx);
+      }, 350);
     }
   };
 
@@ -820,20 +845,28 @@ export default function ProductDetailClient({
     }
   };
 
-  const handleMobileGalleryScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const gallery = event.currentTarget;
-    if (gallery.clientWidth === 0 || mediaItems.length <= 1) return;
+  const handleMobileGalleryScroll = () => {
+    if (mediaItems.length <= 1) return;
+    const gallery = mobileGalleryRef.current;
+    if (!gallery || gallery.clientWidth === 0) return;
 
     const slideWidth = gallery.clientWidth;
     const trackIdx = Math.round(gallery.scrollLeft / slideWidth);
 
+    // Update visual index immediately
     if (trackIdx === 0) {
       setMobileIdx(mediaItems.length - 1);
-    } else if (trackIdx === mediaItems.length + 1) {
+    } else if (trackIdx >= mediaItems.length + 1) {
       setMobileIdx(0);
     } else {
       setMobileIdx(trackIdx - 1);
     }
+
+    // Debounce: when scroll settles, snap if on a clone
+    if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
+    scrollEndTimerRef.current = setTimeout(() => {
+      snapToCloneIfNeeded();
+    }, 120);
   };
 
   const handleMobileGalleryTouchCancel = () => {

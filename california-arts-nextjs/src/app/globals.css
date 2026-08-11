@@ -11376,7 +11376,17 @@ body#california-arts .product-detail__mobile-frame {
   overflow: hidden !important;
 }
 
-body#california-arts .product-detail__mobile-track,
+body#california-arts .product-detail__mobile-track {
+  -ms-overflow-style: none;
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: none;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  width: 100%;
+}
+
 body#california-arts .product-detail__lightbox-track {
   -ms-overflow-style: none;
   display: flex;
@@ -11386,13 +11396,6 @@ body#california-arts .product-detail__lightbox-track {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   width: 100%;
-}
-
-body#california-arts .product-detail__mobile-track {
-  touch-action: pan-x pan-y;
-}
-
-body#california-arts .product-detail__lightbox-track {
   touch-action: pan-x;
 }
 
@@ -11402,7 +11405,11 @@ body#california-arts .product-detail__suggestions-grid::-webkit-scrollbar {
   display: none;
 }
 
-body#california-arts .product-detail__mobile-slide,
+body#california-arts .product-detail__mobile-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
 body#california-arts .product-detail__lightbox-slide {
   flex: 0 0 100%;
   min-width: 0;
