@@ -6,20 +6,20 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 // Collections
-import { Media } from './src/payload/collections/Media.ts'
-import { Fonts } from './src/payload/collections/Fonts.ts'
-import { ProductVideos } from './src/payload/collections/ProductVideos.ts'
-import { Products } from './src/payload/collections/Products.ts'
-import { ProductCollections } from './src/payload/collections/ProductCollections.ts'
-import { Pages } from './src/payload/collections/Pages.ts'
-import { Orders } from './src/payload/collections/Orders.ts'
-import { DiscountCodes } from './src/payload/collections/DiscountCodes.ts'
-import { Customers } from './src/payload/collections/Customers.ts'
+import { Media } from './src/payload/collections/Media'
+import { Fonts } from './src/payload/collections/Fonts'
+import { ProductVideos } from './src/payload/collections/ProductVideos'
+import { Products } from './src/payload/collections/Products'
+import { ProductCollections } from './src/payload/collections/ProductCollections'
+import { Pages } from './src/payload/collections/Pages'
+import { Orders } from './src/payload/collections/Orders'
+import { DiscountCodes } from './src/payload/collections/DiscountCodes'
+import { Customers } from './src/payload/collections/Customers'
 
 // Globals
-import { Header } from './src/payload/globals/Header.ts'
-import { Footer } from './src/payload/globals/Footer.ts'
-import { SiteSettings } from './src/payload/globals/SiteSettings.ts'
+import { Header } from './src/payload/globals/Header'
+import { Footer } from './src/payload/globals/Footer'
+import { SiteSettings } from './src/payload/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
