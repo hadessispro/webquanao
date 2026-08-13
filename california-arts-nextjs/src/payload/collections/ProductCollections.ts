@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { VIEW_ALL_SECTION_BAR_DEFAULTS } from '../../lib/collection-bar-content'
+import { VIEW_ALL_SECTION_BAR_DEFAULTS } from '../../lib/collection-bar-content.ts'
 
 export const ProductCollections: CollectionConfig = {
   slug: 'product-collections',
