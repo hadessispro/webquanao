@@ -37,8 +37,16 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const fallbackPage = fallbackPages[slug as keyof typeof fallbackPages]
+  const page = await getPageBySlug(slug)
 
+  if (page) {
+    return {
+      title: page.seo?.title || page.title || slug,
+      description: page.seo?.description || undefined,
+    }
+  }
+
+  const fallbackPage = fallbackPages[slug as keyof typeof fallbackPages]
   if (fallbackPage) {
     return {
       title: fallbackPage.title,
@@ -46,16 +54,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
 
-  const page = await getPageBySlug(slug)
-
   return {
-    title: page?.seo?.title || page?.title || slug,
-    description: page?.seo?.description || undefined,
+    title: slug,
   }
 }
 
 export default async function DynamicCmsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const page = await getPageBySlug(slug)
+
+  if (page) {
+    return <CmsPageContent page={page} />
+  }
+
   const fallbackPage = fallbackPages[slug as keyof typeof fallbackPages]
 
   if (fallbackPage) {
@@ -73,9 +84,5 @@ export default async function DynamicCmsPage({ params }: { params: Promise<{ slu
     )
   }
 
-  const page = await getPageBySlug(slug)
-
-  if (!page) notFound()
-
-  return <CmsPageContent page={page} />
+  notFound()
 }
