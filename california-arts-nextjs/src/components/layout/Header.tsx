@@ -166,51 +166,7 @@ function MegaMenu({
 }) {
   if (!megaMenu.enabled) return null
 
-  // Priority 1: Render custom columns configured in Payload Admin if present
-  if (megaMenu.columns && megaMenu.columns.length > 0) {
-    return (
-      <div
-        className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color"
-      >
-        <div className="c_megamenu-main section-x-padding text-center">
-          <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center">
-            <div className="c_megamenu-inner-menu">
-              {megaMenu.columns.map((column, index) => (
-                <div className="c_megamenu-inner-a ml-16" key={`${column.heading}-${index}`}>
-                  <h2 className="c_megamenu-second font-heading mb-2">
-                    <SmartLink
-                      className="inline-block py-1"
-                      href={column.headingHref || fallbackHref || column.links[0]?.href || '#'}
-                      onClick={onNavigate}
-                    >
-                      {localizedText(locale, column.heading, column.headingVi)}
-                    </SmartLink>
-                  </h2>
-                  <ul className="c_megamenu-third-ul">
-                    {column.links.map((item) => (
-                      <li key={`${item.label}-${item.href}`}>
-                        <SmartLink className="inline-block py-1" href={item.href} onClick={onNavigate}>
-                          {localizedText(locale, item.label, item.labelVi)}
-                        </SmartLink>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="c_megamenu-inner-after" />
-        </div>
-      </div>
-    )
-  }
-
-  // Priority 2: Fallback to ProductMegaMenu for product/shop-all link if no custom columns exist
-  if (fallbackHref === '/collections/shop-all' || fallbackHref.includes('shop') || fallbackHref.includes('product')) {
-    return <ProductMegaMenu onNavigate={onNavigate} />
-  }
-
-  return null
+  return <ProductMegaMenu onNavigate={onNavigate} />
 }
 
 function DesktopNavItem({
