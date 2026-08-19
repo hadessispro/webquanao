@@ -55,6 +55,7 @@ export interface ProductColorOption {
   label: string;
   value: string;
   swatch?: string;
+  swatchImage?: string;
   position?: number;
   available?: boolean;
 }
