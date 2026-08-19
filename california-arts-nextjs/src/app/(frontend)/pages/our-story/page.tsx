@@ -1,6 +1,4 @@
 import Image from 'next/image'
-import { getPageBySlug } from '@/lib/pages-data'
-import CmsPageContent from '@/components/page/CmsPageContent'
 
 const storySections = [
   {
@@ -33,13 +31,7 @@ const storySections = [
   },
 ]
 
-export default async function OurStoryPage() {
-  const page = await getPageBySlug('our-story')
-
-  if (page) {
-    return <CmsPageContent page={page} />
-  }
-
+export default function OurStoryPage() {
   return (
     <section className="story-page bg-primary-background text-primary-text">
       <div className="story-page__sections">
