@@ -1254,15 +1254,7 @@ export default function ProductDetailClient({
           <div className="product-detail__suggestions-head">
             <p>sản phẩm gợi ý</p>
           </div>
-          <div
-            className="product-detail__suggestions-grid"
-            data-dragging={isDraggingSuggestions || undefined}
-            onClickCapture={handleSuggestionClickCapture}
-            onPointerCancel={finishSuggestionsPointerDrag}
-            onPointerDown={handleSuggestionsPointerDown}
-            onPointerMove={handleSuggestionsPointerMove}
-            onPointerUp={finishSuggestionsPointerDrag}
-          >
+          <div className="product-detail__suggestions-grid">
             {suggestedProducts.map((item) => {
               const firstImage = item.images[0];
               const hoverImage = item.images[1];
@@ -1271,13 +1263,8 @@ export default function ProductDetailClient({
               return (
                 <Link
                   className="product-detail__suggestion cursor-pointer"
-                  draggable={false}
                   href={`/products/${item.handle}`}
                   key={item.id}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    router.push(`/products/${item.handle}`);
-                  }}
                 >
                   {firstImage && (
                     <span className="product-detail__suggestion-media">
