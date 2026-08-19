@@ -246,9 +246,9 @@ export const Products: CollectionConfig = {
         {
           name: 'video',
           type: 'upload',
-          relationTo: 'product-videos',
+          relationTo: ['media', 'product-videos'],
           admin: {
-            description: 'Managed video file in Payload.',
+            description: 'File Video (Tải trực tiếp file MP4/WebM lên hoặc chọn từ Media/Product Videos).',
           },
         },
         {

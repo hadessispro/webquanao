@@ -1270,10 +1270,14 @@ export default function ProductDetailClient({
 
               return (
                 <Link
-                  className="product-detail__suggestion"
+                  className="product-detail__suggestion cursor-pointer"
                   draggable={false}
                   href={`/products/${item.handle}`}
                   key={item.id}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    router.push(`/products/${item.handle}`);
+                  }}
                 >
                   {firstImage && (
                     <span className="product-detail__suggestion-media">
