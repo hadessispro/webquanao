@@ -1,14 +1,6 @@
 import { BRAND_CONTACT_EMAIL, BRAND_INSTAGRAM_HANDLE, BRAND_INSTAGRAM_PROFILE_URL } from '@/lib/brand'
-import { getPageBySlug } from '@/lib/pages-data'
-import CmsPageContent from '@/components/page/CmsPageContent'
 
-export default async function AboutPage() {
-  const page = await getPageBySlug('about')
-
-  if (page) {
-    return <CmsPageContent page={page} />
-  }
-
+export default function AboutPage() {
   return (
     <article className="cms-page cms-page--contact-static contact-page contact-page--static bg-primary-background text-primary-text">
       <section className="cms-page__section cms-page__section--intro contact-page__static">

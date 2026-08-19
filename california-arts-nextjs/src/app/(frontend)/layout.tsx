@@ -256,7 +256,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
             <main role="main" id="MainContent">
               {children}
             </main>
-            <Footer footer={footer} />
+            <Footer />
           </div>
         </ClientLayout>
       </body>
