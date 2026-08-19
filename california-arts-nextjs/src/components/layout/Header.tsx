@@ -205,8 +205,8 @@ function MegaMenu({
     )
   }
 
-  // Priority 2: Fallback to ProductMegaMenu for /collections/shop-all if no custom columns exist
-  if (fallbackHref === '/collections/shop-all') {
+  // Priority 2: Fallback to ProductMegaMenu for product/shop-all link if no custom columns exist
+  if (fallbackHref === '/collections/shop-all' || fallbackHref.includes('shop') || fallbackHref.includes('product')) {
     return <ProductMegaMenu onNavigate={onNavigate} />
   }
 
