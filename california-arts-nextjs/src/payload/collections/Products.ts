@@ -60,6 +60,23 @@ export const Products: CollectionConfig = {
       },
     },
     {
+      name: 'sizeChartImage',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Bảng size / Gợi ý size (Hình ảnh). Tải ảnh bảng size của sản phẩm lên đây.',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'sizeChartImageSourceUrl',
+      type: 'text',
+      admin: {
+        description: 'URL ảnh bảng size ngoài (nếu không tải trực tiếp từ máy).',
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'shopifyId',
       type: 'number',
       unique: true,

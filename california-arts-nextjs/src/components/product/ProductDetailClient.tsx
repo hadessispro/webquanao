@@ -1414,7 +1414,15 @@ export default function ProductDetailClient({
               </button>
             </div>
 
-            {sizeFinderView === "finder" ? (
+            {product.sizeChartImage ? (
+              <div className="product-detail__size-chart-image-container flex justify-center items-center p-4">
+                <img
+                  alt={`Bảng size ${product.title}`}
+                  className="max-h-[75vh] max-w-full object-contain rounded"
+                  src={product.sizeChartImage}
+                />
+              </div>
+            ) : sizeFinderView === "finder" ? (
               <div className="product-detail__finder">
                 {showFitPreference && (
                   <label className="product-detail__finder-field product-detail__finder-field--full">
