@@ -91,11 +91,14 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
 }
 
 function topNavLabel(item: HeaderNavItem, locale: Locale) {
+  const customLabel = localizedText(locale, item.label, item.labelVi) || item.label
+  if (customLabel) return customLabel
+
   if (item.href === '/collections/shop-all') return locale === 'vi' ? 'sản phẩm' : 'products'
   if (item.href === '/pages/our-story') return locale === 'vi' ? 'về điển' : 'about điển'
   if (item.href === '/pages/campaign') return locale === 'vi' ? 'chiến dịch' : 'campaign'
 
-  return localizedText(locale, item.label, item.labelVi) || item.label
+  return item.label
 }
 
 type SearchResult = {
@@ -163,17 +166,14 @@ function MegaMenu({
 }) {
   if (!megaMenu.enabled) return null
 
-  if (fallbackHref === '/collections/shop-all') {
-    return <ProductMegaMenu onNavigate={onNavigate} />
-  }
-
-  return (
-    <div
-      className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color"
-    >
-      <div className="c_megamenu-main section-x-padding text-center">
-        <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center">
-          {megaMenu.columns.length > 0 && (
+  // Priority 1: Render custom columns configured in Payload Admin if present
+  if (megaMenu.columns && megaMenu.columns.length > 0) {
+    return (
+      <div
+        className="c_megamenu-upper absolute left-0 bottom-0 w-full transform translate-y-full z-20 bg-header-background text-header-text border-b-grid border-grid-color"
+      >
+        <div className="c_megamenu-main section-x-padding text-center">
+          <div className="c_megamenu-inner c_megamenu-inner-2 flex py-2 justify-center">
             <div className="c_megamenu-inner-menu">
               {megaMenu.columns.map((column, index) => (
                 <div className="c_megamenu-inner-a ml-16" key={`${column.heading}-${index}`}>
@@ -198,12 +198,19 @@ function MegaMenu({
                 </div>
               ))}
             </div>
-          )}
+          </div>
+          <div className="c_megamenu-inner-after" />
         </div>
-        <div className="c_megamenu-inner-after" />
       </div>
-    </div>
-  )
+    )
+  }
+
+  // Priority 2: Fallback to ProductMegaMenu for /collections/shop-all if no custom columns exist
+  if (fallbackHref === '/collections/shop-all') {
+    return <ProductMegaMenu onNavigate={onNavigate} />
+  }
+
+  return null
 }
 
 function DesktopNavItem({
@@ -276,22 +283,48 @@ export default function Header({ header }: HeaderProps) {
   const pathname = usePathname()
   const desktopMenuRef = useRef<HTMLDivElement | null>(null)
   const megaMenuCloseTimerRef = useRef<number | null>(null)
-  const justNavigatedHome = useRef(false)
+
+  const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [searchLoading, setSearchLoading] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
-  const logoAlt = header.logo?.alt || header.logoAlt || 'điển'
+
   const isHome = pathname === '/'
+  const justNavigatedHome = useRef(false)
+  const previousPathname = useRef(pathname)
+
+  const logoAlt = localizedText(locale, header.logoAlt, header.logoAlt) || 'điển'
+  const shippingText = localizedText(locale, header.shippingBar.text, header.shippingBar.textVi) || ''
   const desktopNavigation = header.navigation
-    .filter((item) => item.href !== '/pages/campaign')
-    .slice(0, 2)
-  const shippingText =
-    locale === 'vi'
-      ? 'miễn phí vận chuyển cho đơn hàng trên 950.000đ'
-      : 'complimentary shipping on orders over 950.000đ'
+
+  const openMegaMenu = (href: string) => {
+    if (megaMenuCloseTimerRef.current !== null) {
+      window.clearTimeout(megaMenuCloseTimerRef.current)
+      megaMenuCloseTimerRef.current = null
+    }
+    setOpenMegaMenuHref(href)
+  }
+
+  const closeMegaMenu = () => {
+    if (megaMenuCloseTimerRef.current !== null) {
+      window.clearTimeout(megaMenuCloseTimerRef.current)
+      megaMenuCloseTimerRef.current = null
+    }
+    setOpenMegaMenuHref(null)
+  }
+
+  const scheduleMegaMenuClose = () => {
+    if (megaMenuCloseTimerRef.current !== null) {
+      window.clearTimeout(megaMenuCloseTimerRef.current)
+    }
+
+    megaMenuCloseTimerRef.current = window.setTimeout(() => {
+      setOpenMegaMenuHref(null)
+      megaMenuCloseTimerRef.current = null
+    }, 180)
+  }
 
   const cancelMegaMenuClose = () => {
     if (megaMenuCloseTimerRef.current !== null) {
@@ -300,103 +333,28 @@ export default function Header({ header }: HeaderProps) {
     }
   }
 
-  const closeMegaMenu = () => {
-    cancelMegaMenuClose()
-    setOpenMegaMenuHref(null)
-  }
-
-  const scheduleMegaMenuClose = () => {
-    cancelMegaMenuClose()
-    megaMenuCloseTimerRef.current = window.setTimeout(() => {
-      setOpenMegaMenuHref(null)
-      megaMenuCloseTimerRef.current = null
-    }, 20)
-  }
-
-  const openMegaMenu = (href: string) => {
-    cancelMegaMenuClose()
-    setOpenMegaMenuHref(href)
+  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const query = searchQuery.trim()
+    if (!query) return
+    window.location.href = `/api/search?q=${encodeURIComponent(query)}`
   }
 
   useEffect(() => {
-    cancelMegaMenuClose()
-
-    const timer = window.setTimeout(() => {
-      setSearchOpen(false)
-      setSearchQuery('')
-      setSearchResults([])
-      setOpenMegaMenuHref(null)
-    }, 0)
-
-    return () => window.clearTimeout(timer)
+    if (previousPathname.current !== pathname) {
+      if (pathname === '/') {
+        justNavigatedHome.current = true
+      }
+      previousPathname.current = pathname
+    }
   }, [pathname])
 
   useEffect(() => {
-    if (!searchOpen) return undefined
+    closeMegaMenu()
+    setSearchOpen(false)
 
-    const controller = new AbortController()
-    const timer = window.setTimeout(async () => {
-      setSearchLoading(true)
-      try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`, {
-          signal: controller.signal,
-        })
-        if (!response.ok) throw new Error('search failed')
-        const data = (await response.json()) as { results?: SearchResult[] }
-        setSearchResults(Array.isArray(data.results) ? data.results : [])
-      } catch {
-        if (!controller.signal.aborted) setSearchResults([])
-      } finally {
-        if (!controller.signal.aborted) setSearchLoading(false)
-      }
-    }, 140)
-
-    return () => {
-      controller.abort()
-      window.clearTimeout(timer)
-    }
-  }, [searchOpen, searchQuery])
-
-  useEffect(() => {
-    if (!searchOpen) return undefined
-
-    const scrollY = window.scrollY
-    const previousBodyStyles = {
-      overflow: document.body.style.overflow,
-      position: document.body.style.position,
-      top: document.body.style.top,
-      width: document.body.style.width,
-    }
-    const previousHtmlOverflow = document.documentElement.style.overflow
-
-    document.documentElement.style.overflow = 'hidden'
-    document.body.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
-
-    return () => {
-      document.documentElement.style.overflow = previousHtmlOverflow
-      document.body.style.overflow = previousBodyStyles.overflow
-      document.body.style.position = previousBodyStyles.position
-      document.body.style.top = previousBodyStyles.top
-      document.body.style.width = previousBodyStyles.width
-      window.scrollTo(0, scrollY)
-    }
-  }, [searchOpen])
-
-  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (searchResults[0]?.href) {
-      window.location.href = searchResults[0].href
-    }
-  }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
     if (pathname === '/') {
-      justNavigatedHome.current = true
-    } else {
+      setScrolled(false)
       justNavigatedHome.current = false
     }
 
@@ -413,7 +371,7 @@ export default function Header({ header }: HeaderProps) {
     const updateHeaderState = () => {
       frameId = 0
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
-      
+
       if (justNavigatedHome.current) {
         if (scrollTop === 0) {
           justNavigatedHome.current = false
@@ -498,6 +456,30 @@ export default function Header({ header }: HeaderProps) {
     [],
   )
 
+  useEffect(() => {
+    if (!searchOpen || !searchQuery.trim()) {
+      setSearchResults([])
+      return
+    }
+
+    const controller = new AbortController()
+    setSearchLoading(true)
+
+    fetch(`/api/search?q=${encodeURIComponent(searchQuery.trim())}&json=true`, {
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSearchResults(data.results || [])
+        setSearchLoading(false)
+      })
+      .catch(() => {
+        setSearchLoading(false)
+      })
+
+    return () => controller.abort()
+  }, [searchOpen, searchQuery])
+
   const headerStackClass = [
     'site-header-stack',
     isHome ? 'site-header-stack--home' : '',
@@ -572,9 +554,7 @@ export default function Header({ header }: HeaderProps) {
                     onMouseLeave={scheduleMegaMenuClose}
                     ref={desktopMenuRef}
                   >
-                    <ul
-                      className="c_header-menu-ul flex flex-wrap"
-                    >
+                    <ul className="c_header-menu-ul flex flex-wrap">
                       {desktopNavigation.map((item) => (
                         <DesktopNavItem
                           isOpen={openMegaMenuHref === item.href}

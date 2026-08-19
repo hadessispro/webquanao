@@ -16,7 +16,7 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
 
-const MOBILE_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
+const FALLBACK_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
   if (group.items && group.items.length > 0) {
     return group.items.map((item) => ({
       href: item.href,
@@ -34,12 +34,18 @@ const MOBILE_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
 
 export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) {
   const { isMobileMenuOpen, locale, setIsMobileMenuOpen } = useLayout()
-  const [productsOpen, setProductsOpen] = useState(false)
-  const aboutLink = navigation.find((item) => item.href === '/pages/our-story')
+  const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({})
 
   const closeMenu = () => {
-    setProductsOpen(false)
+    setOpenAccordions({})
     setIsMobileMenuOpen(false)
+  }
+
+  const toggleAccordion = (href: string) => {
+    setOpenAccordions((prev) => ({
+      ...prev,
+      [href]: !prev[href],
+    }))
   }
 
   useEffect(() => {
@@ -55,6 +61,11 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
   }, [isMobileMenuOpen])
 
   if (!isMobileMenuOpen) return null
+
+  const itemsToRender = navigation && navigation.length > 0 ? navigation : [
+    { label: 'sản phẩm', href: '/collections/shop-all', megaMenu: { enabled: true, columns: [] } },
+    { label: 'về điển', href: '/pages/our-story' },
+  ]
 
   return (
     <nav aria-label="menu" className="art-menu">
@@ -78,38 +89,77 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
           </div>
 
           <div className="art-menu__primary">
-            <button
-              aria-controls="art-menu-products"
-              aria-expanded={productsOpen}
-              className="art-menu__product-toggle"
-              onClick={() => setProductsOpen((current) => !current)}
-              type="button"
-            >
-              <span>sản phẩm</span>
-              <span aria-hidden="true" className="art-menu__chevron" />
-            </button>
+            {itemsToRender.map((item) => {
+              const label = localizedText(locale, item.label, item.labelVi) || item.label
+              const hasMegaMenu = Boolean(
+                item.megaMenu?.enabled &&
+                  (item.href === '/collections/shop-all' ||
+                    (item.megaMenu?.columns && item.megaMenu.columns.length > 0)),
+              )
 
-            {productsOpen && (
-              <ul className="art-menu__accordion" id="art-menu-products">
-                {MOBILE_PRODUCT_ITEMS.map((item) => (
-                  <li key={item.label}>
-                    {item.href ? (
-                      <Link className="art-menu__primary-link" href={item.href} onClick={closeMenu}>
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <span className="art-menu__primary-link art-menu__primary-link--disabled">
-                        {item.label}
-                      </span>
+              // Build sub-items for accordion: use custom Admin columns if set, else fallback for shop-all
+              const customLinks = item.megaMenu?.columns?.flatMap((col) =>
+                col.links.map((link) => ({
+                  href: link.href,
+                  label: localizedText(locale, link.label, link.labelVi) || link.label,
+                })),
+              )
+
+              const accordionLinks =
+                customLinks && customLinks.length > 0
+                  ? customLinks
+                  : item.href === '/collections/shop-all'
+                    ? FALLBACK_PRODUCT_ITEMS
+                    : []
+
+              const isOpen = Boolean(openAccordions[item.href])
+
+              if (hasMegaMenu && accordionLinks.length > 0) {
+                return (
+                  <div key={`${item.label}-${item.href}`} className="art-menu__group">
+                    <button
+                      aria-controls={`art-menu-${item.href}`}
+                      aria-expanded={isOpen}
+                      className="art-menu__product-toggle"
+                      onClick={() => toggleAccordion(item.href)}
+                      type="button"
+                    >
+                      <span>{label}</span>
+                      <span aria-hidden="true" className={`art-menu__chevron ${isOpen ? 'transform rotate-180' : ''}`} />
+                    </button>
+
+                    {isOpen && (
+                      <ul className="art-menu__accordion" id={`art-menu-${item.href}`}>
+                        {accordionLinks.map((link, idx) => (
+                          <li key={`${link.label}-${idx}`}>
+                            {link.href ? (
+                              <Link className="art-menu__primary-link" href={link.href} onClick={closeMenu}>
+                                {link.label}
+                              </Link>
+                            ) : (
+                              <span className="art-menu__primary-link art-menu__primary-link--disabled">
+                                {link.label}
+                              </span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                  </li>
-                ))}
-              </ul>
-            )}
+                  </div>
+                )
+              }
 
-            <Link className="art-menu__about-link" href={aboutLink?.href || '/pages/our-story'} onClick={closeMenu}>
-              {localizedText(locale, aboutLink?.label, aboutLink?.labelVi) || 'về điển'}
-            </Link>
+              return (
+                <Link
+                  key={`${item.label}-${item.href}`}
+                  className="art-menu__about-link block py-2 text-base"
+                  href={item.href}
+                  onClick={closeMenu}
+                >
+                  {label}
+                </Link>
+              )
+            })}
           </div>
 
           <p className="art-menu__slogan">điển, you already know</p>
