@@ -8,12 +8,55 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'handle', 'productType', 'status', 'updatedAt'],
+    defaultColumns: ['title', 'handle', 'price', 'productType', 'status', 'updatedAt'],
   },
   access: {
     read: () => true,
   },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (data.price !== undefined && data.price !== null && data.price !== '') {
+          const numericPrice = Number(data.price)
+          const numericCompareAt = data.compareAtPrice ? Number(data.compareAtPrice) : null
+
+          if (!Array.isArray(data.variants) || data.variants.length === 0) {
+            data.variants = [
+              {
+                title: 'Default Title',
+                price: numericPrice,
+                compareAtPrice: numericCompareAt,
+                available: true,
+              },
+            ]
+          } else {
+            data.variants.forEach((v: Record<string, unknown>) => {
+              if (!v.price) v.price = numericPrice
+              if (!v.compareAtPrice && numericCompareAt) v.compareAtPrice = numericCompareAt
+            })
+          }
+        }
+        return data
+      },
+    ],
+  },
   fields: [
+    {
+      name: 'price',
+      type: 'number',
+      admin: {
+        description: 'Giá bán sản phẩm (VND). Ví dụ: 9594000',
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'compareAtPrice',
+      type: 'number',
+      admin: {
+        description: 'Giá gốc / Giá cũ chưa giảm (VND). Ví dụ: 12000000',
+        position: 'sidebar',
+      },
+    },
     {
       name: 'shopifyId',
       type: 'number',

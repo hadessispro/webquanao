@@ -3,9 +3,9 @@ const { createClient } = require('@libsql/client')
 
 async function fixDatabase() {
   const db = createClient({ url: process.env.DATABASE_URI || 'file:database.db' })
-  
+
   // 1. Ensure all missing columns exist in site_settings table
-  const cols = [
+  const siteSettingsCols = [
     ['home_hero_tablet_image_id', 'INTEGER'],
     ['home_hero_tablet_source_url', 'TEXT'],
     ['home_hero_image_opacity', 'NUMERIC'],
@@ -15,7 +15,7 @@ async function fixDatabase() {
     const tableInfo = await db.execute('PRAGMA table_info(site_settings)')
     const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
 
-    for (const [col, type] of cols) {
+    for (const [col, type] of siteSettingsCols) {
       if (!existing.has(col)) {
         try {
           await db.execute(`ALTER TABLE site_settings ADD COLUMN ${col} ${type}`)
@@ -29,7 +29,31 @@ async function fixDatabase() {
     console.error('[DB Fix] Error inspecting site_settings table:', err.message)
   }
 
-  // 2. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
+  // 2. Ensure missing columns exist in products table
+  const productCols = [
+    ['price', 'NUMERIC'],
+    ['compare_at_price', 'NUMERIC'],
+  ]
+
+  try {
+    const tableInfo = await db.execute('PRAGMA table_info(products)')
+    const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
+
+    for (const [col, type] of productCols) {
+      if (!existing.has(col)) {
+        try {
+          await db.execute(`ALTER TABLE products ADD COLUMN ${col} ${type}`)
+          console.log(`[DB Fix] Added missing column to products: ${col}`)
+        } catch (e) {
+          console.error(`[DB Fix] Error adding column ${col}:`, e.message)
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[DB Fix] Error inspecting products table:', err.message)
+  }
+
+  // 3. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
   try {
     const passwordToSet = 'Admin123456@'
     const salt = crypto.randomBytes(32).toString('hex')
