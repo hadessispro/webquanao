@@ -567,7 +567,7 @@ export async function getFooterData(): Promise<FooterData> {
         mediaToImage(footer.desktopLogo, 'điển') || DEFAULT_FOOTER.desktopLogo,
       mobileLogo:
         mediaToImage(footer.mobileLogo, 'điển') || DEFAULT_FOOTER.mobileLogo,
-      columns: normalizeFooterColumns(footer.columns),
+      columns: DEFAULT_FOOTER.columns,
       newsletter: {
         title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
         titleVi:
