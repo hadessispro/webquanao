@@ -137,6 +137,7 @@ const VI_TEXT_MAP: Record<string, string> = {
     'thiết kế dễ tiếp cận bằng cách sản xuất ít hơn và làm tốt hơn.',
   'from the palm-fringed western edge of the american dream.':
     'từ rìa phía tây phủ bóng cọ của giấc mơ mỹ.',
+  'creative campaign': 'chiến dịch',
   'shop all': 'xem tất cả',
   'join us, at điển': 'đồng hành cùng điển',
   'join điển': 'đồng hành cùng điển',

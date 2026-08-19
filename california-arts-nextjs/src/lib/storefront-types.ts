@@ -395,7 +395,7 @@ export const DEFAULT_HEADER: HeaderData = {
       },
     },
     { label: 'About điển', labelVi: 'Về điển', href: '/pages/our-story' },
-    { label: 'Creative Campaign', labelVi: 'Chiến dịch sáng tạo', href: '/pages/campaign' },
+    { label: 'Creative Campaign', labelVi: 'Chiến dịch', href: '/pages/campaign' },
   ],
 }
 
