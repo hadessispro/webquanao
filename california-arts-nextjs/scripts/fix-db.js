@@ -3,9 +3,9 @@ const { createClient } = require('@libsql/client')
 
 async function fixDatabase() {
   const db = createClient({ url: process.env.DATABASE_URI || 'file:database.db' })
-
+  
   // 1. Ensure all missing columns exist in site_settings table
-  const siteSettingsCols = [
+  const cols = [
     ['home_hero_tablet_image_id', 'INTEGER'],
     ['home_hero_tablet_source_url', 'TEXT'],
     ['home_hero_image_opacity', 'NUMERIC'],
@@ -15,7 +15,7 @@ async function fixDatabase() {
     const tableInfo = await db.execute('PRAGMA table_info(site_settings)')
     const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
 
-    for (const [col, type] of siteSettingsCols) {
+    for (const [col, type] of cols) {
       if (!existing.has(col)) {
         try {
           await db.execute(`ALTER TABLE site_settings ADD COLUMN ${col} ${type}`)
@@ -29,75 +29,7 @@ async function fixDatabase() {
     console.error('[DB Fix] Error inspecting site_settings table:', err.message)
   }
 
-  // 2. Ensure missing columns exist in products table
-  const productCols = [
-    ['price', 'NUMERIC'],
-    ['compare_at_price', 'NUMERIC'],
-    ['subtitle', 'TEXT'],
-    ['size_chart_image_id', 'INTEGER'],
-    ['size_chart_image_source_url', 'TEXT'],
-  ]
-
-  try {
-    const tableInfo = await db.execute('PRAGMA table_info(products)')
-    const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
-
-    for (const [col, type] of productCols) {
-      if (!existing.has(col)) {
-        try {
-          await db.execute(`ALTER TABLE products ADD COLUMN ${col} ${type}`)
-          console.log(`[DB Fix] Added missing column to products: ${col}`)
-        } catch (e) {
-          console.error(`[DB Fix] Error adding column ${col}:`, e.message)
-        }
-      }
-    }
-  } catch (err) {
-    console.error('[DB Fix] Error inspecting products table:', err.message)
-  }
-
-  // 3. Ensure missing columns exist in products_color_options table
-  const colorCols = [
-    ['swatch_image_id', 'INTEGER'],
-    ['swatch_image_source_url', 'TEXT'],
-  ]
-
-  try {
-    const tableInfo = await db.execute('PRAGMA table_info(products_color_options)')
-    const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
-
-    for (const [col, type] of colorCols) {
-      if (!existing.has(col)) {
-        try {
-          await db.execute(`ALTER TABLE products_color_options ADD COLUMN ${col} ${type}`)
-          console.log(`[DB Fix] Added missing column to products_color_options: ${col}`)
-        } catch (e) {
-          console.error(`[DB Fix] Error adding column ${col}:`, e.message)
-        }
-      }
-    }
-  } catch (err) {
-    console.error('[DB Fix] Error inspecting products_color_options table:', err.message)
-  }
-
-  // 4. Ensure missing media_id column exists in products_rels table
-  try {
-    const tableInfo = await db.execute('PRAGMA table_info(products_rels)')
-    const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
-
-    if (!existing.has('media_id')) {
-      try {
-        await db.execute('ALTER TABLE products_rels ADD COLUMN media_id INTEGER')
-        console.log('[DB Fix] Added missing media_id column to products_rels')
-      } catch (e) {
-        console.error('[DB Fix] Error adding media_id column:', e.message)
-      }
-    }
-  } catch (err) {
-    console.error('[DB Fix] Error inspecting products_rels table:', err.message)
-  }
-
-  // 4. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
+  // 2. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
   try {
     const passwordToSet = 'Admin123456@'
     const salt = crypto.randomBytes(32).toString('hex')

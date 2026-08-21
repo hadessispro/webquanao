@@ -55,7 +55,6 @@ export interface ProductColorOption {
   label: string;
   value: string;
   swatch?: string;
-  swatchImage?: string;
   position?: number;
   available?: boolean;
 }
@@ -75,8 +74,6 @@ export interface ProductAccordion {
 export interface Product {
   id: number;
   title: string;
-  subtitle?: string;
-  href?: string;
   handle: string;
   body_html: string;
   vendor: string;
@@ -95,7 +92,6 @@ export interface Product {
   sizeOptions?: ProductSizeOption[];
   accordions?: ProductAccordion[];
   relatedProductHandles?: string[];
-  sizeChartImage?: string;
   collections?: string[];
   published_at: string;
   created_at: string;
@@ -225,80 +221,3 @@ export function getVariantsByColor(
 ): ProductVariant[] {
   return product.variants.filter((v) => v.option1 === color);
 }
-
-export function buildProductColorImages(product: Product): Record<string, ProductImage[]> {
-  const allImgs = product.images.slice().sort((a, b) => a.position - b.position);
-  const colors = getProductColors(product);
-
-  if (colors.length <= 1) return { [colors[0] || "default"]: allImgs };
-
-  const leadPos: Record<string, number> = {};
-  for (const v of product.variants) {
-    const color = v.option1 || "";
-    if (color && !leadPos[color] && v.featured_image) {
-      leadPos[color] =
-        (v.featured_image as { position?: number }).position ||
-        v.featured_image.id ||
-        999;
-    }
-  }
-
-  for (const color of colors) {
-    if (leadPos[color]) continue;
-    const colorVarIds = product.variants
-      .filter((v) => (v.option1 || "").toLowerCase() === color.toLowerCase())
-      .map((v) => v.id);
-    const leadImg = allImgs.find((img) =>
-      img.variant_ids && img.variant_ids.some((vid) => colorVarIds.includes(vid))
-    );
-    if (leadImg) leadPos[color] = leadImg.position;
-  }
-
-  const sorted = [...colors].sort(
-    (a, b) => (leadPos[a] ?? 999) - (leadPos[b] ?? 999),
-  );
-
-  const groups: Record<string, ProductImage[]> = {};
-  for (let i = 0; i < sorted.length; i++) {
-    const color = sorted[i];
-    const start = leadPos[color] ?? 1;
-    const nextStart =
-      i + 1 < sorted.length ? (leadPos[sorted[i + 1]] ?? 9999) : 9999;
-    groups[color] = allImgs.filter(
-      (img) => img.position >= start && img.position < nextStart,
-    );
-    if (groups[color].length === 0) groups[color] = allImgs;
-  }
-
-  return groups;
-}
-
-export function expandProductByColors(product: Product): Product[] {
-  const colors = getProductColors(product);
-  if (colors.length <= 1) {
-    return [product];
-  }
-
-  const colorImages = buildProductColorImages(product);
-
-  return colors.map((color, index) => {
-    const colorLower = color.toLowerCase();
-    const matchingVariants = product.variants.filter((v) => {
-      const vColor = (v.option1 || "").toLowerCase();
-      const vTitle = (v.title || "").toLowerCase();
-      return vColor === colorLower || vTitle.startsWith(colorLower);
-    });
-
-    const specificImages = colorImages[color] || [];
-    const imagesToUse = specificImages.length > 0 ? specificImages : product.images;
-
-    return {
-      ...product,
-      id: Number(`${product.id}${index + 1}`),
-      href: `/products/${product.handle}?color=${encodeURIComponent(colorLower)}`,
-      variants: matchingVariants.length > 0 ? matchingVariants : product.variants,
-      images: imagesToUse,
-    };
-  });
-}
-

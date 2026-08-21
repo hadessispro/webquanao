@@ -8,74 +8,12 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'handle', 'price', 'productType', 'status', 'updatedAt'],
+    defaultColumns: ['title', 'handle', 'productType', 'status', 'updatedAt'],
   },
   access: {
     read: () => true,
   },
-  hooks: {
-    beforeChange: [
-      ({ data }) => {
-        if (data.price !== undefined && data.price !== null && data.price !== '') {
-          const numericPrice = Number(data.price)
-          const numericCompareAt = data.compareAtPrice !== undefined && data.compareAtPrice !== null && data.compareAtPrice !== '' ? Number(data.compareAtPrice) : null
-
-          if (!Array.isArray(data.variants) || data.variants.length === 0) {
-            data.variants = [
-              {
-                title: 'Default Title',
-                price: numericPrice,
-                compareAtPrice: numericCompareAt,
-                available: true,
-              },
-            ]
-          } else {
-            data.variants.forEach((v: Record<string, unknown>) => {
-              v.price = numericPrice
-              if (numericCompareAt !== null) {
-                v.compareAtPrice = numericCompareAt
-              }
-            })
-          }
-        }
-        return data
-      },
-    ],
-  },
   fields: [
-    {
-      name: 'price',
-      type: 'number',
-      admin: {
-        description: 'Giá bán sản phẩm (VND). Ví dụ: 9594000',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'compareAtPrice',
-      type: 'number',
-      admin: {
-        description: 'Giá gốc / Giá cũ chưa giảm (VND). Ví dụ: 12000000',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'sizeChartImage',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'Bảng size / Gợi ý size (Hình ảnh). Tải ảnh bảng size của sản phẩm lên đây.',
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'sizeChartImageSourceUrl',
-      type: 'text',
-      admin: {
-        description: 'URL ảnh bảng size ngoài (nếu không tải trực tiếp từ máy).',
-        position: 'sidebar',
-      },
-    },
     {
       name: 'shopifyId',
       type: 'number',
@@ -89,13 +27,6 @@ export const Products: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-    },
-    {
-      name: 'subtitle',
-      type: 'textarea',
-      admin: {
-        description: 'Mô tả ngắn / ghi chú sản phẩm hiển thị ở thanh tiêu đề danh mục (ví dụ: a vintage inspired vegan leather blouson...).',
-      },
     },
     {
       name: 'handle',
@@ -253,9 +184,9 @@ export const Products: CollectionConfig = {
         {
           name: 'video',
           type: 'upload',
-          relationTo: 'media',
+          relationTo: 'product-videos',
           admin: {
-            description: 'File Video (Tải trực tiếp file MP4/WebM từ máy lên Media hoặc dán URL ở ô dưới).',
+            description: 'Managed video file in Payload.',
           },
         },
         {
@@ -359,21 +290,6 @@ export const Products: CollectionConfig = {
           type: 'text',
           admin: {
             description: 'Hex color for the swatch, for example #111111.',
-          },
-        },
-        {
-          name: 'swatchImage',
-          type: 'upload',
-          relationTo: 'media',
-          admin: {
-            description: 'Ảnh mẫu màu (File hình ảnh). Tải ảnh mẫu vải/màu của biến thể lên đây.',
-          },
-        },
-        {
-          name: 'swatchImageSourceUrl',
-          type: 'text',
-          admin: {
-            description: 'URL ảnh mẫu màu ngoài (nếu không tải trực tiếp từ máy).',
           },
         },
         {

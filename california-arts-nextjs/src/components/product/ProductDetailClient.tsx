@@ -1119,7 +1119,6 @@ export default function ProductDetailClient({
                 <div className="product-detail__swatches">
                   {colors.map((color) => {
                     const label = getColorLabel(product, color);
-                    const control = getColorControl(product, color);
 
                     return (
                       <button
@@ -1132,14 +1131,10 @@ export default function ProductDetailClient({
                         }
                         key={color}
                         onClick={() => pickColor(color)}
-                        style={control?.swatchImage ? undefined : { backgroundColor: getColorSwatch(product, color) }}
+                        style={{ backgroundColor: getColorSwatch(product, color) }}
                         title={label}
                         type="button"
-                      >
-                        {control?.swatchImage ? (
-                          <img src={control.swatchImage} alt={label} className="w-full h-full object-cover rounded-full pointer-events-none" />
-                        ) : null}
-                      </button>
+                      />
                     );
                   })}
                 </div>
@@ -1254,7 +1249,15 @@ export default function ProductDetailClient({
           <div className="product-detail__suggestions-head">
             <p>sản phẩm gợi ý</p>
           </div>
-          <div className="product-detail__suggestions-grid">
+          <div
+            className="product-detail__suggestions-grid"
+            data-dragging={isDraggingSuggestions || undefined}
+            onClickCapture={handleSuggestionClickCapture}
+            onPointerCancel={finishSuggestionsPointerDrag}
+            onPointerDown={handleSuggestionsPointerDown}
+            onPointerMove={handleSuggestionsPointerMove}
+            onPointerUp={finishSuggestionsPointerDrag}
+          >
             {suggestedProducts.map((item) => {
               const firstImage = item.images[0];
               const hoverImage = item.images[1];
@@ -1262,7 +1265,8 @@ export default function ProductDetailClient({
 
               return (
                 <Link
-                  className="product-detail__suggestion cursor-pointer"
+                  className="product-detail__suggestion"
+                  draggable={false}
                   href={`/products/${item.handle}`}
                   key={item.id}
                 >
@@ -1410,15 +1414,7 @@ export default function ProductDetailClient({
               </button>
             </div>
 
-            {product.sizeChartImage ? (
-              <div className="product-detail__size-chart-image-container flex justify-center items-center p-4">
-                <img
-                  alt={`Bảng size ${product.title}`}
-                  className="max-h-[75vh] max-w-full object-contain rounded"
-                  src={product.sizeChartImage}
-                />
-              </div>
-            ) : sizeFinderView === "finder" ? (
+            {sizeFinderView === "finder" ? (
               <div className="product-detail__finder">
                 {showFitPreference && (
                   <label className="product-detail__finder-field product-detail__finder-field--full">

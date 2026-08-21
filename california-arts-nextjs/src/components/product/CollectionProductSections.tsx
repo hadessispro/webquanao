@@ -6,7 +6,7 @@ import {
   DEMO_COLLECTION_BAR_DESCRIPTION_HTML,
 } from "@/lib/collection-bar-content";
 import type { StorefrontCollection } from "@/lib/product-data";
-import { type Product, expandProductByColors } from "@/lib/products";
+import type { Product } from "@/lib/products";
 
 const COLLECTION_SEQUENCE = [
   { handle: "coats-jackets", title: "áo khoác" },
@@ -27,7 +27,7 @@ const COLLECTION_TITLE_VI: Record<string, string> = Object.fromEntries(
 );
 
 function productSectionTitle(product: Product, index: number) {
-  const number = String(index + 1).padStart(2, "0");
+  const number = String(index + 1).padStart(3, "0");
   const title = product.title.replace(/\s*\|\s*.*$/, "").trim();
 
   return `${number} ${title}`;
@@ -101,10 +101,10 @@ export default function CollectionProductSections({
         {collection.products.map((product, index) => (
           <section className="collection-product-section" id={`product-${product.handle}`} key={product.handle}>
             <ProductGrid
-              barDescriptionHtml={product.subtitle || DEMO_COLLECTION_BAR_DESCRIPTION_HTML}
+              barDescriptionHtml={DEMO_COLLECTION_BAR_DESCRIPTION_HTML}
               barLabel={productSectionTitle(product, index)}
               cardDesktopSpan={3}
-              products={expandProductByColors(product)}
+              products={[product]}
               showSectionTitle={false}
               stickyBar
             />

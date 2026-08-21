@@ -18,12 +18,7 @@ type PayloadProductDoc = {
   id: number | string
   shopifyId?: number
   title?: string
-  subtitle?: string
   handle?: string
-  price?: number
-  compareAtPrice?: number
-  sizeChartImage?: MediaDoc | number | string
-  sizeChartImageSourceUrl?: string
   bodyHtml?: string
   vendor?: string
   productType?: string
@@ -383,14 +378,10 @@ export function normalizePayloadProduct(
     })
     .filter((image) => image.src)
 
-  const sizeChartImg = mediaUrl(doc.sizeChartImage, doc.sizeChartImageSourceUrl)
-
   return {
     id: Number(doc.shopifyId || doc.id),
     title: doc.title || '',
-    subtitle: doc.subtitle || undefined,
     handle: doc.handle || '',
-    sizeChartImage: sizeChartImg || undefined,
     body_html: doc.bodyHtml || '',
     vendor: doc.vendor || 'điển',
     product_type: doc.productType || '',
@@ -421,12 +412,8 @@ export function normalizePayloadProduct(
         option2: variant.option2 || null,
         option3: variant.option3 || null,
         sku: variant.sku || '',
-        price: String(doc.price ? doc.price : variant.price || 0),
-        compare_at_price: doc.compareAtPrice
-          ? String(doc.compareAtPrice)
-          : variant.compareAtPrice
-            ? String(variant.compareAtPrice)
-            : null,
+        price: String(variant.price || 0),
+        compare_at_price: variant.compareAtPrice ? String(variant.compareAtPrice) : null,
         available: variant.available ?? true,
         featured_image: featuredSrc
           ? {
@@ -476,7 +463,6 @@ export function normalizePayloadProduct(
             label: option.label || option.value || '',
             value: option.value || option.label || '',
             swatch: option.swatch || undefined,
-            swatchImage: mediaUrl(option.swatchImage, option.swatchImageSourceUrl) || undefined,
             position: option.position ?? index,
             available: option.available ?? true,
           }))
