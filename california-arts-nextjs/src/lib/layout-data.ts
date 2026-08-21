@@ -137,6 +137,7 @@ const VI_TEXT_MAP: Record<string, string> = {
     'thiết kế dễ tiếp cận bằng cách sản xuất ít hơn và làm tốt hơn.',
   'from the palm-fringed western edge of the american dream.':
     'từ rìa phía tây phủ bóng cọ của giấc mơ mỹ.',
+  'creative campaign': 'chiến dịch',
   'shop all': 'xem tất cả',
   'join us, at điển': 'đồng hành cùng điển',
   'join điển': 'đồng hành cùng điển',
@@ -566,7 +567,7 @@ export async function getFooterData(): Promise<FooterData> {
         mediaToImage(footer.desktopLogo, 'điển') || DEFAULT_FOOTER.desktopLogo,
       mobileLogo:
         mediaToImage(footer.mobileLogo, 'điển') || DEFAULT_FOOTER.mobileLogo,
-      columns: normalizeFooterColumns(footer.columns),
+      columns: DEFAULT_FOOTER.columns,
       newsletter: {
         title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
         titleVi:
