@@ -18,6 +18,7 @@ type PayloadProductDoc = {
   id: number | string
   shopifyId?: number
   title?: string
+  subtitle?: string
   handle?: string
   price?: number
   compareAtPrice?: number
@@ -387,6 +388,7 @@ export function normalizePayloadProduct(
   return {
     id: Number(doc.shopifyId || doc.id),
     title: doc.title || '',
+    subtitle: doc.subtitle || undefined,
     handle: doc.handle || '',
     sizeChartImage: sizeChartImg || undefined,
     body_html: doc.bodyHtml || '',

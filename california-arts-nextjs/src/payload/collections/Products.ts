@@ -91,6 +91,13 @@ export const Products: CollectionConfig = {
       required: true,
     },
     {
+      name: 'subtitle',
+      type: 'textarea',
+      admin: {
+        description: 'Mô tả ngắn / ghi chú sản phẩm hiển thị ở thanh tiêu đề danh mục (ví dụ: a vintage inspired vegan leather blouson...).',
+      },
+    },
+    {
       name: 'handle',
       type: 'text',
       required: true,
