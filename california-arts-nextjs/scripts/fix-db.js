@@ -79,6 +79,23 @@ async function fixDatabase() {
     console.error('[DB Fix] Error inspecting products_color_options table:', err.message)
   }
 
+  // 4. Ensure missing media_id column exists in products_rels table
+  try {
+    const tableInfo = await db.execute('PRAGMA table_info(products_rels)')
+    const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
+
+    if (!existing.has('media_id')) {
+      try {
+        await db.execute('ALTER TABLE products_rels ADD COLUMN media_id INTEGER')
+        console.log('[DB Fix] Added missing media_id column to products_rels')
+      } catch (e) {
+        console.error('[DB Fix] Error adding media_id column:', e.message)
+      }
+    }
+  } catch (err) {
+    console.error('[DB Fix] Error inspecting products_rels table:', err.message)
+  }
+
   // 4. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
   try {
     const passwordToSet = 'Admin123456@'
