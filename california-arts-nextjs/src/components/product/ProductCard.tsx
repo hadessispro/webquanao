@@ -43,7 +43,7 @@ export default function ProductCard({
   const sizes = getProductSizes(product);
 
   // Build the product URL
-  const productUrl = `/products/${product.handle}`;
+  const productUrl = product.href || `/products/${product.handle}`;
 
   const prefetchProduct = () => {
     router.prefetch(productUrl);
