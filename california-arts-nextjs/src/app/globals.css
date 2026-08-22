@@ -12014,3 +12014,38 @@ body#california-arts :where(.header-search-toggle, .ca_menu-1st-button, .header-
   text-decoration-thickness: 1px !important;
   text-underline-offset: 0.18em !important;
 }
+
+/* Aspect ratio 2:3 auto-crop fixes for suggested products, mobile product gallery & search */
+body#california-arts .product-detail__suggestion-media {
+  aspect-ratio: 2 / 3 !important;
+}
+
+body#california-arts .product-detail__suggestion-image {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.search-overlay__result img {
+  aspect-ratio: 2 / 3 !important;
+  object-fit: cover !important;
+}
+
+body#california-arts .product-detail__mobile-slide img,
+body#california-arts .product-detail__mobile-frame img {
+  aspect-ratio: 2 / 3 !important;
+  object-fit: cover !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Logo transparent background & blend mode fix when returning home */
+.site-header__logo-link,
+.site-header__logo-link img,
+.c_header-logo img,
+h1.c_header-logo img {
+  background: transparent !important;
+  background-color: transparent !important;
+  mix-blend-mode: multiply !important;
+}
+
