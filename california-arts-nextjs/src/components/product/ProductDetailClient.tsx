@@ -1119,6 +1119,7 @@ export default function ProductDetailClient({
                 <div className="product-detail__swatches">
                   {colors.map((color) => {
                     const label = getColorLabel(product, color);
+                    const control = getColorControl(product, color);
 
                     return (
                       <button
@@ -1131,10 +1132,14 @@ export default function ProductDetailClient({
                         }
                         key={color}
                         onClick={() => pickColor(color)}
-                        style={{ backgroundColor: getColorSwatch(product, color) }}
+                        style={control?.swatchImage ? undefined : { backgroundColor: getColorSwatch(product, color) }}
                         title={label}
                         type="button"
-                      />
+                      >
+                        {control?.swatchImage ? (
+                          <img src={control.swatchImage} alt={label} className="w-full h-full object-cover rounded-full pointer-events-none" />
+                        ) : null}
+                      </button>
                     );
                   })}
                 </div>

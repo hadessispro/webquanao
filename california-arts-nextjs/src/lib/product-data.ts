@@ -474,6 +474,7 @@ export function normalizePayloadProduct(
             label: option.label || option.value || '',
             value: option.value || option.label || '',
             swatch: option.swatch || undefined,
+            swatchImage: mediaUrl(option.swatchImage, option.swatchImageSourceUrl) || undefined,
             position: option.position ?? index,
             available: option.available ?? true,
           }))

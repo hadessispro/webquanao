@@ -355,6 +355,21 @@ export const Products: CollectionConfig = {
           },
         },
         {
+          name: 'swatchImage',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            description: 'Ảnh mẫu màu (File hình ảnh). Tải ảnh mẫu vải/màu của biến thể lên đây.',
+          },
+        },
+        {
+          name: 'swatchImageSourceUrl',
+          type: 'text',
+          admin: {
+            description: 'URL ảnh mẫu màu ngoài (nếu không tải trực tiếp từ máy).',
+          },
+        },
+        {
           name: 'position',
           type: 'number',
           defaultValue: 0,

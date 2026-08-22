@@ -55,7 +55,31 @@ async function fixDatabase() {
     console.error('[DB Fix] Error inspecting products table:', err.message)
   }
 
-  // 3. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
+  // 3. Ensure missing columns exist in products_color_options table
+  const colorCols = [
+    ['swatch_image_id', 'INTEGER'],
+    ['swatch_image_source_url', 'TEXT'],
+  ]
+
+  try {
+    const tableInfo = await db.execute('PRAGMA table_info(products_color_options)')
+    const existing = new Set(tableInfo.rows.map((r) => String(r.name)))
+
+    for (const [col, type] of colorCols) {
+      if (!existing.has(col)) {
+        try {
+          await db.execute(`ALTER TABLE products_color_options ADD COLUMN ${col} ${type}`)
+          console.log(`[DB Fix] Added missing column to products_color_options: ${col}`)
+        } catch (e) {
+          console.error(`[DB Fix] Error adding column ${col}:`, e.message)
+        }
+      }
+    }
+  } catch (err) {
+    console.error('[DB Fix] Error inspecting products_color_options table:', err.message)
+  }
+
+  // 4. Ensure Admin user password is set to Admin123456@ with Payload v3 hash
   try {
     const passwordToSet = 'Admin123456@'
     const salt = crypto.randomBytes(32).toString('hex')
