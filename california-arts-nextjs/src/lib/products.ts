@@ -92,6 +92,7 @@ export interface Product {
   sizeOptions?: ProductSizeOption[];
   accordions?: ProductAccordion[];
   relatedProductHandles?: string[];
+  sizeChartImage?: string;
   collections?: string[];
   published_at: string;
   created_at: string;

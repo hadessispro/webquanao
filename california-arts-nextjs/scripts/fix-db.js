@@ -33,6 +33,8 @@ async function fixDatabase() {
   const productCols = [
     ['price', 'NUMERIC'],
     ['compare_at_price', 'NUMERIC'],
+    ['size_chart_image_id', 'INTEGER'],
+    ['size_chart_image_source_url', 'TEXT'],
   ]
 
   try {

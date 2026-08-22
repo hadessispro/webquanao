@@ -21,6 +21,8 @@ type PayloadProductDoc = {
   handle?: string
   price?: number
   compareAtPrice?: number
+  sizeChartImage?: MediaDoc | number | string
+  sizeChartImageSourceUrl?: string
   bodyHtml?: string
   vendor?: string
   productType?: string
@@ -380,10 +382,13 @@ export function normalizePayloadProduct(
     })
     .filter((image) => image.src)
 
+  const sizeChartImg = mediaUrl(doc.sizeChartImage, doc.sizeChartImageSourceUrl)
+
   return {
     id: Number(doc.shopifyId || doc.id),
     title: doc.title || '',
     handle: doc.handle || '',
+    sizeChartImage: sizeChartImg || undefined,
     body_html: doc.bodyHtml || '',
     vendor: doc.vendor || 'điển',
     product_type: doc.productType || '',
