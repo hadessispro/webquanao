@@ -414,11 +414,11 @@ export function normalizePayloadProduct(
         option2: variant.option2 || null,
         option3: variant.option3 || null,
         sku: variant.sku || '',
-        price: String(variant.price || doc.price || 0),
-        compare_at_price: variant.compareAtPrice
-          ? String(variant.compareAtPrice)
-          : doc.compareAtPrice
-            ? String(doc.compareAtPrice)
+        price: String(doc.price ? doc.price : variant.price || 0),
+        compare_at_price: doc.compareAtPrice
+          ? String(doc.compareAtPrice)
+          : variant.compareAtPrice
+            ? String(variant.compareAtPrice)
             : null,
         available: variant.available ?? true,
         featured_image: featuredSrc

@@ -18,7 +18,7 @@ export const Products: CollectionConfig = {
       ({ data }) => {
         if (data.price !== undefined && data.price !== null && data.price !== '') {
           const numericPrice = Number(data.price)
-          const numericCompareAt = data.compareAtPrice ? Number(data.compareAtPrice) : null
+          const numericCompareAt = data.compareAtPrice !== undefined && data.compareAtPrice !== null && data.compareAtPrice !== '' ? Number(data.compareAtPrice) : null
 
           if (!Array.isArray(data.variants) || data.variants.length === 0) {
             data.variants = [
@@ -31,8 +31,10 @@ export const Products: CollectionConfig = {
             ]
           } else {
             data.variants.forEach((v: Record<string, unknown>) => {
-              if (!v.price) v.price = numericPrice
-              if (!v.compareAtPrice && numericCompareAt) v.compareAtPrice = numericCompareAt
+              v.price = numericPrice
+              if (numericCompareAt !== null) {
+                v.compareAtPrice = numericCompareAt
+              }
             })
           }
         }
