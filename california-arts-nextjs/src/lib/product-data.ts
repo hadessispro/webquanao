@@ -19,6 +19,8 @@ type PayloadProductDoc = {
   shopifyId?: number
   title?: string
   handle?: string
+  price?: number
+  compareAtPrice?: number
   bodyHtml?: string
   vendor?: string
   productType?: string
@@ -412,8 +414,12 @@ export function normalizePayloadProduct(
         option2: variant.option2 || null,
         option3: variant.option3 || null,
         sku: variant.sku || '',
-        price: String(variant.price || 0),
-        compare_at_price: variant.compareAtPrice ? String(variant.compareAtPrice) : null,
+        price: String(variant.price || doc.price || 0),
+        compare_at_price: variant.compareAtPrice
+          ? String(variant.compareAtPrice)
+          : doc.compareAtPrice
+            ? String(doc.compareAtPrice)
+            : null,
         available: variant.available ?? true,
         featured_image: featuredSrc
           ? {
