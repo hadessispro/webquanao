@@ -35,6 +35,8 @@ type PayloadProductDoc = {
     label?: string
     value?: string
     swatch?: string
+    swatchImage?: MediaDoc | number | string
+    swatchImageSourceUrl?: string
     position?: number
     available?: boolean
   }>
