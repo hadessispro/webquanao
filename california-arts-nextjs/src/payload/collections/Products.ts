@@ -41,6 +41,40 @@ export const Products: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [
+      async () => {
+        // Make edits (price, images, colours, videos, text) show on the storefront
+        // right away instead of waiting for the in-memory cache TTL.
+        try {
+          const { resetStorefrontProductCache } = await import('../../lib/product-data')
+          resetStorefrontProductCache()
+        } catch (err) {
+          console.error('Failed to reset storefront product cache:', err)
+        }
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+        } catch (err) {
+          console.error('Failed to revalidate storefront paths:', err)
+        }
+      },
+    ],
+    afterDelete: [
+      async () => {
+        try {
+          const { resetStorefrontProductCache } = await import('../../lib/product-data')
+          resetStorefrontProductCache()
+        } catch (err) {
+          console.error('Failed to reset storefront product cache:', err)
+        }
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+        } catch (err) {
+          console.error('Failed to revalidate storefront paths:', err)
+        }
+      },
+    ],
   },
   fields: [
     {
@@ -283,6 +317,14 @@ export const Products: CollectionConfig = {
         {
           name: 'alt',
           type: 'text',
+        },
+        {
+          name: 'color',
+          type: 'text',
+          admin: {
+            description:
+              'Màu áp dụng cho video này (ví dụ: black, white, đen, trắng). Nhập ĐÚNG giá trị màu (value) của biến thể để video chỉ hiện khi khách chọn màu đó. Để trống nếu muốn video hiển thị cho mọi màu.',
+          },
         },
         {
           name: 'position',
@@ -554,13 +596,46 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    // Product Accordions (Details, Size & Fit, etc.)
+    // Storefront info tabs shown under the Add-to-bag button (chi tiết / giao hàng / đổi size).
+    // These are the easiest way to control that text. When left empty the storefront
+    // falls back to the Accordions below (matched by title) and then to sensible defaults.
+    {
+      name: 'infoTabs',
+      type: 'group',
+      label: 'Info tabs (chi tiết / giao hàng / đổi size)',
+      admin: {
+        description:
+          'Nội dung 3 tab dưới nút đặt hàng ở trang chi tiết sản phẩm. Nhập trực tiếp tại đây để chỉnh chữ. Bỏ trống nếu muốn dùng nội dung mặc định.',
+      },
+      fields: [
+        {
+          name: 'details',
+          type: 'richText',
+          label: 'Tab "chi tiết"',
+        },
+        {
+          name: 'shipping',
+          type: 'richText',
+          label: 'Tab "giao hàng"',
+        },
+        {
+          name: 'exchange',
+          type: 'richText',
+          label: 'Tab "đổi size"',
+        },
+      ],
+    },
+    // Product Accordions (Details, Size & Fit, etc.) — legacy source for the info tabs.
     {
       name: 'accordions',
       type: 'array',
       labels: {
         singular: 'Accordion',
         plural: 'Accordions',
+      },
+      admin: {
+        description:
+          'Nội dung cũ theo từng mục. Chỉ dùng khi để trống "Info tabs" ở trên. Tiêu đề phải đúng: Details, Size & Fit, Sustainability, Shipping & Returns, Need Assistance?',
       },
       fields: [
         {

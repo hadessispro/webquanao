@@ -21,9 +21,13 @@ export async function generateMetadata({
   const product = await getStorefrontProductByHandle(handle);
   if (!product) return { title: "Product Not Found" };
 
+  // Prefer the SEO fields edited in the admin (Products -> SEO), fall back to
+  // the product title/description.
   return {
-    title: `${product.title} | điển`,
-    description: product.body_html?.replace(/<[^>]*>/g, "")?.slice(0, 160),
+    title: product.seo?.title || `${product.title} | điển`,
+    description:
+      product.seo?.description ||
+      product.body_html?.replace(/<[^>]*>/g, "")?.slice(0, 160),
   };
 }
 

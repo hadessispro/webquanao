@@ -104,6 +104,7 @@ function buildColorImages(product: Product) {
 function buildProductMediaItems(
   product: Product,
   images: ProductImage[],
+  selectedColor?: string,
 ): ProductDetailMediaItem[] {
   const imageItems: ProductDetailMediaItem[] = images.map((image, index) => ({
     image,
@@ -111,14 +112,20 @@ function buildProductMediaItems(
     position: image.position || index + 1,
     type: "image",
   }));
-  const videoItems = (product.videos || []).map(
-    (video, index) => ({
+  const activeColor = normalizeOptionValue(selectedColor);
+  const videoItems = (product.videos || [])
+    // A video with a color only shows when that color is selected. Videos with no
+    // color are shown for every colour.
+    .filter((video) => {
+      const videoColor = normalizeOptionValue(video.color);
+      return !videoColor || !activeColor || videoColor === activeColor;
+    })
+    .map((video, index) => ({
       key: `video-${video.id || index}`,
       position: video.position ?? 999 + index,
       type: "video" as const,
       video,
-    }),
-  );
+    }));
 
   if (videoItems.length === 0) return imageItems;
 
@@ -524,8 +531,8 @@ export default function ProductDetailClient({
     [colorImageMap, selColor],
   );
   const mediaItems = useMemo(
-    () => buildProductMediaItems(product, imgs),
-    [imgs, product],
+    () => buildProductMediaItems(product, imgs, selColor),
+    [imgs, product, selColor],
   );
   const loopMediaItems = useMemo(() => {
     if (mediaItems.length <= 1) return mediaItems;
@@ -624,21 +631,22 @@ export default function ProductDetailClient({
     const accordionMap = new Map(
       accordions.map((accordion) => [accordion.title.toLowerCase(), accordion.html]),
     );
-    const detailHtml = [
-      accordionMap.get("details"),
-      accordionMap.get("sustainability"),
-    ]
-      .filter(Boolean)
-      .join("");
+    // Prefer the dedicated, admin-editable info tabs. Fall back to the legacy
+    // accordions (matched by title), then to sensible defaults.
+    const detailHtml =
+      product.infoTabs?.details ||
+      [accordionMap.get("details"), accordionMap.get("sustainability")]
+        .filter(Boolean)
+        .join("");
     const shippingHtml =
+      product.infoTabs?.shipping ||
       accordionMap.get("shipping & returns") ||
       "<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Hỗ trợ hoàn trả trong vòng 14 ngày kể từ khi giao thành công.</p>";
-    const exchangeHtml = [
-      accordionMap.get("size & fit"),
-      accordionMap.get("need assistance?"),
-    ]
-      .filter(Boolean)
-      .join("");
+    const exchangeHtml =
+      product.infoTabs?.exchange ||
+      [accordionMap.get("size & fit"), accordionMap.get("need assistance?")]
+        .filter(Boolean)
+        .join("");
 
     return [
       {
@@ -661,7 +669,7 @@ export default function ProductDetailClient({
           "<p>Liên hệ với chúng tôi qua email hoặc instagram để được hỗ trợ đổi size phù hợp hơn.</p>",
       },
     ];
-  }, [accordions, t]);
+  }, [accordions, product.infoTabs, t]);
 
   const activeInfoTabData =
     infoTabs.find((tab) => tab.key === activeInfoTab) || infoTabs[0];
@@ -1410,7 +1418,7 @@ export default function ProductDetailClient({
               </button>
             </div>
 
-            {product.sizeChartImage ? (
+            {sizeFinderView === "chart" && product.sizeChartImage ? (
               <div className="product-detail__size-chart-image-container flex justify-center items-center p-4">
                 <img
                   alt={`Bảng size ${product.title}`}

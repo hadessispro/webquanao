@@ -491,6 +491,48 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
   }
 }
 
+export type SiteMetadata = {
+  title: string
+  description: string
+  image?: string
+}
+
+const DEFAULT_SITE_METADATA: SiteMetadata = {
+  title: 'Điển',
+  description: 'Điển. Accessible design by producing less & building better.',
+}
+
+// Site-wide SEO defaults, editable in the admin under Site Settings -> SEO.
+// Used for the homepage and as a fallback title template.
+export async function getSiteMetadata(): Promise<SiteMetadata> {
+  try {
+    const payload = await getPayloadClient()
+    const settings = (await payload.findGlobal({
+      slug: 'site-settings',
+      depth: 2,
+    })) as {
+      siteName?: string
+      siteDescription?: string
+      seo?: {
+        title?: string
+        description?: string
+        image?: MediaLike
+      }
+    }
+
+    const image = mediaToImage(settings.seo?.image)?.src
+
+    return {
+      title: settings.seo?.title || settings.siteName || DEFAULT_SITE_METADATA.title,
+      description:
+        settings.seo?.description || settings.siteDescription || DEFAULT_SITE_METADATA.description,
+      image,
+    }
+  } catch {
+    return DEFAULT_SITE_METADATA
+  }
+}
+
 export async function getHeaderData(): Promise<HeaderData> {
   try {
     const payload = await getPayloadClient()
@@ -637,6 +679,7 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
         textTheme?: HomeHeroData['textTheme']
         overlayOpacity?: number
         imageOpacity?: number
+        flipHorizontal?: boolean
       }
     }
 
@@ -686,6 +729,7 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
       textTheme: hero.textTheme || DEFAULT_HOME_HERO.textTheme,
       overlayOpacity: hero.overlayOpacity ?? DEFAULT_HOME_HERO.overlayOpacity,
       imageOpacity: hero.imageOpacity ?? DEFAULT_HOME_HERO.imageOpacity ?? 0.7,
+      flipHorizontal: hero.flipHorizontal ?? false,
     }
   } catch {
     return DEFAULT_HOME_HERO

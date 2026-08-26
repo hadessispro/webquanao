@@ -1,6 +1,14 @@
 import React from 'react'
 import Link from 'next/link'
-import { getHomeHeroData } from '@/lib/layout-data'
+import { getHomeHeroData, getSiteMetadata } from '@/lib/layout-data'
+
+export async function generateMetadata() {
+  const meta = await getSiteMetadata()
+  return {
+    title: meta.title,
+    description: meta.description,
+  }
+}
 
 export default async function HomePage() {
   const hero = await getHomeHeroData()
@@ -9,6 +17,7 @@ export default async function HomePage() {
   const title = hero.titleVi || hero.title
   const body = hero.bodyVi || hero.body
   const ctaLabel = hero.ctaLabelVi || hero.ctaLabel
+  const heroImageTransform = hero.flipHorizontal ? 'scaleX(-1)' : undefined
 
   if (!hero.enabled || !desktopImage) {
     return <div className="home-page home-page--empty" />
@@ -31,6 +40,7 @@ export default async function HomePage() {
               alt={desktopImage.alt || title || 'điển'}
               className="home-hero__image"
               src={desktopImage.src}
+              style={heroImageTransform ? { transform: heroImageTransform } : undefined}
             />
           </picture>
           <span

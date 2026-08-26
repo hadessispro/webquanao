@@ -36,7 +36,9 @@ export const Media: CollectionConfig = {
       },
     ],
     adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/*'],
+    // Allow both images and product videos (mp4/webm). Sharp only resizes images;
+    // videos are stored as-is and served from /api/media/file/<name>.
+    mimeTypes: ['image/*', 'video/*'],
   },
   fields: [
     {

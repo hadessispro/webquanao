@@ -284,14 +284,18 @@ export default function Header({ header }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const [openMegaMenuHref, setOpenMegaMenuHref] = useState<string | null>(null)
   const logoAlt = header.logo?.alt || header.logoAlt || 'điển'
+  const logoSrc = header.logo?.src || BRAND_LOGO_SRC
   const isHome = pathname === '/'
   const desktopNavigation = header.navigation
     .filter((item) => item.href !== '/pages/campaign')
     .slice(0, 2)
+  // Promotion / shipping bar text comes from the Header global in the admin
+  // (Shipping bar -> Text / Vietnamese text). Falls back to the brand default.
   const shippingText =
-    locale === 'vi'
+    localizedText(locale, header.shippingBar.text, header.shippingBar.textVi) ||
+    (locale === 'vi'
       ? 'miễn phí vận chuyển cho đơn hàng trên 950.000đ'
-      : 'complimentary shipping on orders over 950.000đ'
+      : 'complimentary shipping on orders over 950.000đ')
 
   const cancelMegaMenuClose = () => {
     if (megaMenuCloseTimerRef.current !== null) {
@@ -562,7 +566,7 @@ export default function Header({ header }: HeaderProps) {
 
                   <h1 className="c_header-logo site-header__brand">
                     <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
-                      <img src={BRAND_LOGO_SRC} alt={logoAlt} />
+                      <img src={logoSrc} alt={logoAlt} />
                     </SmartLink>
                   </h1>
 
@@ -622,7 +626,7 @@ export default function Header({ header }: HeaderProps) {
 
                   <h1 className="site-header__mobile-brand">
                     <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
-                      <img src={BRAND_LOGO_SRC} alt={logoAlt} />
+                      <img src={logoSrc} alt={logoAlt} />
                     </SmartLink>
                   </h1>
 

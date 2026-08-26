@@ -446,6 +446,16 @@ export const SiteSettings: GlobalConfig = {
             description: 'Opacity of the hero banner image (e.g. 0.7 = 70% opacity) so logo & text stand out clearly.',
           },
         },
+        {
+          name: 'flipHorizontal',
+          type: 'checkbox',
+          defaultValue: false,
+          label: 'Lật ảnh theo chiều ngang (Flip horizontally)',
+          admin: {
+            description:
+              'Bật nếu bạn muốn lật gương ảnh hero theo chiều ngang. Mặc định tắt = ảnh hiển thị đúng chiều gốc (không bị ngược).',
+          },
+        },
       ],
     },
     {

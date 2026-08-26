@@ -213,6 +213,7 @@ export interface HomeHeroData {
   textTheme: 'light' | 'dark'
   overlayOpacity: number
   imageOpacity?: number
+  flipHorizontal?: boolean
 }
 
 export interface NewsletterPopupData {

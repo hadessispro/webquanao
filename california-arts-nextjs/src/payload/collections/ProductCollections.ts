@@ -14,6 +14,24 @@ export const ProductCollections: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    afterChange: [
+      async () => {
+        try {
+          const { resetStorefrontProductCache } = await import('../../lib/product-data')
+          resetStorefrontProductCache()
+        } catch (err) {
+          console.error('Failed to reset storefront product cache:', err)
+        }
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+        } catch (err) {
+          console.error('Failed to revalidate storefront paths:', err)
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'shopifyId',

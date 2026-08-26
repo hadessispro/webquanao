@@ -281,7 +281,8 @@ body#california-arts .bg-footer-background,
 .home-hero__image {
   object-fit: cover;
   object-position: 58% center;
-  transform: scaleX(-1);
+  /* Orientation is controlled from the admin (Site Settings -> Home Hero ->
+     Flip horizontally). No default mirror so the image shows its true side. */
 }
 
 .home-hero__overlay {
@@ -12034,18 +12035,23 @@ body#california-arts .product-detail__suggestion-image {
 body#california-arts .product-detail__mobile-slide img,
 body#california-arts .product-detail__mobile-frame img {
   aspect-ratio: 2 / 3 !important;
-  object-fit: cover !important;
+  /* Use contain so no edges/corners of the product photo are cropped on mobile.
+     The 2/3 frame keeps every slide the same height for a consistent gallery. */
+  object-fit: contain !important;
   width: 100% !important;
-  height: auto !important;
+  height: 100% !important;
 }
 
-/* Logo transparent background & blend mode fix when returning home */
+/* Keep the logo on a transparent plate. The logo asset itself is transparent,
+   so we must NOT use mix-blend-mode (it tints the mark against the header and
+   can leave a washed/white look when returning to the homepage). Home theming
+   is handled by filter: invert(1) in the header rules above. */
 .site-header__logo-link,
 .site-header__logo-link img,
 .c_header-logo img,
 h1.c_header-logo img {
   background: transparent !important;
   background-color: transparent !important;
-  mix-blend-mode: multiply !important;
+  mix-blend-mode: normal !important;
 }
 

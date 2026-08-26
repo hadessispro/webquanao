@@ -81,6 +81,7 @@ type PayloadProductDoc = {
     poster?: MediaDoc | number | string
     posterSourceUrl?: string
     alt?: string
+    color?: string
     position?: number
     placement?: 'inherit' | 'after-images' | 'manual'
     autoplay?: boolean
@@ -97,12 +98,21 @@ type PayloadProductDoc = {
     title?: string
     content?: unknown
   }>
+  infoTabs?: {
+    details?: unknown
+    shipping?: unknown
+    exchange?: unknown
+  }
   relatedProducts?: Array<PayloadProductDoc | number | string>
   publishedAt?: string
   shopifyCreatedAt?: string
   shopifyUpdatedAt?: string
   createdAt?: string
   updatedAt?: string
+  seo?: {
+    title?: string
+    description?: string
+  }
 }
 
 type PayloadCollectionDoc = {
@@ -142,14 +152,15 @@ let allProductsCache:
 function mediaUrl(media: MediaDoc | number | string | undefined, fallback?: string): string {
   if (media && typeof media === 'object') {
     const mediaSourceUrl = media.sourceUrl || media.source_url
-    const localUploadUrl =
-      media.url && !media.url.startsWith('/api/media/file/') ? media.url : undefined
+    // Prefer an explicit external/original URL, then the caller fallback, then the
+    // URL Payload serves the uploaded file from (e.g. /api/media/file/<name> or
+    // /media/<name>). We must NOT skip /api/media/file/ URLs: fresh admin uploads
+    // are only reachable there, not under the public /media folder.
     const src =
       mediaSourceUrl ||
       fallback ||
-      localUploadUrl ||
-      (media.filename ? `/media/${media.filename}` : undefined) ||
-      media.url
+      media.url ||
+      (media.filename ? `/media/${media.filename}` : undefined)
     if (src) return normalizeImageUrl(src)
   }
 
@@ -462,6 +473,7 @@ export function normalizePayloadProduct(
           src,
           poster: poster || undefined,
           alt: video.alt || videoMeta.alt,
+          color: video.color?.trim() || undefined,
           position: video.position ?? 999 + index,
           placement: video.placement || 'inherit',
           autoplay: video.autoplay ?? true,
@@ -509,6 +521,19 @@ export function normalizePayloadProduct(
           }))
           .filter((accordion) => accordion.title)
       : [],
+    infoTabs: doc.infoTabs
+      ? {
+          details: richTextToHtml(doc.infoTabs.details) || undefined,
+          shipping: richTextToHtml(doc.infoTabs.shipping) || undefined,
+          exchange: richTextToHtml(doc.infoTabs.exchange) || undefined,
+        }
+      : undefined,
+    seo: doc.seo
+      ? {
+          title: doc.seo.title || undefined,
+          description: doc.seo.description || undefined,
+        }
+      : undefined,
     relatedProductHandles: Array.isArray(doc.relatedProducts)
       ? doc.relatedProducts
           .map((relatedProduct) =>
@@ -570,6 +595,12 @@ export async function getAllStorefrontProducts(): Promise<Product[]> {
   }
 
   return allProductsCache.promise
+}
+
+// Clears the in-memory product cache so admin edits (price, images, colors, etc.)
+// show on listing/collection pages immediately instead of after the cache TTL.
+export function resetStorefrontProductCache() {
+  allProductsCache = undefined
 }
 
 export async function getStorefrontProductByHandle(handle: string): Promise<Product | undefined> {

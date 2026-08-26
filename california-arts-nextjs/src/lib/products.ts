@@ -17,6 +17,7 @@ export interface ProductVideo {
   src: string;
   poster?: string;
   alt?: string;
+  color?: string;
   position: number;
   placement?: "inherit" | "after-images" | "manual";
   autoplay?: boolean;
@@ -94,8 +95,17 @@ export interface Product {
   colorOptions?: ProductColorOption[];
   sizeOptions?: ProductSizeOption[];
   accordions?: ProductAccordion[];
+  infoTabs?: {
+    details?: string;
+    shipping?: string;
+    exchange?: string;
+  };
   relatedProductHandles?: string[];
   sizeChartImage?: string;
+  seo?: {
+    title?: string;
+    description?: string;
+  };
   collections?: string[];
   published_at: string;
   created_at: string;
@@ -137,21 +147,69 @@ export function getProductByHandle(handle: string): Product | undefined {
   return getAllProductsFromJson().find((p) => p.handle === handle);
 }
 
-// Get unique color options
+// All color values that actually exist on the product (from the legacy Color
+// option, or failing that from distinct variant option1 values).
+function getBaseColorValues(product: Product): string[] {
+  const colorOption = product.options.find(
+    (o) => o.name.toLowerCase() === "color",
+  );
+  if (colorOption?.values?.length) return colorOption.values.filter(Boolean);
+
+  const seen = new Set<string>();
+  const values: string[] = [];
+  for (const variant of product.variants) {
+    const value = variant.option1 || "";
+    const key = value.toLowerCase();
+    if (value && !seen.has(key)) {
+      seen.add(key);
+      values.push(value);
+    }
+  }
+  return values;
+}
+
+// Get unique color options.
+//
+// colorOptions in the CMS are meant to *configure* colours (label, swatch image,
+// ordering, visibility) — not to be the exhaustive list. Previously, adding a
+// single colorOption replaced the entire colour list, so uploading one swatch
+// hid every other colour. We now merge: show configured-and-available colours
+// first (in their set order) and append any remaining product colours that were
+// not explicitly hidden (available === false).
 export function getProductColors(product: Product): string[] {
+  const baseColors = getBaseColorValues(product);
+
   if (product.colorOptions?.length) {
-    return product.colorOptions
+    const normalize = (value: string) => value.trim().toLowerCase();
+
+    const configured = product.colorOptions
       .filter((option) => option.available !== false)
       .slice()
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .map((option) => option.value || option.label)
-      .filter(Boolean);
+      .filter(Boolean) as string[];
+
+    const hidden = new Set(
+      product.colorOptions
+        .filter((option) => option.available === false)
+        .map((option) => normalize(option.value || option.label || ""))
+        .filter(Boolean),
+    );
+
+    const configuredSet = new Set(configured.map(normalize));
+    const merged = [...configured];
+
+    for (const color of baseColors) {
+      const key = normalize(color);
+      if (!configuredSet.has(key) && !hidden.has(key)) {
+        merged.push(color);
+      }
+    }
+
+    return merged.filter(Boolean);
   }
 
-  const colorOption = product.options.find(
-    (o) => o.name.toLowerCase() === "color",
-  );
-  return colorOption?.values || [];
+  return baseColors;
 }
 
 // Get unique size options

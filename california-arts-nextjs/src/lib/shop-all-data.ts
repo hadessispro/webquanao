@@ -349,17 +349,71 @@ function pickSectionProducts(allProducts: Product[], definition: ShopAllSectionD
   )
 }
 
+// Vietnamese section names (numbers are added automatically, so no digits here).
+const SHOP_ALL_SECTION_TITLES_VI: Record<string, string> = {
+  coats: 'Áo khoác dáng dài',
+  jackets: 'Áo khoác',
+  'denim-jackets': 'Áo khoác denim',
+  blazers: 'Áo blazer',
+  'crewneck-sweaters': 'Áo len cổ tròn',
+  'v-neck-sweaters': 'Áo len cổ tim',
+  cardigans: 'Áo cardigan',
+  polos: 'Áo polo',
+  turtlenecks: 'Áo len cổ lọ',
+  sweatshirts: 'Áo nỉ',
+  'long-sleeve-shirts': 'Áo sơ mi dài tay',
+  'short-sleeve-shirts': 'Áo sơ mi ngắn tay',
+  'long-sleeve-tees-henleys': 'Áo thun dài tay & Henley',
+  't-shirts': 'Áo thun',
+  vests: 'Áo gi-lê',
+  'tank-tops': 'Áo ba lỗ',
+  'muscle-tanks': 'Áo tank',
+  'pants-trousers': 'Quần dài',
+  jeans: 'Quần jeans',
+  shorts: 'Quần short',
+  accessories: 'Phụ kiện',
+}
+
+// Remove any leading "01 " style numbering so we can re-number consistently.
+function stripLeadingNumber(value?: string) {
+  return (value || '').replace(/^\s*\d+\s*/, '').trim()
+}
+
 export async function getStorefrontShopAllSections(): Promise<StorefrontShopAllSection[]> {
   const [allProducts, overrides] = await Promise.all([
     getAllStorefrontProducts(),
     getViewAllSectionOverrides(),
   ])
 
-  return SHOP_ALL_SECTION_DEFINITIONS.map((definition) => ({
-    descriptionHtml: overrides.get(definition.handle)?.descriptionHtml,
-    handle: definition.handle,
-    title: overrides.get(definition.handle)?.title || definition.title,
-    titleVi: overrides.get(definition.handle)?.titleVi || definition.titleVi,
-    products: pickSectionProducts(allProducts, definition),
-  })).filter((section) => section.products.length > 0)
+  // Build sections, keeping only those with products, THEN number them
+  // sequentially so the list always starts at 01 (empty categories no longer
+  // leave gaps like "05 ...").
+  const nonEmpty = SHOP_ALL_SECTION_DEFINITIONS.map((definition) => {
+    const override = overrides.get(definition.handle)
+    const baseTitle = stripLeadingNumber(override?.title) || stripLeadingNumber(definition.title)
+    const baseTitleVi =
+      stripLeadingNumber(override?.titleVi) ||
+      SHOP_ALL_SECTION_TITLES_VI[definition.handle] ||
+      stripLeadingNumber(definition.titleVi) ||
+      baseTitle
+
+    return {
+      descriptionHtml: override?.descriptionHtml,
+      handle: definition.handle,
+      baseTitle,
+      baseTitleVi,
+      products: pickSectionProducts(allProducts, definition),
+    }
+  }).filter((section) => section.products.length > 0)
+
+  return nonEmpty.map((section, index) => {
+    const number = String(index + 1).padStart(2, '0')
+    return {
+      descriptionHtml: section.descriptionHtml,
+      handle: section.handle,
+      title: `${number} ${section.baseTitle}`,
+      titleVi: `${number} ${section.baseTitleVi}`,
+      products: section.products,
+    }
+  })
 }
