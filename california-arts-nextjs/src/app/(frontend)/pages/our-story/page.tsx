@@ -1,20 +1,4 @@
 import Image from 'next/image'
-import CmsPageContent from '@/components/page/CmsPageContent'
-import { getPageBySlug } from '@/lib/pages-data'
-
-export async function generateMetadata() {
-  const page = await getPageBySlug('our-story')
-  if (page) {
-    return {
-      title: page.seo?.title || `${page.title} | điển`,
-      description: page.seo?.description || undefined,
-    }
-  }
-  return {
-    title: 'về điển | điển',
-    description: 'câu chuyện và cách làm của điển.',
-  }
-}
 
 const storySections = [
   {
@@ -47,18 +31,7 @@ const storySections = [
   },
 ]
 
-export default async function OurStoryPage() {
-  // Editable in the admin: create/edit a Page with slug "our-story".
-  // Falls back to the built-in story layout below when no page exists.
-  const page = await getPageBySlug('our-story')
-  if (page) {
-    return <CmsPageContent page={page} fallback={<OurStoryFallback />} />
-  }
-
-  return <OurStoryFallback />
-}
-
-function OurStoryFallback() {
+export default function OurStoryPage() {
   return (
     <section className="story-page bg-primary-background text-primary-text">
       <div className="story-page__sections">
