@@ -160,22 +160,19 @@ export default function ProductCard({
                 </div>
               )}
 
-              {/* Price */}
+              {/* Price. When there is a discount, the old price is shown struck
+                  through (handled in CSS via .ca-price-compare). */}
               <div
                 className="ca_pro-prices"
-                style={{ display: "flex", gap: "4px" }}
+                style={{ display: "flex", gap: "6px" }}
               >
                 {comparePrice && (
-                  <span
-                    className="dfgjghjhg4"
-                    style={{ textDecoration: "line-through", opacity: 0.5 }}
-                  >
-                    <BrandPrice amount={comparePrice} />
-                  </span>
+                  <BrandPrice
+                    amount={comparePrice}
+                    className="dfgjghjhg4 ca-price-compare"
+                  />
                 )}
-                <span className="dfgjghjhg4">
-                  <BrandPrice amount={price} />
-                </span>
+                <BrandPrice amount={price} className="dfgjghjhg4" />
               </div>
 
               {/* Sold out indicator */}

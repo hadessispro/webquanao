@@ -3375,8 +3375,28 @@ body.art-menu-lock {
 
 .product-detail__compare-price {
   opacity: 0.5;
-  text-decoration: none !important;
-  text-decoration-line: none !important;
+  position: relative;
+}
+
+/* Sale display: draw a strike line across the OLD (compare-at) price. A pseudo
+   line is used instead of text-decoration because the price is an inline-flex
+   element (number + currency mark) and line-through does not cross it. */
+.product-detail__compare-price::after,
+.ca_pro-prices .ca-price-compare::after {
+  content: "";
+  position: absolute;
+  left: -0.03em;
+  right: -0.03em;
+  top: 54%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.ca_pro-prices .ca-price-compare {
+  position: relative;
+  opacity: 0.5;
 }
 
 .product-detail__description {

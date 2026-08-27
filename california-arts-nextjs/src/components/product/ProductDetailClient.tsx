@@ -595,12 +595,14 @@ export default function ProductDetailClient({
         ? "order ngay"
         : t("unavailable");
 
-  const price = selVariant
-    ? formatPrice(selVariant.price)
-    : formatPrice(product.variants[0]?.price);
-  const cmpPrice = selVariant?.compare_at_price
-    ? formatPrice(selVariant.compare_at_price)
-    : null;
+  const activePriceVariant = selVariant || product.variants[0];
+  const price = formatPrice(activePriceVariant?.price);
+  // Only treat compare-at as a discount (old price) when it is higher than the
+  // current price. It is rendered struck through next to the current price.
+  const priceNum = parseInt(activePriceVariant?.price || "0", 10);
+  const compareNum = parseInt(activePriceVariant?.compare_at_price || "0", 10);
+  const cmpPrice =
+    compareNum > priceNum ? formatPrice(activePriceVariant?.compare_at_price) : null;
   const selectedColorLabel = selColor ? getColorLabel(product, selColor) : "";
   const displayTitle = selectedColorLabel ? `${product.title} (${selectedColorLabel})` : product.title;
 

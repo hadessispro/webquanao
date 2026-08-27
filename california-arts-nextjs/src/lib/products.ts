@@ -235,11 +235,16 @@ export function getDisplayPrice(product: Product): string {
   return formatVndAmount(price);
 }
 
-// Get compare_at_price if exists
+// Get compare_at_price only when it represents a real discount (i.e. the
+// compare-at/original price is higher than the current price). This is the old
+// price that should be shown struck through next to the current price.
 export function getCompareAtPrice(product: Product): string | null {
-  const comparePrice = product.variants[0]?.compare_at_price;
-  if (!comparePrice) return null;
-  return formatVndAmount(parseInt(comparePrice, 10));
+  const compareRaw = product.variants[0]?.compare_at_price;
+  if (!compareRaw) return null;
+  const compare = parseInt(compareRaw, 10);
+  const price = parseInt(product.variants[0]?.price || "0", 10);
+  if (!compare || compare <= price) return null;
+  return formatVndAmount(compare);
 }
 
 // Check if product is fully sold out
