@@ -64,6 +64,10 @@ export default buildConfig({
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'default-secret-change-me',
   db: sqliteAdapter({
+    // Dev auto-push can conflict with an existing schema when Payload is booted
+    // from a standalone script (e.g. seeds). Allow disabling it via env without
+    // affecting the normal dev server or production.
+    ...(process.env.PAYLOAD_DISABLE_PUSH === 'true' ? { push: false } : {}),
     busyTimeout: 5000,
     client: {
       url: process.env.DATABASE_URI || 'file:./database.db',
