@@ -1,6 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import { getAllStorefrontProducts, getStorefrontProductByHandle } from "@/lib/product-data";
+import { getSizeFinderConfig } from "@/lib/layout-data";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
 
 // Generate static params for all products
@@ -70,12 +71,14 @@ export default async function ProductDetailPage({
     ? Number.parseInt(variantParam[0] || "0", 10)
     : Number.parseInt(variantParam || "0", 10);
   const initialColorParam = Array.isArray(colorParam) ? colorParam[0] : colorParam;
+  const sizeFinderConfig = await getSizeFinderConfig();
 
   return (
     <ProductDetailClient
       initialColorParam={initialColorParam}
       initialVariantId={Number.isFinite(initialVariantId) ? initialVariantId : 0}
       product={product}
+      sizeFinderConfig={sizeFinderConfig}
       suggestedProducts={suggestedProducts}
     />
   );

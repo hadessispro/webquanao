@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { DEFAULT_SIZE_FINDER } from '../../lib/size-finder'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -600,6 +601,16 @@ export const SiteSettings: GlobalConfig = {
         { name: 'label', type: 'text', required: true },
         { name: 'href', type: 'text', required: true },
       ],
+    },
+    {
+      name: 'sizeFinder',
+      type: 'json',
+      label: 'Size finder (công cụ "tìm size")',
+      defaultValue: DEFAULT_SIZE_FINDER,
+      admin: {
+        description:
+          'Dữ liệu cho công cụ "tìm size" ở trang sản phẩm. "heights" = danh sách chiều cao; mỗi "fits" (ôm / thoải mái) có "weights" (danh sách cân nặng) và "matrix" (size gợi ý theo từng dòng chiều cao × cột cân nặng). Chỉ cần sửa GIÁ TRỊ (ví dụ đổi "M" thành "L"), giữ nguyên cấu trúc. Để trống sẽ dùng bảng mặc định.',
+      },
     },
   ],
 }

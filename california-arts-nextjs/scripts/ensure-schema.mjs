@@ -41,6 +41,7 @@ const REQUIRED_COLUMNS = {
   products_videos: [{ name: 'color', ddl: 'color TEXT' }],
   site_settings: [
     { name: 'home_hero_flip_horizontal', ddl: 'home_hero_flip_horizontal INTEGER DEFAULT false' },
+    { name: 'size_finder', ddl: 'size_finder TEXT' },
   ],
 }
 

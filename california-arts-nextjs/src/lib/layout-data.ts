@@ -16,6 +16,11 @@ import {
   StorefrontFont,
   StorefrontImage,
 } from './storefront-types'
+import {
+  DEFAULT_SIZE_FINDER,
+  normalizeSizeFinder,
+  type SizeFinderConfig,
+} from './size-finder'
 import { getPayloadClient } from './payload-client'
 
 type MediaLike =
@@ -530,6 +535,21 @@ export async function getSiteMetadata(): Promise<SiteMetadata> {
     }
   } catch {
     return DEFAULT_SITE_METADATA
+  }
+}
+
+// Size finder config for the product page "tìm size" tool. Editable in the
+// admin (Site Settings -> Size finder). Falls back to the built-in default.
+export async function getSizeFinderConfig(): Promise<SizeFinderConfig> {
+  try {
+    const payload = await getPayloadClient()
+    const settings = (await payload.findGlobal({
+      slug: 'site-settings',
+      depth: 0,
+    })) as { sizeFinder?: unknown }
+    return normalizeSizeFinder(settings.sizeFinder)
+  } catch {
+    return DEFAULT_SIZE_FINDER
   }
 }
 

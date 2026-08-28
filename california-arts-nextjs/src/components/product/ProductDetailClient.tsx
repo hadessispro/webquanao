@@ -12,6 +12,14 @@ import {
   getProductSizes,
   isProductSoldOut,
 } from "@/lib/products";
+import {
+  DEFAULT_SIZE_FINDER,
+  getSizeFinderFit,
+  normalizeSizeFinder,
+  resolveSizeFromFinder,
+  type SizeFinderConfig,
+  type SizeFinderFitKey,
+} from "@/lib/size-finder";
 import { BRAND_CONTACT_EMAIL, BRAND_INSTAGRAM_PROFILE_URL, BRAND_NAME } from "@/lib/brand";
 
 type ProductDetailMediaItem =
@@ -371,55 +379,9 @@ function FinderDropdown({
   );
 }
 
-const SIZE_FINDER_HEIGHTS = [
-  "≤1m66",
-  "1m68–1m70",
-  "1m71–1m75",
-  "1m76–1m78",
-  "1m80–1m87",
-] as const;
-
-const SIZE_FINDER_CHART = {
-  "ôm": {
-    weightRanges: ["≤53 kg", "54–58 kg", "59–61 kg", "62–64 kg", "65–69 kg", "70–74 kg", "75–81 kg", "82–86 kg"] as const,
-    matrix: [
-      ["S", "S", "S", "M", "M", "L", "XL", "XXL"],
-      ["S", "S", "M", "M", "M", "L", "XL", "XXL"],
-      ["S", "M", "M", "M", "M", "L", "XL", "XXL"],
-      ["M", "M", "M", "L", "L", "XL", "XL", "XXL"],
-      ["M", "L", "L", "L", "XL", "XL", "XXL", "XXL"],
-    ] as const,
-  },
-  "thoải mái": {
-    weightRanges: ["≤53kg", "54–60kg", "61–63kg", "64–66kg", "67–73kg", "74–78kg", "79–85kg"] as const,
-    matrix: [
-      ["S", "M", "M", "L", "XL", "XXL", "XXL"],
-      ["S", "M", "M", "L", "L", "XL", "XXL"],
-      ["S", "M", "M", "L", "L", "XL", "XXL"],
-      ["M", "M", "L", "L", "XL", "XL", "XXL"],
-      ["M", "L", "L", "XL", "XL", "XL", "XXL"],
-    ] as const,
-  },
-} as const;
-
-type SizeFinderFit = keyof typeof SIZE_FINDER_CHART;
+type SizeFinderFit = SizeFinderFitKey;
 type SizeFinderView = "finder" | "chart";
 type ProductInfoTab = "details" | "shipping" | "exchange";
-
-function resolveSizeRecommendation(
-  fit: SizeFinderFit,
-  height: string,
-  weight: string,
-) {
-  const heightIndex = SIZE_FINDER_HEIGHTS.findIndex((item) => item === height);
-  const weightIndex = SIZE_FINDER_CHART[fit].weightRanges.findIndex((item) => item === weight);
-
-  if (heightIndex < 0 || weightIndex < 0) {
-    return null;
-  }
-
-  return SIZE_FINDER_CHART[fit].matrix[heightIndex]?.[weightIndex] || null;
-}
 
 const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
   Details:
@@ -461,15 +423,23 @@ export default function ProductDetailClient({
   initialColorParam,
   initialVariantId = 0,
   product,
+  sizeFinderConfig,
   suggestedProducts = [],
 }: {
   initialColorParam?: string;
   initialVariantId?: number;
   product: Product;
+  sizeFinderConfig?: SizeFinderConfig;
   suggestedProducts?: Product[];
 }) {
   const router = useRouter();
   const { t } = useLayout();
+  // Size finder config comes from the admin (Site Settings -> Size finder); fall
+  // back to the built-in default so the finder always works.
+  const sizeFinder = useMemo(
+    () => normalizeSizeFinder(sizeFinderConfig ?? DEFAULT_SIZE_FINDER),
+    [sizeFinderConfig],
+  );
   const colors = getProductColors(product);
   const sizes = getProductSizes(product);
   const sizeSelectorStyle = getSizeSelectorStyle(product);
@@ -683,7 +653,9 @@ export default function ProductDetailClient({
   };
 
   const handleFindSize = () => {
-    setRecommendedSize(resolveSizeRecommendation(activeSizeFinderFit, selectedHeight, selectedWeight));
+    setRecommendedSize(
+      resolveSizeFromFinder(sizeFinder, activeSizeFinderFit, selectedHeight, selectedWeight),
+    );
   };
 
   const closeSizeFinder = () => {
@@ -1486,7 +1458,7 @@ export default function ProductDetailClient({
                       current === "height" ? null : "height",
                     )
                   }
-                  options={SIZE_FINDER_HEIGHTS.map((option) => ({
+                  options={sizeFinder.heights.map((option) => ({
                     label: option,
                     value: option,
                   }))}
@@ -1506,10 +1478,12 @@ export default function ProductDetailClient({
                       current === "weight" ? null : "weight",
                     )
                   }
-                  options={SIZE_FINDER_CHART[activeSizeFinderFit].weightRanges.map((option) => ({
-                    label: option,
-                    value: option,
-                  }))}
+                  options={(getSizeFinderFit(sizeFinder, activeSizeFinderFit)?.weights ?? []).map(
+                    (option) => ({
+                      label: option,
+                      value: option,
+                    }),
+                  )}
                   placeholder="chọn cân nặng"
                   value={selectedWeight}
                 />
@@ -1535,24 +1509,24 @@ export default function ProductDetailClient({
               </div>
             ) : (
               <div className="product-detail__size-chart">
-                {(Object.keys(SIZE_FINDER_CHART) as SizeFinderFit[]).map((fit) => (
-                  <div className="product-detail__size-chart-block" key={fit}>
-                    <h3>{fit}</h3>
+                {sizeFinder.fits.map((fit) => (
+                  <div className="product-detail__size-chart-block" key={fit.key}>
+                    <h3>{fit.label || fit.key}</h3>
                     <div className="product-detail__size-chart-scroll">
                       <table>
                         <thead>
                           <tr>
                             <th>chiều cao \\ cân nặng</th>
-                            {SIZE_FINDER_CHART[fit].weightRanges.map((weight) => (
+                            {fit.weights.map((weight) => (
                               <th key={weight}>{weight}</th>
                             ))}
                           </tr>
                         </thead>
                         <tbody>
-                          {SIZE_FINDER_HEIGHTS.map((height, rowIndex) => (
+                          {sizeFinder.heights.map((height, rowIndex) => (
                             <tr key={height}>
                               <th>{height}</th>
-                              {SIZE_FINDER_CHART[fit].matrix[rowIndex].map((size, colIndex) => (
+                              {(fit.matrix[rowIndex] ?? []).map((size, colIndex) => (
                                 <td key={`${height}-${colIndex}`}>{size}</td>
                               ))}
                             </tr>
