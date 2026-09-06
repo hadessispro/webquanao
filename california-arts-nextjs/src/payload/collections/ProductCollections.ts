@@ -67,11 +67,12 @@ export const ProductCollections: CollectionConfig = {
     {
       name: 'viewAllSections',
       type: 'array',
-      label: 'View All sections',
+      label: '21 Thanh phân mục dính (Sticky Bars - Xem tất cả)',
       defaultValue: VIEW_ALL_SECTION_BAR_DEFAULTS,
       admin: {
-        condition: (_, siblingData) => siblingData?.handle === 'shop-all',
-        description: 'Controls the sticky category bars on /collections/shop-all. Handles must match the built-in section handles.',
+        condition: (data, siblingData) => (data?.handle || siblingData?.handle) === 'shop-all',
+        description: 'Cấu hình 21 thanh phân mục dính (sticky category bars) cho trang Xem tất cả (/collections/shop-all). Bạn có thể đổi tiêu đề tiếng Việt và mô tả của từng danh mục tại đây.',
+        initCollapsed: true,
       },
       fields: [
         {
@@ -79,32 +80,33 @@ export const ProductCollections: CollectionConfig = {
           type: 'text',
           required: true,
           admin: {
-            description: 'Example: jeans, coats, jackets.',
+            description: 'Mã danh mục (ví dụ: coats, jackets, jeans, accessories).',
           },
         },
         {
           name: 'title',
           type: 'text',
+          label: 'Tiêu đề tiếng Anh',
         },
         {
           name: 'titleVi',
           type: 'text',
-          label: 'Vietnamese title',
+          label: 'Tiêu đề tiếng Việt',
         },
         {
           name: 'barDescription',
           type: 'textarea',
-          label: 'Bar description',
+          label: 'Mô tả ngắn thanh dính (Bar description)',
           admin: {
-            description: 'Plain text rendered in the sticky bar at 10px.',
+            description: 'Dòng chữ mô tả phong cách hiển thị trên thanh dính.',
           },
         },
         {
           name: 'barDescriptionHtml',
           type: 'textarea',
-          label: 'Bar description HTML',
+          label: 'Mô tả HTML (tùy chọn)',
           admin: {
-            description: 'Optional HTML override. Leave blank unless this bar needs markup.',
+            description: 'Để trống nếu không cần định dạng HTML đặc biệt.',
           },
         },
       ],
