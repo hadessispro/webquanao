@@ -58,11 +58,19 @@ function ensureAbsoluteUrl(src?: string): string | undefined {
 function mediaToImage(media: MediaLike, fallbackAlt?: string): StorefrontImage | undefined {
   if (!media || typeof media === 'number' || typeof media === 'string') return undefined
 
-  const src = ensureAbsoluteUrl(media.url || media.sourceUrl || (media.filename ? `/media/${media.filename}` : undefined))
-  if (!src) return undefined
+  // If the media has a static local source (e.g. /media/dien-logo-header.png), prefer it
+  // directly over dynamic Payload routes for reliability and performance.
+  let src =
+    (media.sourceUrl && media.sourceUrl.startsWith('/media/') ? media.sourceUrl : undefined) ||
+    media.url ||
+    media.sourceUrl ||
+    (media.filename ? `/media/${media.filename}` : undefined)
+
+  const finalSrc = ensureAbsoluteUrl(src)
+  if (!finalSrc) return undefined
 
   return {
-    src,
+    src: finalSrc,
     alt: media.alt || fallbackAlt,
   }
 }

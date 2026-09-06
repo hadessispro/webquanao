@@ -566,7 +566,16 @@ export default function Header({ header }: HeaderProps) {
 
                   <h1 className="c_header-logo site-header__brand">
                     <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
-                      <img src={logoSrc} alt={logoAlt} />
+                      <img
+                        src={logoSrc}
+                        alt={logoAlt}
+                        onError={(e) => {
+                          const target = e.currentTarget
+                          if (!target.src.endsWith(BRAND_LOGO_SRC)) {
+                            target.src = BRAND_LOGO_SRC
+                          }
+                        }}
+                      />
                     </SmartLink>
                   </h1>
 
@@ -626,7 +635,16 @@ export default function Header({ header }: HeaderProps) {
 
                   <h1 className="site-header__mobile-brand">
                     <SmartLink href={header.logoHref} className="site-header__logo-link logo-image break-all">
-                      <img src={logoSrc} alt={logoAlt} />
+                      <img
+                        src={logoSrc}
+                        alt={logoAlt}
+                        onError={(e) => {
+                          const target = e.currentTarget
+                          if (!target.src.endsWith(BRAND_LOGO_SRC)) {
+                            target.src = BRAND_LOGO_SRC
+                          }
+                        }}
+                      />
                     </SmartLink>
                   </h1>
 

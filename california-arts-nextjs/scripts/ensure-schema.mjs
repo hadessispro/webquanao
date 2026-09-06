@@ -105,4 +105,23 @@ if (await tableExists('site_settings')) {
   }
 }
 
+// Ensure essential static media files (logos, brand assets) exist in media/ for Payload uploads
+import('node:fs').then(({ copyFileSync, mkdirSync, readdirSync, statSync }) => {
+  import('node:path').then(({ join }) => {
+    const publicMediaDir = 'public/media'
+    const mediaDir = 'media'
+    if (existsSync(publicMediaDir)) {
+      if (!existsSync(mediaDir)) mkdirSync(mediaDir, { recursive: true })
+      for (const f of readdirSync(publicMediaDir)) {
+        const src = join(publicMediaDir, f)
+        const dst = join(mediaDir, f)
+        if (statSync(src).isFile() && !existsSync(dst)) {
+          copyFileSync(src, dst)
+          console.log(`[ensure-schema] synced ${f} to media/`)
+        }
+      }
+    }
+  })
+})
+
 console.log(`[ensure-schema] done (${added} column(s) added)`) 
