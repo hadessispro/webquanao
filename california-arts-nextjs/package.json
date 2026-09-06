@@ -10,7 +10,9 @@
     "migrate:design-system": "tsx scripts/migrate-design-system.ts",
     "seed:shopify": "tsx scripts/seed-products.ts",
     "seed:pages": "tsx scripts/seed-pages.ts",
-    "seed:our-story": "tsx scripts/seed-our-story.ts"
+    "seed:our-story": "tsx scripts/seed-our-story.ts",
+    "seed:shop-all": "tsx scripts/seed-shop-all.ts",
+    "ensure-schema": "node scripts/ensure-schema.mjs"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "^3.83.0",

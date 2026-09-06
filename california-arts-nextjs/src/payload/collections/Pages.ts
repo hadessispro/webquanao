@@ -13,6 +13,36 @@ export const Pages: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    afterChange: [
+      async ({ doc }) => {
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+          if (doc?.slug) {
+            revalidatePath(`/pages/${doc.slug}`)
+            revalidatePath(`/${doc.slug}`)
+          }
+        } catch (err) {
+          console.error('Failed to revalidate page paths:', err)
+        }
+      },
+    ],
+    afterDelete: [
+      async ({ doc }) => {
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+          if (doc?.slug) {
+            revalidatePath(`/pages/${doc.slug}`)
+            revalidatePath(`/${doc.slug}`)
+          }
+        } catch (err) {
+          console.error('Failed to revalidate deleted page paths:', err)
+        }
+      },
+    ],
+  },
   fields: [
     {
       name: 'shopifyId',

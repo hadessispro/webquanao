@@ -70,7 +70,7 @@ export default buildConfig({
     ...(process.env.PAYLOAD_DISABLE_PUSH === 'true' ? { push: false } : {}),
     busyTimeout: 5000,
     client: {
-      url: process.env.DATABASE_URI || 'file:./database.db',
+      url: process.env.DATABASE_URI || `file:${path.resolve(dirname, 'database.db')}`,
     },
   }),
   sharp,

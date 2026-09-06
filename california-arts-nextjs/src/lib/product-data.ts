@@ -577,7 +577,8 @@ async function loadAllStorefrontProducts(): Promise<Product[]> {
         normalizePayloadProduct(doc, collectionHandleById),
       )
     }
-  } catch {
+  } catch (err) {
+    console.error('[product-data] loadAllStorefrontProducts error:', err)
     // Keep storefront usable until Payload is installed, migrated, and seeded.
   }
 
@@ -629,7 +630,8 @@ export async function getStorefrontProductByHandle(handle: string): Promise<Prod
         makeCollectionHandleMap(collectionResult.docs as PayloadCollectionDoc[]),
       )
     }
-  } catch {
+  } catch (err) {
+    console.error('[product-data] getStorefrontProductByHandle error:', err)
     // Fall through to JSON fallback.
   }
 

@@ -185,12 +185,34 @@ function StoryPage({ sections }: { sections: StorySection[] }) {
 }
 
 export default async function OurStoryPage() {
-  // Editable in the admin: Pages -> "our story" -> Sections (Image with text /
-  // Text section). When section blocks exist they drive the page; otherwise the
-  // built-in Vietnamese content is shown so the page is never empty or stale.
+  // Editable in the admin: Pages -> "our story".
+  // 1. If section blocks exist (Image with text / Text section), they drive the page.
+  // 2. If no section blocks, but the user entered content in the RichText "Content"
+  //    or "Content Html" field, render that content directly.
+  // 3. Otherwise, fallback to the built-in Vietnamese story so the page is never blank.
   const page = await getPageBySlug('our-story')
   const cmsSections = Array.isArray(page?.sections) ? blocksToSections(page.sections) : []
-  const sections = cmsSections.length > 0 ? cmsSections : fallbackSections
+
+  let sections = cmsSections
+  if (sections.length === 0) {
+    const rawContentHtml = page?.contentHtml || richTextToHtml(page?.content)
+    if (rawContentHtml && rawContentHtml.trim()) {
+      sections = [
+        {
+          key: 'main-content',
+          title:
+            page?.title &&
+            page.title.toLowerCase() !== 'our story' &&
+            page.title.toLowerCase() !== 'về điển'
+              ? page.title
+              : '',
+          bodyHtml: rawContentHtml,
+        },
+      ]
+    } else {
+      sections = fallbackSections
+    }
+  }
 
   return <StoryPage sections={sections} />
 }

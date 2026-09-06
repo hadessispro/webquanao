@@ -75,4 +75,34 @@ for (const [table, columns] of Object.entries(REQUIRED_COLUMNS)) {
   }
 }
 
+if (await tableExists('site_settings')) {
+  const r = await client.execute('SELECT count(*) as count FROM site_settings')
+  if (Number(r.rows[0].count) === 0) {
+    await client.execute(`
+      INSERT INTO site_settings (
+        site_name,
+        site_description,
+        currency,
+        currency_symbol,
+        country,
+        free_shipping_threshold,
+        default_product_image_behavior,
+        created_at,
+        updated_at
+      ) VALUES (
+        'Điển',
+        'Điển. Accessible design by producing less & building better.',
+        'VND',
+        '₫',
+        'Vietnam',
+        6578950,
+        'payload',
+        datetime('now'),
+        datetime('now')
+      )
+    `)
+    console.log('[ensure-schema] initialized default site_settings row')
+  }
+}
+
 console.log(`[ensure-schema] done (${added} column(s) added)`) 
