@@ -16,6 +16,8 @@ type PayloadViewAllSection = {
   handle?: string
   title?: string
   titleVi?: string
+  collection?: number | string | { id?: number | string; handle?: string }
+  products?: Array<number | string | { id?: number | string; handle?: string }>
 }
 
 type PayloadViewAllCollection = {
@@ -26,6 +28,8 @@ type ViewAllSectionOverride = {
   descriptionHtml?: string
   title?: string
   titleVi?: string
+  collectionHandle?: string
+  productIdsOrHandles?: Array<string | number>
 }
 
 type ShopAllSectionDefinition = {
@@ -283,7 +287,7 @@ async function getViewAllSectionOverrides() {
     const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'product-collections',
-      depth: 0,
+      depth: 1,
       limit: 1,
       where: {
         handle: {
@@ -299,10 +303,29 @@ async function getViewAllSectionOverrides() {
       const handle = section.handle?.trim()
       if (!handle) return
 
+      let collectionHandle: string | undefined
+      if (typeof section.collection === 'object' && section.collection !== null && 'handle' in section.collection) {
+        collectionHandle = section.collection.handle
+      }
+
+      const productIdsOrHandles: Array<string | number> = []
+      if (Array.isArray(section.products)) {
+        section.products.forEach((p) => {
+          if (typeof p === 'object' && p !== null) {
+            if ('handle' in p && p.handle) productIdsOrHandles.push(p.handle)
+            else if ('id' in p && p.id) productIdsOrHandles.push(p.id)
+          } else if (typeof p === 'string' || typeof p === 'number') {
+            productIdsOrHandles.push(p)
+          }
+        })
+      }
+
       overrides.set(handle, {
         descriptionHtml: section.barDescriptionHtml?.trim() || plainTextToParagraphHtml(section.barDescription),
         title: section.title?.trim(),
         titleVi: section.titleVi?.trim(),
+        collectionHandle,
+        productIdsOrHandles,
       })
     })
   } catch {
@@ -397,12 +420,28 @@ export async function getStorefrontShopAllSections(): Promise<StorefrontShopAllS
       stripLeadingNumber(definition.titleVi) ||
       baseTitle
 
+    let sectionProducts: Product[] = []
+    if (override?.productIdsOrHandles?.length) {
+      const matched = override.productIdsOrHandles
+        .map((target) => allProducts.find((p) => String(p.handle) === String(target) || String(p.id) === String(target)))
+        .filter((p): p is Product => Boolean(p))
+      sectionProducts = uniqueProducts(matched)
+    } else if (override?.collectionHandle) {
+      sectionProducts = allProducts.filter((product) =>
+        hasCollectionHandle(product, [override.collectionHandle!]),
+      )
+    }
+
+    if (sectionProducts.length === 0) {
+      sectionProducts = pickSectionProducts(allProducts, definition)
+    }
+
     return {
       descriptionHtml: override?.descriptionHtml,
       handle: definition.handle,
       baseTitle,
       baseTitleVi,
-      products: pickSectionProducts(allProducts, definition),
+      products: sectionProducts,
     }
   }).filter((section) => section.products.length > 0)
 
