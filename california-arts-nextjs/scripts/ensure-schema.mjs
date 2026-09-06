@@ -43,6 +43,9 @@ const REQUIRED_COLUMNS = {
     { name: 'home_hero_flip_horizontal', ddl: 'home_hero_flip_horizontal INTEGER DEFAULT false' },
     { name: 'size_finder', ddl: 'size_finder TEXT' },
   ],
+  product_collections_view_all_sections: [
+    { name: 'collection_id', ddl: 'collection_id INTEGER' },
+  ],
 }
 
 async function tableExists(table) {
