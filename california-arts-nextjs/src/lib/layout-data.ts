@@ -617,6 +617,18 @@ export async function getHeaderData(): Promise<HeaderData> {
   }
 }
 
+
+function normalizeSocialLinks(socialLinks: unknown) {
+  if (!Array.isArray(socialLinks) || socialLinks.length === 0) return undefined
+
+  return socialLinks
+    .filter((s) => s && typeof s === 'object' && typeof s.url === 'string' && s.url.trim())
+    .map((s) => ({
+      platform: typeof s.platform === 'string' ? s.platform.trim() : 'instagram',
+      url: s.url.trim(),
+    }))
+}
+
 export async function getFooterData(): Promise<FooterData> {
   try {
     const payload = await getPayloadClient()
@@ -630,6 +642,7 @@ export async function getFooterData(): Promise<FooterData> {
       newsletter?: Partial<FooterData['newsletter']>
       copyright?: string
       locationText?: string
+      socialLinks?: unknown
     }
 
     return {
@@ -637,7 +650,7 @@ export async function getFooterData(): Promise<FooterData> {
         mediaToImage(footer.desktopLogo, 'điển') || DEFAULT_FOOTER.desktopLogo,
       mobileLogo:
         mediaToImage(footer.mobileLogo, 'điển') || DEFAULT_FOOTER.mobileLogo,
-      columns: DEFAULT_FOOTER.columns,
+      columns: normalizeFooterColumns(footer.columns),
       newsletter: {
         title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
         titleVi:
@@ -673,6 +686,7 @@ export async function getFooterData(): Promise<FooterData> {
       },
       copyright: footer.copyright || DEFAULT_FOOTER.copyright,
       locationText: footer.locationText || DEFAULT_FOOTER.locationText,
+      socialLinks: normalizeSocialLinks(footer.socialLinks),
     }
   } catch {
     return DEFAULT_FOOTER

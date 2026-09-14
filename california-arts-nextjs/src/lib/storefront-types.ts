@@ -75,6 +75,11 @@ export interface FooterColumn {
   links: FooterLink[]
 }
 
+export interface FooterSocialLink {
+  platform: string
+  url: string
+}
+
 export interface FooterData {
   desktopLogo?: StorefrontImage
   mobileLogo?: StorefrontImage
@@ -94,6 +99,7 @@ export interface FooterData {
   }
   copyright: string
   locationText: string
+  socialLinks?: FooterSocialLink[]
 }
 
 export interface HomeHeroData {

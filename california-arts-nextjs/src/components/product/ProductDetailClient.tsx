@@ -572,7 +572,9 @@ export default function ProductDetailClient({
   const priceNum = parseInt(activePriceVariant?.price || "0", 10);
   const compareNum = parseInt(activePriceVariant?.compare_at_price || "0", 10);
   const cmpPrice =
-    compareNum > priceNum ? formatPrice(activePriceVariant?.compare_at_price) : null;
+    compareNum > priceNum
+      ? formatPrice(activePriceVariant?.compare_at_price || undefined)
+      : null;
   const selectedColorLabel = selColor ? getColorLabel(product, selColor) : "";
   const displayTitle = selectedColorLabel ? `${product.title} (${selectedColorLabel})` : product.title;
 
