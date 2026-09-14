@@ -8,6 +8,7 @@ import {
   getFooterData,
   getHeaderData,
   getNewsletterPopupData,
+  getSiteMetadata,
 } from '@/lib/layout-data'
 import type { DesignSystemData, StorefrontFont } from '@/lib/storefront-types'
 
@@ -231,11 +232,12 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [header, footer, newsletterPopup, designSystem] = await Promise.all([
+  const [header, footer, newsletterPopup, designSystem, siteMetadata] = await Promise.all([
     getHeaderData(),
     getFooterData(),
     getNewsletterPopupData(),
     getDesignSystemData(),
+    getSiteMetadata(),
   ])
 
   return (
@@ -245,6 +247,15 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <link rel="icon" href="/icon.png?v=20260701b" type="image/png" />
         <link rel="shortcut icon" href="/icon.png?v=20260701b" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-icon.png?v=20260701b" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={siteMetadata.title} />
+        <meta property="og:title" content={siteMetadata.title} />
+        <meta property="og:description" content={siteMetadata.description} />
+        {siteMetadata.image ? <meta property="og:image" content={siteMetadata.image} /> : null}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={siteMetadata.title} />
+        <meta name="twitter:description" content={siteMetadata.description} />
+        {siteMetadata.image ? <meta name="twitter:image" content={siteMetadata.image} /> : null}
         <link rel="stylesheet" href="/css/theme.min.css?v=20260517b" />
         <link rel="stylesheet" href="/css/component.css?v=20260517b" />
         <style dangerouslySetInnerHTML={{ __html: createDesignSystemStyle(designSystem) }} />
