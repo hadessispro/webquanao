@@ -115,6 +115,158 @@ export function normalizeSizeFinder(raw: unknown): SizeFinderConfig {
   };
 }
 
+export interface ProductSizeFinderRule {
+  height?: string;
+  weight?: string;
+  fit?: string;
+  size?: string;
+}
+
+export interface ProductSizeFinderConfig {
+  mode?: "inherit" | "custom" | "disabled";
+  fitPreference?: "auto" | "both" | "single" | "none";
+  customHeights?: string;
+  customWeights?: string;
+  customWeightsComfort?: string;
+  sizeRules?: ProductSizeFinderRule[];
+  customMatrixText?: string;
+}
+
+export function parseLines(raw?: string): string[] {
+  if (!raw) return [];
+  return raw
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+// Convert a product's custom size finder settings into a SizeFinderConfig matrix,
+// or fallback to the site-wide default.
+export function buildProductCustomFinder(
+  productConfig: ProductSizeFinderConfig,
+  fallbackConfig: SizeFinderConfig = DEFAULT_SIZE_FINDER,
+): { config: SizeFinderConfig; showFitPreference: boolean; disabled: boolean } {
+  const mode = productConfig.mode || "inherit";
+  if (mode === "disabled") {
+    return {
+      config: fallbackConfig,
+      showFitPreference: false,
+      disabled: true,
+    };
+  }
+
+  if (mode === "inherit") {
+    return {
+      config: fallbackConfig,
+      showFitPreference: true,
+      disabled: false,
+    };
+  }
+
+  // mode === 'custom'
+  const heights = parseLines(productConfig.customHeights);
+  const resolvedHeights = heights.length > 0 ? heights : fallbackConfig.heights;
+
+  const weightsStandard = parseLines(productConfig.customWeights);
+  const fallbackFitStandard = fallbackConfig.fits[0];
+  const resolvedWeightsStandard =
+    weightsStandard.length > 0
+      ? weightsStandard
+      : fallbackFitStandard?.weights || [];
+
+  const weightsComfort = parseLines(productConfig.customWeightsComfort);
+  const fallbackFitComfort = fallbackConfig.fits[1] || fallbackFitStandard;
+  const resolvedWeightsComfort =
+    weightsComfort.length > 0
+      ? weightsComfort
+      : weightsStandard.length > 0
+        ? weightsStandard
+        : fallbackFitComfort?.weights || [];
+
+  const fitPref = productConfig.fitPreference || "auto";
+  const hasBothFits = fitPref === "both";
+  const isSingleFit = fitPref === "single" || fitPref === "none";
+
+  // Build matrix lookup from sizeRules if provided
+  const rules = Array.isArray(productConfig.sizeRules) ? productConfig.sizeRules : [];
+
+  // Helper to resolve size for a cell
+  const getRuleSize = (h: string, w: string, fitKey: string): string => {
+    // 1. exact match
+    const match = rules.find(
+      (r) =>
+        r.size &&
+        r.height?.trim() === h.trim() &&
+        r.weight?.trim() === w.trim() &&
+        (r.fit === "all" || !r.fit || r.fit === fitKey),
+    );
+    if (match?.size) return match.size.trim();
+
+    // 2. parse quick matrix text if present
+    // Format: height | size1, size2, size3... or tab/comma separated
+    if (productConfig.customMatrixText) {
+      const lines = parseLines(productConfig.customMatrixText);
+      for (const line of lines) {
+        if (line.toLowerCase().includes(h.toLowerCase())) {
+          const parts = line.split(/[|,;\t]/).map((p) => p.trim());
+          // remove the height part if it matched
+          const sizes = parts.filter((p) => p !== h && p.length > 0);
+          const wIdx = (fitKey === "thoải mái" ? resolvedWeightsComfort : resolvedWeightsStandard).indexOf(w);
+          if (wIdx >= 0 && sizes[wIdx]) {
+            return sizes[wIdx];
+          }
+        }
+      }
+    }
+
+    return "";
+  };
+
+  const fits: SizeFinderFit[] = [];
+
+  if (isSingleFit) {
+    const matrix = resolvedHeights.map((h) =>
+      resolvedWeightsStandard.map((w) => getRuleSize(h, w, "tiêu chuẩn")),
+    );
+    fits.push({
+      key: "tiêu chuẩn",
+      label: "tiêu chuẩn",
+      weights: resolvedWeightsStandard,
+      matrix,
+    });
+  } else {
+    // Has both fits or auto
+    const matrixOm = resolvedHeights.map((h) =>
+      resolvedWeightsStandard.map((w) => getRuleSize(h, w, "ôm")),
+    );
+    fits.push({
+      key: "ôm",
+      label: "ôm",
+      weights: resolvedWeightsStandard,
+      matrix: matrixOm,
+    });
+
+    const matrixComfort = resolvedHeights.map((h) =>
+      resolvedWeightsComfort.map((w) => getRuleSize(h, w, "thoải mái")),
+    );
+    fits.push({
+      key: "thoải mái",
+      label: "thoải mái",
+      weights: resolvedWeightsComfort,
+      matrix: matrixComfort,
+    });
+  }
+
+  return {
+    config: {
+      heights: resolvedHeights,
+      fits,
+    },
+    showFitPreference: hasBothFits || (fitPref === "auto" && !isSingleFit),
+    disabled: false,
+  };
+}
+
 export function getSizeFinderFit(
   config: SizeFinderConfig,
   key: string,
@@ -135,3 +287,4 @@ export function resolveSizeFromFinder(
   if (heightIndex < 0 || weightIndex < 0) return null;
   return fit.matrix[heightIndex]?.[weightIndex] || null;
 }
+

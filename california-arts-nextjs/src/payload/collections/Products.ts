@@ -490,6 +490,124 @@ export const Products: CollectionConfig = {
           'Controls storefront size picker style. Auto follows the California Arts template: text labels with underline on the active size.',
       },
     },
+    {
+      name: 'sizeFinder',
+      type: 'group',
+      label: 'Công cụ "Tìm size" (Size Finder)',
+      admin: {
+        description:
+          'Cấu hình gợi ý size riêng cho sản phẩm này. Có thể dùng chung từ Site Settings, hoặc tùy chỉnh format size (S/M/L hoặc 28/30/32), dáng Ôm / Thoải mái và bảng gợi ý.',
+      },
+      fields: [
+        {
+          name: 'mode',
+          type: 'select',
+          label: 'Chế độ hoạt động',
+          defaultValue: 'inherit',
+          options: [
+            { label: 'Dùng cấu hình chung từ Cài đặt website (Mặc định)', value: 'inherit' },
+            { label: 'Tùy chỉnh riêng cho sản phẩm này', value: 'custom' },
+            { label: 'Tắt tính năng tìm size cho sản phẩm này', value: 'disabled' },
+          ],
+        },
+        {
+          name: 'fitPreference',
+          type: 'select',
+          label: 'Lựa chọn dáng sản phẩm (Fit)',
+          defaultValue: 'auto',
+          admin: {
+            condition: (data, siblingData) => siblingData?.mode === 'custom',
+            description:
+              'Chọn cách hiển thị nút chọn dáng: Tự động (Áo có Ôm/Thoải mái; Quần chỉ có 1 dáng), Có cả 2 lựa chọn, hoặc Chỉ 1 dáng chung.',
+          },
+          options: [
+            { label: 'Tự động (Áo có Ôm/Thoải mái; Quần chỉ 1 dáng)', value: 'auto' },
+            { label: 'Có cả 2 lựa chọn: Ôm & Thoải mái', value: 'both' },
+            { label: 'Chỉ có 1 dáng chung (Không hiện nút chọn dáng)', value: 'single' },
+          ],
+        },
+        {
+          name: 'customHeights',
+          type: 'textarea',
+          label: 'Danh sách chiều cao (mỗi dòng 1 mức)',
+          admin: {
+            condition: (data, siblingData) => siblingData?.mode === 'custom',
+            description:
+              'Ví dụ:\n≤1m66\n1m68–1m70\n1m71–1m75\n1m76–1m78\n1m80–1m87\n(Để trống sẽ lấy danh sách chiều cao mặc định)',
+          },
+        },
+        {
+          name: 'customWeights',
+          type: 'textarea',
+          label: 'Danh sách cân nặng (mỗi dòng 1 mức)',
+          admin: {
+            condition: (data, siblingData) => siblingData?.mode === 'custom',
+            description:
+              'Ví dụ:\n≤53 kg\n54–58 kg\n59–61 kg\n62–64 kg\n65–69 kg\n70–74 kg\n75–81 kg\n82–86 kg\n(Để trống sẽ lấy danh sách cân nặng mặc định)',
+          },
+        },
+        {
+          name: 'customWeightsComfort',
+          type: 'textarea',
+          label: 'Danh sách cân nặng cho dáng Thoải mái (nếu khác)',
+          admin: {
+            condition: (data, siblingData) =>
+              siblingData?.mode === 'custom' && siblingData?.fitPreference !== 'single',
+            description:
+              'Chỉ cần nhập nếu dáng Thoải mái có các mốc cân nặng khác với dáng Ôm/Chung ở trên.',
+          },
+        },
+        {
+          name: 'sizeRules',
+          type: 'array',
+          label: 'Quy tắc gợi ý size (Thêm từng dòng trực tiếp)',
+          admin: {
+            condition: (data, siblingData) => siblingData?.mode === 'custom',
+            description:
+              'Thêm quy tắc: Chiều cao + Cân nặng + (Dáng) => Size gợi ý (S, M, L, XL hoặc 28, 29, 30, 31, 32...). Form thân thiện, không cần viết JSON!',
+          },
+          fields: [
+            {
+              name: 'height',
+              type: 'text',
+              label: 'Chiều cao (VD: 1m71–1m75)',
+            },
+            {
+              name: 'weight',
+              type: 'text',
+              label: 'Cân nặng (VD: 62–64 kg)',
+            },
+            {
+              name: 'fit',
+              type: 'select',
+              label: 'Dáng áp dụng',
+              defaultValue: 'all',
+              options: [
+                { label: 'Tất cả / Dáng chung', value: 'all' },
+                { label: 'Ôm', value: 'ôm' },
+                { label: 'Thoải mái', value: 'thoải mái' },
+              ],
+            },
+            {
+              name: 'size',
+              type: 'text',
+              label: 'Size gợi ý (VD: S, M, L hoặc 28, 29, 30, 31, 32...)',
+              required: true,
+            },
+          ],
+        },
+        {
+          name: 'customMatrixText',
+          type: 'textarea',
+          label: 'Hoặc dán nhanh ma trận size (Tùy chọn phụ trợ)',
+          admin: {
+            condition: (data, siblingData) => siblingData?.mode === 'custom',
+            description:
+              'Tùy chọn: Thay vì thêm từng dòng ở trên, bạn có thể dán nhanh từng hàng theo mẫu:\n≤1m66 | 28, 28, 29, 30, 31\n1m68–1m70 | 28, 29, 30, 31, 32',
+          },
+        },
+      ],
+    },
     // Legacy product options imported from Shopify.
     {
       name: 'options',

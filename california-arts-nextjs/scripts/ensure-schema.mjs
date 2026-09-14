@@ -37,6 +37,12 @@ const REQUIRED_COLUMNS = {
     { name: 'info_tabs_details', ddl: 'info_tabs_details TEXT' },
     { name: 'info_tabs_shipping', ddl: 'info_tabs_shipping TEXT' },
     { name: 'info_tabs_exchange', ddl: 'info_tabs_exchange TEXT' },
+    { name: 'size_finder_mode', ddl: "size_finder_mode TEXT DEFAULT 'inherit'" },
+    { name: 'size_finder_fit_preference', ddl: "size_finder_fit_preference TEXT DEFAULT 'auto'" },
+    { name: 'size_finder_custom_heights', ddl: 'size_finder_custom_heights TEXT' },
+    { name: 'size_finder_custom_weights', ddl: 'size_finder_custom_weights TEXT' },
+    { name: 'size_finder_custom_weights_comfort', ddl: 'size_finder_custom_weights_comfort TEXT' },
+    { name: 'size_finder_custom_matrix_text', ddl: 'size_finder_custom_matrix_text TEXT' },
   ],
   products_videos: [{ name: 'color', ddl: 'color TEXT' }],
   site_settings: [
@@ -85,6 +91,22 @@ for (const [table, columns] of Object.entries(REQUIRED_COLUMNS)) {
     console.log(`[ensure-schema] added ${table}.${col.name}`)
     added += 1
   }
+}
+
+if (await tableExists('products') && !(await tableExists('products_size_finder_size_rules'))) {
+  await client.execute(`
+    CREATE TABLE IF NOT EXISTS products_size_finder_size_rules (
+      _order INTEGER NOT NULL,
+      _parent_id INTEGER NOT NULL,
+      id TEXT PRIMARY KEY,
+      height TEXT,
+      weight TEXT,
+      fit TEXT DEFAULT 'all',
+      size TEXT,
+      FOREIGN KEY (_parent_id) REFERENCES products(id) ON DELETE CASCADE
+    )
+  `)
+  console.log('[ensure-schema] created table products_size_finder_size_rules')
 }
 
 if (await tableExists('site_settings')) {

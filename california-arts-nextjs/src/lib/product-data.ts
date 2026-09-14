@@ -113,6 +113,20 @@ type PayloadProductDoc = {
     title?: string
     description?: string
   }
+  sizeFinder?: {
+    mode?: 'inherit' | 'custom' | 'disabled'
+    fitPreference?: 'auto' | 'both' | 'single' | 'none'
+    customHeights?: string
+    customWeights?: string
+    customWeightsComfort?: string
+    sizeRules?: Array<{
+      height?: string
+      weight?: string
+      fit?: string
+      size?: string
+    }>
+    customMatrixText?: string
+  }
 }
 
 type PayloadCollectionDoc = {
@@ -563,6 +577,24 @@ export function normalizePayloadProduct(
     published_at: doc.publishedAt || '',
     created_at: doc.shopifyCreatedAt || doc.createdAt || '',
     updated_at: doc.shopifyUpdatedAt || doc.updatedAt || '',
+    sizeFinder: doc.sizeFinder
+      ? {
+          mode: doc.sizeFinder.mode,
+          fitPreference: doc.sizeFinder.fitPreference,
+          customHeights: doc.sizeFinder.customHeights,
+          customWeights: doc.sizeFinder.customWeights,
+          customWeightsComfort: doc.sizeFinder.customWeightsComfort,
+          sizeRules: Array.isArray(doc.sizeFinder.sizeRules)
+            ? doc.sizeFinder.sizeRules.map((rule) => ({
+                height: rule.height,
+                weight: rule.weight,
+                fit: rule.fit,
+                size: rule.size,
+              }))
+            : undefined,
+          customMatrixText: doc.sizeFinder.customMatrixText,
+        }
+      : undefined,
   }
 }
 

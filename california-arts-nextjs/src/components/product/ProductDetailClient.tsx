@@ -14,6 +14,7 @@ import {
 } from "@/lib/products";
 import {
   DEFAULT_SIZE_FINDER,
+  buildProductCustomFinder,
   getSizeFinderFit,
   normalizeSizeFinder,
   resolveSizeFromFinder,
@@ -379,7 +380,7 @@ function FinderDropdown({
   );
 }
 
-type SizeFinderFit = SizeFinderFitKey;
+type SizeFinderFit = string;
 type SizeFinderView = "finder" | "chart";
 type ProductInfoTab = "details" | "shipping" | "exchange";
 
@@ -434,12 +435,28 @@ export default function ProductDetailClient({
 }) {
   const router = useRouter();
   const { t } = useLayout();
-  // Size finder config comes from the admin (Site Settings -> Size finder); fall
-  // back to the built-in default so the finder always works.
-  const sizeFinder = useMemo(
+  // Size finder config comes from the admin: either customized on the product
+  // itself or inherited from Site Settings -> Size finder (with fallback to default).
+  const baseSizeFinder = useMemo(
     () => normalizeSizeFinder(sizeFinderConfig ?? DEFAULT_SIZE_FINDER),
     [sizeFinderConfig],
   );
+
+  const resolvedSizeFinder = useMemo(() => {
+    if (product.sizeFinder && product.sizeFinder.mode === "custom") {
+      return buildProductCustomFinder(product.sizeFinder, baseSizeFinder);
+    }
+    const disabled = product.sizeFinder?.mode === "disabled";
+    return {
+      config: baseSizeFinder,
+      showFitPreference: !isPantsProduct(product),
+      disabled,
+    };
+  }, [baseSizeFinder, product]);
+
+  const sizeFinder = resolvedSizeFinder.config;
+  const isSizeFinderDisabled = resolvedSizeFinder.disabled;
+  const showFitPreference = resolvedSizeFinder.showFitPreference;
   const colors = getProductColors(product);
   const sizes = getProductSizes(product);
   const sizeSelectorStyle = getSizeSelectorStyle(product);
@@ -535,8 +552,10 @@ export default function ProductDetailClient({
   );
   const lightboxItem =
     lightboxIndex !== null ? imageMediaItems[lightboxIndex] : undefined;
-  const showFitPreference = !isPantsProduct(product);
-  const activeSizeFinderFit = showFitPreference ? desiredFit : "thoải mái";
+  const availableFits = sizeFinder.fits;
+  const activeSizeFinderFit = showFitPreference
+    ? (availableFits.some((f) => f.key === desiredFit) ? desiredFit : (availableFits[0]?.key || "ôm"))
+    : (availableFits[availableFits.length - 1]?.key || availableFits[0]?.key || "thoải mái");
   const colorVariants = useMemo(
     () =>
       selColor
@@ -650,7 +669,7 @@ export default function ProductDetailClient({
 
   const openSizeFinder = (view: SizeFinderView) => {
     setOpenFinderDropdown(null);
-    setSizeFinderView(view);
+    setSizeFinderView(isSizeFinderDisabled ? "chart" : view);
     setIsSizeFinderOpen(true);
   };
 
@@ -1177,22 +1196,26 @@ export default function ProductDetailClient({
                     })}
                   </div>
                 </div>
-                <div className="product-detail__size-tools">
-                  <button
-                    className="product-detail__text-link"
-                    onClick={() => openSizeFinder("finder")}
-                    type="button"
-                  >
-                    gợi ý size?
-                  </button>
-                  <button
-                    className="product-detail__text-link product-detail__text-link--right"
-                    onClick={() => openSizeFinder("chart")}
-                    type="button"
-                  >
-                    bảng size
-                  </button>
-                </div>
+                {(!isSizeFinderDisabled || Boolean(product.sizeChartImage)) && (
+                  <div className="product-detail__size-tools">
+                    {!isSizeFinderDisabled && (
+                      <button
+                        className="product-detail__text-link"
+                        onClick={() => openSizeFinder("finder")}
+                        type="button"
+                      >
+                        gợi ý size?
+                      </button>
+                    )}
+                    <button
+                      className="product-detail__text-link product-detail__text-link--right"
+                      onClick={() => openSizeFinder("chart")}
+                      type="button"
+                    >
+                      bảng size
+                    </button>
+                  </div>
+                )}
               </>
             )}
 
@@ -1369,30 +1392,32 @@ export default function ProductDetailClient({
             >
               ×
             </button>
-            <div className="product-detail__modal-tabs">
-              <button
-                className={
-                  sizeFinderView === "finder"
-                    ? "product-detail__modal-tab product-detail__modal-tab--active"
-                    : "product-detail__modal-tab"
-                }
-                onClick={() => setSizeFinderView("finder")}
-                type="button"
-              >
-                tìm size
-              </button>
-              <button
-                className={
-                  sizeFinderView === "chart"
-                    ? "product-detail__modal-tab product-detail__modal-tab--active"
-                    : "product-detail__modal-tab"
-                }
-                onClick={() => setSizeFinderView("chart")}
-                type="button"
-              >
-                bảng size
-              </button>
-            </div>
+            {!isSizeFinderDisabled ? (
+              <div className="product-detail__modal-tabs">
+                <button
+                  className={
+                    sizeFinderView === "finder"
+                      ? "product-detail__modal-tab product-detail__modal-tab--active"
+                      : "product-detail__modal-tab"
+                  }
+                  onClick={() => setSizeFinderView("finder")}
+                  type="button"
+                >
+                  tìm size
+                </button>
+                <button
+                  className={
+                    sizeFinderView === "chart"
+                      ? "product-detail__modal-tab product-detail__modal-tab--active"
+                      : "product-detail__modal-tab"
+                  }
+                  onClick={() => setSizeFinderView("chart")}
+                  type="button"
+                >
+                  bảng size
+                </button>
+              </div>
+            ) : null}
 
             {sizeFinderView === "chart" && product.sizeChartImage ? (
               <div className="product-detail__size-chart-image-container flex justify-center items-center p-4">
@@ -1404,46 +1429,31 @@ export default function ProductDetailClient({
               </div>
             ) : sizeFinderView === "finder" ? (
               <div className="product-detail__finder">
-                {showFitPreference && (
+                {showFitPreference && availableFits.length > 1 && (
                   <label className="product-detail__finder-field product-detail__finder-field--full">
                     <span>dáng sản phẩm mong muốn:</span>
                     <div className="product-detail__finder-fit-options" role="tablist" aria-label="Dáng sản phẩm mong muốn">
-                      <button
-                        aria-selected={desiredFit === "ôm"}
-                        className={
-                          desiredFit === "ôm"
-                            ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
-                            : "product-detail__finder-fit-option"
-                        }
-                        onClick={() => {
-                          setDesiredFit("ôm");
-                          setOpenFinderDropdown(null);
-                          setSelectedWeight("");
-                          setRecommendedSize(null);
-                        }}
-                        role="tab"
-                        type="button"
-                      >
-                        ôm
-                      </button>
-                      <button
-                        aria-selected={desiredFit === "thoải mái"}
-                        className={
-                          desiredFit === "thoải mái"
-                            ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
-                            : "product-detail__finder-fit-option"
-                        }
-                        onClick={() => {
-                          setDesiredFit("thoải mái");
-                          setOpenFinderDropdown(null);
-                          setSelectedWeight("");
-                          setRecommendedSize(null);
-                        }}
-                        role="tab"
-                        type="button"
-                      >
-                        thoải mái
-                      </button>
+                      {availableFits.map((fit) => (
+                        <button
+                          aria-selected={activeSizeFinderFit === fit.key}
+                          className={
+                            activeSizeFinderFit === fit.key
+                              ? "product-detail__finder-fit-option product-detail__finder-fit-option--active"
+                              : "product-detail__finder-fit-option"
+                          }
+                          key={fit.key}
+                          onClick={() => {
+                            setDesiredFit(fit.key);
+                            setOpenFinderDropdown(null);
+                            setSelectedWeight("");
+                            setRecommendedSize(null);
+                          }}
+                          role="tab"
+                          type="button"
+                        >
+                          {fit.label || fit.key}
+                        </button>
+                      ))}
                     </div>
                   </label>
                 )}

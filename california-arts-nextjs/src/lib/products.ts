@@ -102,6 +102,7 @@ export interface Product {
   };
   relatedProductHandles?: string[];
   sizeChartImage?: string;
+  sizeFinder?: import("./size-finder").ProductSizeFinderConfig;
   seo?: {
     title?: string;
     description?: string;
