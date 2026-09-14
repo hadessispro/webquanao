@@ -136,6 +136,7 @@ async function run() {
       { name: 'seo_title', ddl: 'seo_title TEXT' },
       { name: 'seo_description', ddl: 'seo_description TEXT' },
       { name: 'info_tabs_details', ddl: 'info_tabs_details TEXT' },
+      { name: 'info_tabs_material', ddl: 'info_tabs_material TEXT' },
       { name: 'info_tabs_shipping', ddl: 'info_tabs_shipping TEXT' },
       { name: 'info_tabs_exchange', ddl: 'info_tabs_exchange TEXT' },
       { name: 'size_finder_mode', ddl: "size_finder_mode TEXT DEFAULT 'inherit'" },

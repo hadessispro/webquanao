@@ -100,6 +100,7 @@ type PayloadProductDoc = {
   }>
   infoTabs?: {
     details?: unknown
+    material?: unknown
     shipping?: unknown
     exchange?: unknown
   }
@@ -555,6 +556,7 @@ export function normalizePayloadProduct(
     infoTabs: doc.infoTabs
       ? {
           details: richTextToHtml(doc.infoTabs.details) || undefined,
+          material: richTextToHtml(doc.infoTabs.material) || undefined,
           shipping: richTextToHtml(doc.infoTabs.shipping) || undefined,
           exchange: richTextToHtml(doc.infoTabs.exchange) || undefined,
         }

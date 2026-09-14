@@ -97,6 +97,7 @@ export interface Product {
   accordions?: ProductAccordion[];
   infoTabs?: {
     details?: string;
+    material?: string;
     shipping?: string;
     exchange?: string;
   };

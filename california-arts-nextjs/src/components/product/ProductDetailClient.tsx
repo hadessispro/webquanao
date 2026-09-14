@@ -382,7 +382,7 @@ function FinderDropdown({
 
 type SizeFinderFit = string;
 type SizeFinderView = "finder" | "chart";
-type ProductInfoTab = "details" | "shipping" | "exchange";
+type ProductInfoTab = "details" | "material" | "shipping";
 
 const LYNDON_ACCORDION_CONTENT: Record<string, string> = {
   Details:
@@ -628,41 +628,45 @@ export default function ProductDetailClient({
     // accordions (matched by title), then to sensible defaults.
     const detailHtml =
       product.infoTabs?.details ||
-      [accordionMap.get("details"), accordionMap.get("sustainability")]
-        .filter(Boolean)
-        .join("");
+      accordionMap.get("details") ||
+      accordionMap.get("chi tiết") ||
+      accordionMap.get("sustainability") ||
+      "<p>Được hoàn thiện với tỷ lệ cân nhắc kỹ và hướng đến nhu cầu mặc hằng ngày.</p>";
+
+    const materialHtml =
+      product.infoTabs?.material ||
+      (product.material ? `<p>${product.material}</p>` : "") ||
+      accordionMap.get("chất liệu") ||
+      accordionMap.get("material") ||
+      accordionMap.get("care") ||
+      "<p>Chất liệu cao cấp, được lựa chọn kỹ lưỡng để mang lại cảm giác thoải mái và độ bền tối đa.</p>";
+
     const shippingHtml =
       product.infoTabs?.shipping ||
       accordionMap.get("shipping & returns") ||
-      "<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Hỗ trợ hoàn trả trong vòng 14 ngày kể từ khi giao thành công.</p>";
-    const exchangeHtml =
+      accordionMap.get("giao hàng & đổi trả") ||
+      accordionMap.get("shipping") ||
       product.infoTabs?.exchange ||
-      [accordionMap.get("size & fit"), accordionMap.get("need assistance?")]
-        .filter(Boolean)
-        .join("");
+      "<p>Miễn phí vận chuyển cho đơn hàng đủ điều kiện. Xem <a href=\"/pages/returns-exchanges\">Vận chuyển &amp; đổi trả</a> để biết thêm chi tiết.</p><p>Hỗ trợ đổi trả trong vòng 14 ngày kể từ khi giao hàng thành công.</p>";
 
     return [
       {
         key: "details" as const,
-        label: t("details"),
-        html:
-          detailHtml ||
-          "<p>Được hoàn thiện với tỷ lệ cân nhắc kỹ và hướng đến nhu cầu mặc hằng ngày.</p>",
+        label: "chi tiết",
+        html: detailHtml,
+      },
+      {
+        key: "material" as const,
+        label: "chất liệu",
+        html: materialHtml,
       },
       {
         key: "shipping" as const,
-        label: "giao hàng",
+        label: "giao hàng & đổi trả",
         html: shippingHtml,
       },
-      {
-        key: "exchange" as const,
-        label: "đổi size",
-        html:
-          exchangeHtml ||
-          "<p>Liên hệ với chúng tôi qua email hoặc instagram để được hỗ trợ đổi size phù hợp hơn.</p>",
-      },
     ];
-  }, [accordions, product.infoTabs, t]);
+  }, [accordions, product.infoTabs, product.material]);
 
   const activeInfoTabData =
     infoTabs.find((tab) => tab.key === activeInfoTab) || infoTabs[0];

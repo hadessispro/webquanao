@@ -722,7 +722,7 @@ export const Products: CollectionConfig = {
     {
       name: 'infoTabs',
       type: 'group',
-      label: 'Info tabs (chi tiết / giao hàng / đổi size)',
+      label: 'Info tabs (chi tiết / chất liệu / giao hàng & đổi trả)',
       admin: {
         description:
           'Nội dung 3 tab dưới nút đặt hàng ở trang chi tiết sản phẩm. Nhập trực tiếp tại đây để chỉnh chữ. Bỏ trống nếu muốn dùng nội dung mặc định.',
@@ -734,14 +734,22 @@ export const Products: CollectionConfig = {
           label: 'Tab "chi tiết"',
         },
         {
+          name: 'material',
+          type: 'richText',
+          label: 'Tab "chất liệu"',
+        },
+        {
           name: 'shipping',
           type: 'richText',
-          label: 'Tab "giao hàng"',
+          label: 'Tab "giao hàng & đổi trả"',
         },
         {
           name: 'exchange',
           type: 'richText',
-          label: 'Tab "đổi size"',
+          label: 'Tab "đổi size" (tùy chọn dự phòng)',
+          admin: {
+            description: 'Dự phòng nội dung cũ, sẽ được gộp vào tab giao hàng & đổi trả nếu có.',
+          },
         },
       ],
     },
