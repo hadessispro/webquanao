@@ -581,7 +581,7 @@ export default function ProductDetailClient({
     : requiresSize && !selSize
       ? t("selectSize")
       : selectedVariantAvailable
-        ? "order ngay"
+        ? "đặt hàng qua ig"
         : t("unavailable");
 
   const activePriceVariant = selVariant || product.variants[0];
