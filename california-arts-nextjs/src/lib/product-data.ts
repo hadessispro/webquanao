@@ -128,6 +128,15 @@ type PayloadCollectionDoc = {
     title?: string
     description?: string
   }
+  bottomCta?: {
+    hideCta?: boolean
+    eyebrow?: string
+    eyebrowVi?: string
+    buttonLabel?: string
+    buttonLabelVi?: string
+    linkCollection?: { id?: number | string; handle?: string; title?: string } | number | string
+    customUrl?: string
+  }
 }
 
 export type StorefrontCollection = {
@@ -137,6 +146,14 @@ export type StorefrontCollection = {
   seoTitle?: string
   seoDescription?: string
   products: Product[]
+  bottomCta?: {
+    hideCta?: boolean
+    eyebrow?: string
+    eyebrowVi?: string
+    buttonLabel?: string
+    buttonLabelVi?: string
+    href?: string
+  }
 }
 
 type CollectionHandleMap = Map<string, string>
@@ -721,6 +738,29 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
     alias?.descriptionHtml ||
     defaultCollectionDescription()
 
+  const rawCta = collection?.bottomCta
+  let ctaHref: string | undefined = undefined
+  if (rawCta?.customUrl && rawCta.customUrl.trim()) {
+    ctaHref = rawCta.customUrl.trim()
+  } else if (
+    rawCta?.linkCollection &&
+    typeof rawCta.linkCollection === 'object' &&
+    rawCta.linkCollection.handle
+  ) {
+    ctaHref = `/collections/${rawCta.linkCollection.handle}`
+  }
+
+  const bottomCta = rawCta
+    ? {
+        hideCta: Boolean(rawCta.hideCta),
+        eyebrow: rawCta.eyebrow?.trim() || undefined,
+        eyebrowVi: rawCta.eyebrowVi?.trim() || undefined,
+        buttonLabel: rawCta.buttonLabel?.trim() || undefined,
+        buttonLabelVi: rawCta.buttonLabelVi?.trim() || undefined,
+        href: ctaHref,
+      }
+    : undefined
+
   return {
     handle,
     title,
@@ -731,6 +771,7 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
       descriptionHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160) ||
       `${title} | điển`,
     products,
+    bottomCta,
   }
 }
 

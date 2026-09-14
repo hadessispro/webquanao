@@ -46,6 +46,15 @@ const REQUIRED_COLUMNS = {
   product_collections_view_all_sections: [
     { name: 'collection_id', ddl: 'collection_id INTEGER' },
   ],
+  product_collections: [
+    { name: 'bottom_cta_hide_cta', ddl: 'bottom_cta_hide_cta INTEGER DEFAULT false' },
+    { name: 'bottom_cta_eyebrow', ddl: 'bottom_cta_eyebrow TEXT' },
+    { name: 'bottom_cta_eyebrow_vi', ddl: 'bottom_cta_eyebrow_vi TEXT' },
+    { name: 'bottom_cta_button_label', ddl: 'bottom_cta_button_label TEXT' },
+    { name: 'bottom_cta_button_label_vi', ddl: 'bottom_cta_button_label_vi TEXT' },
+    { name: 'bottom_cta_link_collection_id', ddl: 'bottom_cta_link_collection_id INTEGER' },
+    { name: 'bottom_cta_custom_url', ddl: 'bottom_cta_custom_url TEXT' },
+  ],
 }
 
 async function tableExists(table) {

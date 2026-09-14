@@ -238,6 +238,78 @@ export const ProductCollections: CollectionConfig = {
       },
     },
     {
+      name: 'bottomCta',
+      type: 'group',
+      label: 'Nút & Dòng chữ cuối trang (Bottom CTA)',
+      admin: {
+        description: 'Tùy chỉnh dòng chữ nhỏ và nút bấm ở cuối trang bộ sưu tập (mặc định dẫn về Xem tất cả /collections/shop-all).',
+      },
+      fields: [
+        {
+          name: 'hideCta',
+          type: 'checkbox',
+          label: 'Ẩn khu vực này (Không hiển thị nút cuối trang)',
+          defaultValue: false,
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'eyebrowVi',
+              type: 'text',
+              label: 'Dòng chữ nhỏ (Tiếng Việt)',
+              defaultValue: 'xem toàn bộ sản phẩm',
+              admin: { width: '50%' },
+            },
+            {
+              name: 'eyebrow',
+              type: 'text',
+              label: 'Dòng chữ nhỏ (Tiếng Anh)',
+              defaultValue: 'explore our full catalog',
+              admin: { width: '50%' },
+            },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'buttonLabelVi',
+              type: 'text',
+              label: 'Chữ trên nút (Tiếng Việt)',
+              defaultValue: 'khám phá ngay',
+              admin: { width: '50%' },
+            },
+            {
+              name: 'buttonLabel',
+              type: 'text',
+              label: 'Chữ trên nút (Tiếng Anh)',
+              defaultValue: 'shop all',
+              admin: { width: '50%' },
+            },
+          ],
+        },
+        {
+          name: 'linkCollection',
+          type: 'relationship',
+          relationTo: 'product-collections',
+          label: 'Bộ sưu tập đích khi bấm nút (Gợi ý & Tìm kiếm bộ sưu tập)',
+          admin: {
+            description: 'Chọn bộ sưu tập muốn chuyển hướng đến (ví dụ: Xem tất cả hoặc một bộ sưu tập khác).',
+          },
+        },
+        {
+          name: 'customUrl',
+          type: 'text',
+          label: 'Đường dẫn liên kết tùy chỉnh (Custom URL)',
+          defaultValue: '/collections/shop-all',
+          admin: {
+            description: 'Nếu muốn dẫn đến một trang hoặc đường link khác thay vì chọn từ bộ sưu tập ở trên, nhập vào đây (ví dụ: /collections/shop-all hoặc https://...).',
+          },
+        },
+      ],
+    },
+    {
       name: 'seo',
       type: 'group',
       fields: [
