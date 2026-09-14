@@ -31,9 +31,11 @@ export const Products: CollectionConfig = {
             ]
           } else {
             data.variants.forEach((v: Record<string, unknown>) => {
-              v.price = numericPrice
-              if (numericCompareAt !== null) {
-                v.compareAtPrice = numericCompareAt
+              if (v && typeof v === 'object') {
+                v.price = numericPrice
+                if (numericCompareAt !== null) {
+                  v.compareAtPrice = numericCompareAt
+                }
               }
             })
           }
@@ -281,7 +283,7 @@ export const Products: CollectionConfig = {
       },
       admin: {
         description:
-          'Product detail videos. Upload to Product Videos or use an external MP4/WebM URL. By default videos render after product images.',
+          'Video chi tiết sản phẩm. Tải trực tiếp file video MP4/WebM lên Media hoặc dán URL ở ô dưới. Mặc định video hiển thị sau ảnh sản phẩm.',
       },
       fields: [
         {
