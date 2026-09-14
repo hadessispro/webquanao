@@ -1144,7 +1144,7 @@ export default function ProductDetailClient({
                         type="button"
                       >
                         {control?.swatchImage ? (
-                          <img src={control.swatchImage} alt={label} className="w-full h-full object-cover rounded-full pointer-events-none" />
+                          <img src={control.swatchImage} alt={label} className="w-full h-full object-cover rounded-none pointer-events-none" />
                         ) : null}
                       </button>
                     );
