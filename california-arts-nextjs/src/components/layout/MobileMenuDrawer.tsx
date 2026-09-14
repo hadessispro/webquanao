@@ -16,7 +16,7 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
 
-const MOBILE_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
+const FALLBACK_MOBILE_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
   if (group.items && group.items.length > 0) {
     return group.items.map((item) => ({
       href: item.href,
@@ -34,11 +34,10 @@ const MOBILE_PRODUCT_ITEMS = PRODUCT_MENU_GROUPS.flatMap((group) => {
 
 export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) {
   const { isMobileMenuOpen, locale, setIsMobileMenuOpen } = useLayout()
-  const [productsOpen, setProductsOpen] = useState(false)
-  const aboutLink = navigation.find((item) => item.href === '/pages/our-story')
+  const [openAccordionIndex, setOpenAccordionIndex] = useState<number | null>(null)
 
   const closeMenu = () => {
-    setProductsOpen(false)
+    setOpenAccordionIndex(null)
     setIsMobileMenuOpen(false)
   }
 
@@ -55,6 +54,8 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
   }, [isMobileMenuOpen])
 
   if (!isMobileMenuOpen) return null
+
+  const navItems = Array.isArray(navigation) && navigation.length > 0 ? navigation : []
 
   return (
     <nav aria-label="menu" className="art-menu">
@@ -78,38 +79,149 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
           </div>
 
           <div className="art-menu__primary">
-            <button
-              aria-controls="art-menu-products"
-              aria-expanded={productsOpen}
-              className="art-menu__product-toggle"
-              onClick={() => setProductsOpen((current) => !current)}
-              type="button"
-            >
-              <span>sản phẩm</span>
-              <span aria-hidden="true" className="art-menu__chevron" />
-            </button>
+            {navItems.length > 0 ? (
+              navItems.map((item, index) => {
+                const hasMegaMenu = Boolean(
+                  item.megaMenu?.enabled &&
+                    (item.megaMenu.columns.length > 0 ||
+                      item.href === '/collections/shop-all' ||
+                      item.href.includes('shop') ||
+                      item.href.includes('product')),
+                )
+                const isOpen = openAccordionIndex === index
+                const label =
+                  localizedText(locale, item.label, item.labelVi) || item.label || 'sản phẩm'
 
-            {productsOpen && (
-              <ul className="art-menu__accordion" id="art-menu-products">
-                {MOBILE_PRODUCT_ITEMS.map((item) => (
-                  <li key={item.label}>
-                    {item.href ? (
-                      <Link className="art-menu__primary-link" href={item.href} onClick={closeMenu}>
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <span className="art-menu__primary-link art-menu__primary-link--disabled">
-                        {item.label}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                if (hasMegaMenu) {
+                  const hasCustomColumns = Boolean(
+                    item.megaMenu?.columns && item.megaMenu.columns.length > 0,
+                  )
+
+                  return (
+                    <React.Fragment key={`${item.href}-${index}`}>
+                      <button
+                        aria-controls={`art-menu-accordion-${index}`}
+                        aria-expanded={isOpen}
+                        className="art-menu__product-toggle"
+                        onClick={() => setOpenAccordionIndex(isOpen ? null : index)}
+                        type="button"
+                      >
+                        <span>{label}</span>
+                        <span aria-hidden="true" className="art-menu__chevron" />
+                      </button>
+
+                      {isOpen && (
+                        <ul className="art-menu__accordion" id={`art-menu-accordion-${index}`}>
+                          {hasCustomColumns
+                            ? item.megaMenu!.columns.map((column, colIndex) => (
+                                <React.Fragment key={`${column.heading}-${colIndex}`}>
+                                  {column.heading && (
+                                    <li className="art-menu__group-heading">
+                                      {column.headingHref ? (
+                                        <Link
+                                          className="art-menu__primary-link font-bold"
+                                          href={column.headingHref}
+                                          onClick={closeMenu}
+                                        >
+                                          {localizedText(locale, column.heading, column.headingVi)}
+                                        </Link>
+                                      ) : (
+                                        <span className="art-menu__primary-link font-bold">
+                                          {localizedText(locale, column.heading, column.headingVi)}
+                                        </span>
+                                      )}
+                                    </li>
+                                  )}
+                                  {column.links.map((link) => (
+                                    <li key={`${link.label}-${link.href}`}>
+                                      {link.href ? (
+                                        <Link
+                                          className="art-menu__primary-link"
+                                          href={link.href}
+                                          onClick={closeMenu}
+                                        >
+                                          {localizedText(locale, link.label, link.labelVi)}
+                                        </Link>
+                                      ) : (
+                                        <span className="art-menu__primary-link art-menu__primary-link--disabled">
+                                          {localizedText(locale, link.label, link.labelVi)}
+                                        </span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </React.Fragment>
+                              ))
+                            : FALLBACK_MOBILE_PRODUCT_ITEMS.map((fallbackItem) => (
+                                <li key={fallbackItem.label}>
+                                  {fallbackItem.href ? (
+                                    <Link
+                                      className="art-menu__primary-link"
+                                      href={fallbackItem.href}
+                                      onClick={closeMenu}
+                                    >
+                                      {fallbackItem.label}
+                                    </Link>
+                                  ) : (
+                                    <span className="art-menu__primary-link art-menu__primary-link--disabled">
+                                      {fallbackItem.label}
+                                    </span>
+                                  )}
+                                </li>
+                              ))}
+                        </ul>
+                      )}
+                    </React.Fragment>
+                  )
+                }
+
+                return (
+                  <Link
+                    className="art-menu__about-link"
+                    href={item.href || '#'}
+                    key={`${item.href}-${index}`}
+                    onClick={closeMenu}
+                    target={item.openInNewTab ? '_blank' : undefined}
+                  >
+                    {label}
+                  </Link>
+                )
+              })
+            ) : (
+              <>
+                <button
+                  aria-controls="art-menu-products"
+                  aria-expanded={openAccordionIndex === 0}
+                  className="art-menu__product-toggle"
+                  onClick={() => setOpenAccordionIndex(openAccordionIndex === 0 ? null : 0)}
+                  type="button"
+                >
+                  <span>sản phẩm</span>
+                  <span aria-hidden="true" className="art-menu__chevron" />
+                </button>
+
+                {openAccordionIndex === 0 && (
+                  <ul className="art-menu__accordion" id="art-menu-products">
+                    {FALLBACK_MOBILE_PRODUCT_ITEMS.map((item) => (
+                      <li key={item.label}>
+                        {item.href ? (
+                          <Link className="art-menu__primary-link" href={item.href} onClick={closeMenu}>
+                            {item.label}
+                          </Link>
+                        ) : (
+                          <span className="art-menu__primary-link art-menu__primary-link--disabled">
+                            {item.label}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <Link className="art-menu__about-link" href="/pages/our-story" onClick={closeMenu}>
+                  về điển
+                </Link>
+              </>
             )}
-
-            <Link className="art-menu__about-link" href={aboutLink?.href || '/pages/our-story'} onClick={closeMenu}>
-              {localizedText(locale, aboutLink?.label, aboutLink?.labelVi) || 'về điển'}
-            </Link>
           </div>
 
           <p className="art-menu__slogan">điển, you already know</p>

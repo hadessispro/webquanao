@@ -11438,6 +11438,18 @@ body#california-arts .art-menu .art-menu__primary-link--disabled {
   pointer-events: none !important;
 }
 
+body#california-arts .art-menu .art-menu__group-heading {
+  margin-top: 4px;
+}
+
+body#california-arts .art-menu .art-menu__group-heading:first-child {
+  margin-top: 0;
+}
+
+body#california-arts .art-menu .art-menu__group-heading .art-menu__primary-link {
+  font-weight: 700 !important;
+}
+
 body#california-arts .art-menu .art-menu__about-link {
   align-items: center !important;
   display: inline-flex !important;
