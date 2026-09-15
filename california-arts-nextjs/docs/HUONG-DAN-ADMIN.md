@@ -1,5 +1,8 @@
 # HƯỚNG DẪN SỬ DỤNG ADMIN — điển
 
+> 📸 **CẬP NHẬT MỚI (Feedback 2 & 3):**  
+> Đã có tài liệu hướng dẫn kèm **ảnh chụp màn hình thực tế (Screenshots)** cho tính năng **Chữ & Nút cuối trang (Bottom CTA)** và **Công cụ "Tìm size" trực quan (Size Finder Form)**: Xem chi tiết tại [docs/HUONG-DAN-FEEDBACK-2-VA-3.md](./HUONG-DAN-FEEDBACK-2-VA-3.md).
+
 > Tài liệu này mô tả **đầy đủ từng bước** cách dùng trang quản trị (admin). Vì không chèn được ảnh chụp màn hình trực tiếp, mỗi phần được mô tả theo dạng: **đường dẫn menu → tên field chính xác → điền gì → kết quả ngoài web**. Bạn mở admin lên và làm theo song song.
 
 ---
