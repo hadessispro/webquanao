@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { getPayloadClient } from '@/lib/payload-client'
 
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://d-dien.shop').replace(/\/+$/, '')
 
