@@ -295,6 +295,7 @@ function normalizeNavigation(navigation: unknown): HeaderNavItem[] {
         : value.href || value.url || (collection?.handle ? `/collections/${collection.handle}` : undefined)
 
       if (!label || !href) return null
+      if (href === '/pages/campaign' || href.endsWith('/campaign')) return null
 
       const legacyCategories =
         Array.isArray(value.megaMenu?.categories) && value.megaMenu.categories.length > 0

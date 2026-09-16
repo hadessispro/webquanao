@@ -90,12 +90,20 @@ function localizedText(locale: Locale, text?: string, textVi?: string) {
   return locale === 'vi' && textVi ? textVi : text
 }
 
-function topNavLabel(item: HeaderNavItem, locale: Locale) {
+export function topNavLabel(item: HeaderNavItem, locale: Locale) {
+  if (locale === 'vi' && item.labelVi) return item.labelVi
+
+  if (item.label) {
+    const lower = item.label.trim().toLowerCase()
+    if (lower !== 'products' && lower !== 'shop all' && lower !== 'about' && lower !== 'about điển') {
+      return item.label
+    }
+  }
+
   if (item.href === '/collections/shop-all') return locale === 'vi' ? 'sản phẩm' : 'products'
   if (item.href === '/pages/our-story') return locale === 'vi' ? 'về điển' : 'about điển'
-  if (item.href === '/pages/campaign') return locale === 'vi' ? 'chiến dịch' : 'campaign'
 
-  return localizedText(locale, item.label, item.labelVi) || item.label
+  return localizedText(locale, item.label, item.labelVi) || item.label || ''
 }
 
 type SearchResult = {

@@ -6,6 +6,7 @@ import { useLayout } from '@/context/LayoutContext'
 import { FooterData, HeaderNavItem } from '@/lib/storefront-types'
 import type { Locale } from '@/lib/i18n'
 import { PRODUCT_MENU_GROUPS } from '@/lib/product-menu'
+import { topNavLabel } from './Header'
 
 interface MobileMenuDrawerProps {
   footer: FooterData
@@ -55,7 +56,9 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
 
   if (!isMobileMenuOpen) return null
 
-  const navItems = Array.isArray(navigation) && navigation.length > 0 ? navigation : []
+  const navItems = (Array.isArray(navigation) ? navigation : []).filter(
+    (item) => item.href !== '/pages/campaign' && !item.href.endsWith('/campaign'),
+  )
 
   return (
     <nav aria-label="menu" className="art-menu">
@@ -89,8 +92,7 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
                       item.href.includes('product')),
                 )
                 const isOpen = openAccordionIndex === index
-                const label =
-                  localizedText(locale, item.label, item.labelVi) || item.label || 'sản phẩm'
+                const label = topNavLabel(item, locale) || 'sản phẩm'
 
                 if (hasMegaMenu) {
                   const hasCustomColumns = Boolean(
