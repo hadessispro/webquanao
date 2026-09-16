@@ -1610,62 +1610,11 @@ body#california-arts .dien-footer__brand p {
 }
 
 .dien-footer__bottom {
-  align-items: flex-start;
+  align-items: center;
   display: grid;
   gap: 24px;
   grid-template-columns: minmax(0, 1fr) auto;
   position: static;
-}
-
-.dien-footer__newsletter-block {
-  display: flex;
-  flex-direction: column;
-  max-width: 440px;
-  width: 100%;
-}
-
-.dien-footer__newsletter-title {
-  color: #131818;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0;
-  line-height: 1.3;
-  margin: 0 0 4px;
-}
-
-.dien-footer__newsletter-desc {
-  color: rgba(19, 24, 24, 0.7);
-  font-family: inherit;
-  font-size: 12px;
-  line-height: 1.4;
-  margin: 0 0 10px;
-}
-
-.dien-footer__newsletter-privacy {
-  color: rgba(19, 24, 24, 0.5);
-  font-size: 11px;
-  line-height: 1.3;
-  margin: 6px 0 0;
-}
-
-.dien-footer__newsletter-privacy a {
-  color: inherit;
-  text-decoration: underline;
-}
-
-.dien-footer__newsletter-message {
-  font-size: 12px;
-  margin: 6px 0 0;
-  line-height: 1.3;
-}
-
-.dien-footer__newsletter-message--success {
-  color: #1b6a38;
-}
-
-.dien-footer__newsletter-message--error {
-  color: #b3261e;
 }
 
 .dien-footer__newsletter {
@@ -1699,57 +1648,6 @@ body#california-arts .dien-footer__brand p {
   font-size: var(--dien-subheading-size);
   letter-spacing: 0;
   text-transform: lowercase;
-}
-
-.dien-footer__columns-wrap {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.dien-footer__columns {
-  align-items: flex-start;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px 36px;
-  justify-content: flex-end;
-}
-
-.dien-footer__col {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dien-footer__col-title {
-  color: #131818;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0;
-  line-height: 1.2;
-  margin: 0 0 4px;
-  text-transform: lowercase;
-}
-
-.dien-footer__col-links {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.dien-footer__col-links a {
-  color: rgba(19, 24, 24, 0.7) !important;
-  font-size: var(--dien-subheading-size);
-  line-height: 1.2;
-  transition: color 0.18s ease, opacity 0.18s ease;
-  white-space: nowrap;
-}
-
-.dien-footer__col-links a:hover {
-  color: #131818 !important;
-  opacity: 1;
 }
 
 .dien-footer__links {
@@ -1790,24 +1688,11 @@ body#california-arts .dien-footer__brand p {
 
   .dien-footer__bottom {
     grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .dien-footer__newsletter-block {
-    max-width: none;
+    gap: 12px;
   }
 
   .dien-footer__newsletter {
     max-width: none;
-  }
-
-  .dien-footer__columns-wrap {
-    justify-content: flex-start;
-  }
-
-  .dien-footer__columns {
-    justify-content: flex-start;
-    gap: 16px 28px;
   }
 
   .dien-footer__links {
