@@ -17,6 +17,23 @@ export const ProductVideos: CollectionConfig = {
   upload: {
     staticDir: 'product-videos',
     mimeTypes: ['video/*'],
+    adminThumbnail: () => null,
+    handlers: [
+      async (_req, { doc, params }) => {
+        const fs = await import('node:fs')
+        const path = await import('node:path')
+        const fileDir = path.resolve('product-videos')
+        const filePath = path.resolve(fileDir, params.filename)
+        if (fs.existsSync(filePath)) {
+          return null
+        }
+        const sourceUrl = (doc as any)?.sourceUrl || (doc as any)?.source_url
+        if (sourceUrl && typeof sourceUrl === 'string') {
+          return Response.redirect(sourceUrl, 302)
+        }
+        return new Response('File not found', { status: 404 })
+      },
+    ],
   },
   fields: [
     {

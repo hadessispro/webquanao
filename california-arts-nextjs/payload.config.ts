@@ -25,6 +25,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  debug: true,
   admin: {
     user: 'users',
     suppressHydrationWarning: true,

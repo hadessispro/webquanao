@@ -35,10 +35,34 @@ export const Media: CollectionConfig = {
         position: 'centre',
       },
     ],
-    adminThumbnail: 'thumbnail',
+    adminThumbnail: ({ doc }) => {
+      if (doc?.mimeType && typeof doc.mimeType === 'string' && doc.mimeType.startsWith('video/')) {
+        return null
+      }
+      if (doc?.sourceUrl && typeof doc.sourceUrl === 'string') {
+        return doc.sourceUrl
+      }
+      return (doc?.sizes as any)?.thumbnail?.url || (doc?.url as string) || null
+    },
     // Allow both images and product videos (mp4/webm). Sharp only resizes images;
     // videos are stored as-is and served from /api/media/file/<name>.
     mimeTypes: ['image/*', 'video/*'],
+    handlers: [
+      async (_req, { doc, params }) => {
+        const fs = await import('node:fs')
+        const path = await import('node:path')
+        const fileDir = path.resolve('media')
+        const filePath = path.resolve(fileDir, params.filename)
+        if (fs.existsSync(filePath)) {
+          return null
+        }
+        const sourceUrl = (doc as any)?.sourceUrl || (doc as any)?.source_url
+        if (sourceUrl && typeof sourceUrl === 'string') {
+          return Response.redirect(sourceUrl, 302)
+        }
+        return new Response('File not found', { status: 404 })
+      },
+    ],
   },
   fields: [
     {
