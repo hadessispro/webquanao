@@ -187,6 +187,9 @@ async function run() {
       { name: 'bottom_cta_link_collection_id', ddl: 'bottom_cta_link_collection_id INTEGER' },
       { name: 'bottom_cta_custom_url', ddl: 'bottom_cta_custom_url TEXT' },
     ],
+    header_navigation_mega_menu_columns: [
+      { name: 'hide_heading', ddl: 'hide_heading INTEGER DEFAULT 0' },
+    ],
   }
 
   for (const [table, columns] of Object.entries(REQUIRED_COLUMNS)) {

@@ -4,16 +4,16 @@ import { withPayload } from "@payloadcms/next/withPayload";
 import path from "node:path";
 import fs from "node:fs";
 
-function getTurbopackRoot() {
+const turbopackRoot = (() => {
   if (process.env.TURBOPACK_ROOT) return path.resolve(process.env.TURBOPACK_ROOT);
-  if (fs.existsSync('/var/www/dien-web')) return '/var/www/dien-web';
-  return path.resolve(__dirname, '..');
-}
+  if (process.platform !== 'win32' && fs.existsSync('/var/www/dien-web')) {
+    return '/var/www/dien-web';
+  }
+  return undefined;
+})();
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    root: getTurbopackRoot(),
-  },
+  ...(turbopackRoot ? { turbopack: { root: turbopackRoot } } : {}),
   images: {
     remotePatterns: [
       {

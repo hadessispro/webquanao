@@ -179,8 +179,8 @@ function MegaMenu({
         <div className="dien-product-menu__inner section-x-padding relative">
           <div className="dien-product-menu__groups flex flex-wrap gap-x-12 gap-y-4 items-start">
             {megaMenu.columns.map((column, index) => (
-              <div className="dien-product-menu__group" key={`${column.heading}-${index}`}>
-                {column.heading && (
+              <div className="dien-product-menu__group" key={`${column.heading || 'col'}-${index}`}>
+                {!column.hideHeading && column.heading && (
                   <h2 className="dien-product-menu__heading">
                     {column.headingHref ? (
                       <SmartLink

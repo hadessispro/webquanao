@@ -116,8 +116,8 @@ export default function MobileMenuDrawer({ navigation }: MobileMenuDrawerProps) 
                         <ul className="art-menu__accordion" id={`art-menu-accordion-${index}`}>
                           {hasCustomColumns
                             ? item.megaMenu!.columns.map((column, colIndex) => (
-                                <React.Fragment key={`${column.heading}-${colIndex}`}>
-                                  {column.heading && (
+                                <React.Fragment key={`${column.heading || 'col'}-${colIndex}`}>
+                                  {!column.hideHeading && column.heading && (
                                     <li className="art-menu__group-heading">
                                       {column.headingHref ? (
                                         <Link

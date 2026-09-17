@@ -168,7 +168,20 @@ export const Header: GlobalConfig = {
                 {
                   name: 'heading',
                   type: 'text',
-                  required: true,
+                  label: 'Heading (Tiêu đề cột)',
+                  admin: {
+                    description: 'Tên tiêu đề cột (tùy chọn). Có thể để trống hoặc tích ẩn bên dưới.',
+                  },
+                },
+                {
+                  name: 'hideHeading',
+                  type: 'checkbox',
+                  label: 'Ẩn tiêu đề cột trên menu (Hide heading)',
+                  defaultValue: false,
+                  admin: {
+                    description:
+                      'Tích chọn để ẩn dòng tiêu đề này trên menu dropdown (chỉ hiển thị các nút liên kết bên dưới, kích thước đồng đều).',
+                  },
                 },
                 {
                   name: 'headingVi',

@@ -122,9 +122,10 @@ export interface HeaderLink {
 }
 
 export interface HeaderMegaColumn {
-  heading: string
+  heading?: string
   headingVi?: string
   headingHref?: string
+  hideHeading?: boolean
   links: HeaderLink[]
 }
 

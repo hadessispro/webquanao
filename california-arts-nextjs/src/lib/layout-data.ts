@@ -202,6 +202,7 @@ function normalizeMegaColumns(columns: unknown, parentHref?: string): HeaderMega
         heading?: string
         headingVi?: string
         headingHref?: string
+        hideHeading?: boolean
         links?: Array<{
           label?: string
           labelVi?: string
@@ -239,6 +240,7 @@ function normalizeMegaColumns(columns: unknown, parentHref?: string): HeaderMega
         heading: value.heading || '',
         headingVi: value.headingVi || translateSourceTextToVi(value.heading) || undefined,
         headingHref: value.headingHref || normalizedLinks[0]?.href || parentHref || undefined,
+        hideHeading: Boolean(value.hideHeading),
         links: normalizedLinks,
       }
     })
