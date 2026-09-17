@@ -8,6 +8,25 @@ export const ProductVideos: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
+  },
+  hooks: {
+    beforeChange: [
+      async ({ data, req }) => {
+        if (!data) return data
+        if (data.poster && req?.payload) {
+          const raw = typeof data.poster === 'object' && 'id' in data.poster ? (data.poster as any).id : data.poster
+          const nid = Number(raw)
+          if (nid) {
+            const exists = await req.payload.findByID({ collection: 'media', id: nid, depth: 0 }).catch(() => null)
+            if (!exists) data.poster = null
+          }
+        }
+        return data
+      },
+    ],
   },
   admin: {
     useAsTitle: 'alt',

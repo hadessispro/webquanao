@@ -9,7 +9,7 @@ const turbopackRoot = (() => {
   if (process.platform !== 'win32' && fs.existsSync('/var/www/dien-web')) {
     return '/var/www/dien-web';
   }
-  return undefined;
+  return path.resolve(process.cwd());
 })();
 
 const nextConfig: NextConfig = {
@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '250mb',
+    },
   },
 };
 

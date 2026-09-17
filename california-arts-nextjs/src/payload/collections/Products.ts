@@ -15,7 +15,9 @@ export const Products: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      ({ data }) => {
+      async ({ data, req }) => {
+        if (!data || typeof data !== 'object') return data
+
         if (data.price !== undefined && data.price !== null && data.price !== '') {
           const numericPrice = Number(data.price)
           const numericCompareAt = data.compareAtPrice !== undefined && data.compareAtPrice !== null && data.compareAtPrice !== '' ? Number(data.compareAtPrice) : null
@@ -40,6 +42,101 @@ export const Products: CollectionConfig = {
             })
           }
         }
+
+        // Validate and sanitize foreign key references to media table to prevent
+        // SQLITE_CONSTRAINT_FOREIGNKEY errors if an uncreated or deleted media ID is referenced.
+        if (req?.payload) {
+          const mediaIdsToCheck = new Set<number>()
+          const extractId = (val: unknown): number | null => {
+            if (!val) return null
+            const raw = typeof val === 'object' && 'id' in (val as any) ? (val as any).id : val
+            const n = Number(raw)
+            return !isNaN(n) && n > 0 ? n : null
+          }
+
+          if (Array.isArray(data.videos)) {
+            for (const v of data.videos) {
+              if (v && typeof v === 'object') {
+                const vid = extractId(v.video)
+                if (vid) mediaIdsToCheck.add(vid)
+                const pid = extractId(v.poster)
+                if (pid) mediaIdsToCheck.add(pid)
+              }
+            }
+          }
+
+          if (Array.isArray(data.images)) {
+            for (const img of data.images) {
+              if (img && typeof img === 'object') {
+                const iid = extractId(img.image)
+                if (iid) mediaIdsToCheck.add(iid)
+              }
+            }
+          }
+
+          const scId = extractId(data.sizeChartImage)
+          if (scId) mediaIdsToCheck.add(scId)
+
+          if (Array.isArray(data.variants)) {
+            for (const v of data.variants) {
+              if (v && typeof v === 'object') {
+                const fiId = extractId(v.featuredImage)
+                if (fiId) mediaIdsToCheck.add(fiId)
+              }
+            }
+          }
+
+          if (mediaIdsToCheck.size > 0) {
+            try {
+              const found = await req.payload.find({
+                collection: 'media',
+                where: {
+                  id: { in: Array.from(mediaIdsToCheck) },
+                },
+                limit: 0,
+                depth: 0,
+                pagination: false,
+              })
+              const validSet = new Set(found.docs.map((d: any) => d.id))
+
+              if (Array.isArray(data.videos)) {
+                for (const v of data.videos) {
+                  if (v && typeof v === 'object') {
+                    const vid = extractId(v.video)
+                    if (vid && !validSet.has(vid)) v.video = null
+                    const pid = extractId(v.poster)
+                    if (pid && !validSet.has(pid)) v.poster = null
+                  }
+                }
+              }
+
+              if (Array.isArray(data.images)) {
+                for (const img of data.images) {
+                  if (img && typeof img === 'object') {
+                    const iid = extractId(img.image)
+                    if (iid && !validSet.has(iid)) img.image = null
+                  }
+                }
+              }
+
+              if (scId && !validSet.has(scId)) {
+                data.sizeChartImage = null
+              }
+
+              if (Array.isArray(data.variants)) {
+                for (const v of data.variants) {
+                  if (v && typeof v === 'object') {
+                    const fiId = extractId(v.featuredImage)
+                    if (fiId && !validSet.has(fiId)) v.featuredImage = null
+                  }
+                }
+              }
+            } catch (err) {
+              console.error('[Products beforeChange] Error validating media references:', err)
+            }
+          }
+        }
+
         return data
       },
     ],

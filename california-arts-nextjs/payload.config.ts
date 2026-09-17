@@ -76,6 +76,11 @@ export default buildConfig({
     },
   }),
   sharp,
+  upload: {
+    limits: {
+      fileSize: 250 * 1024 * 1024, // 250MB
+    },
+  },
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload/payload-types.ts'),
   },

@@ -8,6 +8,9 @@ export const Media: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
   },
   admin: {
     useAsTitle: 'alt',
@@ -36,7 +39,12 @@ export const Media: CollectionConfig = {
       },
     ],
     adminThumbnail: ({ doc }) => {
-      if (doc?.mimeType && typeof doc.mimeType === 'string' && doc.mimeType.startsWith('video/')) {
+      const mime = doc?.mimeType || (doc as any)?.mime_type || ''
+      const filename = (doc?.filename as string) || ''
+      if (
+        (typeof mime === 'string' && mime.startsWith('video/')) ||
+        /\.(mp4|webm|mov|mkv|ogg|m4v|avi)$/i.test(filename)
+      ) {
         return null
       }
       if (doc?.sourceUrl && typeof doc.sourceUrl === 'string') {
