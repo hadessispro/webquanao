@@ -15,14 +15,44 @@ export const Products: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      async ({ data, req }) => {
+      async ({ data, req, operation, originalDoc }) => {
         if (!data || typeof data !== 'object') return data
+
+        // Guard against variant and option loss on update:
+        // When an admin user saves a product or updates media/videos, Payload admin form
+        // may submit a partial document where `variants` or `options` are omitted or empty.
+        // We must NEVER wipe out existing variants or options on update!
+        if (operation === 'update') {
+          if (
+            Array.isArray(data.variants) &&
+            data.variants.length === 0 &&
+            Array.isArray(originalDoc?.variants) &&
+            originalDoc.variants.length > 0
+          ) {
+            data.variants = originalDoc.variants
+          }
+
+          if (
+            Array.isArray(data.options) &&
+            data.options.length === 0 &&
+            Array.isArray(originalDoc?.options) &&
+            originalDoc.options.length > 0
+          ) {
+            data.options = originalDoc.options
+          }
+        }
 
         if (data.price !== undefined && data.price !== null && data.price !== '') {
           const numericPrice = Number(data.price)
-          const numericCompareAt = data.compareAtPrice !== undefined && data.compareAtPrice !== null && data.compareAtPrice !== '' ? Number(data.compareAtPrice) : null
+          const numericCompareAt =
+            data.compareAtPrice !== undefined &&
+            data.compareAtPrice !== null &&
+            data.compareAtPrice !== ''
+              ? Number(data.compareAtPrice)
+              : null
 
-          if (!Array.isArray(data.variants) || data.variants.length === 0) {
+          // Only on CREATE: generate a 'Default Title' variant if none was provided
+          if (operation === 'create' && (!Array.isArray(data.variants) || data.variants.length === 0)) {
             data.variants = [
               {
                 title: 'Default Title',
@@ -31,11 +61,17 @@ export const Products: CollectionConfig = {
                 available: true,
               },
             ]
-          } else {
+          } else if (Array.isArray(data.variants)) {
+            // On update or when variants are explicitly provided, only populate price on variants lacking one
             data.variants.forEach((v: Record<string, unknown>) => {
               if (v && typeof v === 'object') {
-                v.price = numericPrice
-                if (numericCompareAt !== null) {
+                if (v.price === undefined || v.price === null || v.price === '') {
+                  v.price = numericPrice
+                }
+                if (
+                  numericCompareAt !== null &&
+                  (v.compareAtPrice === undefined || v.compareAtPrice === null || v.compareAtPrice === '')
+                ) {
                   v.compareAtPrice = numericCompareAt
                 }
               }

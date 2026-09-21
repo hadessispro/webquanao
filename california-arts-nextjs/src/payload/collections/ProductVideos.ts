@@ -13,6 +13,19 @@ export const ProductVideos: CollectionConfig = {
     delete: ({ req }) => Boolean(req.user),
   },
   hooks: {
+    beforeValidate: [
+      ({ data, req }) => {
+        if (!data) return data
+        if (!data.alt || typeof data.alt !== 'string' || !data.alt.trim()) {
+          const fallback =
+            (data.filename as string) ||
+            (req as any)?.file?.name ||
+            'Product video'
+          data.alt = fallback
+        }
+        return data
+      },
+    ],
     beforeChange: [
       async ({ data, req }) => {
         if (!data) return data
@@ -58,7 +71,7 @@ export const ProductVideos: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: true,
+      required: false,
       admin: {
         description: 'Short description for accessibility and admin search.',
       },

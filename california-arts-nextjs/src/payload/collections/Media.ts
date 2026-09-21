@@ -16,6 +16,22 @@ export const Media: CollectionConfig = {
     useAsTitle: 'alt',
     defaultColumns: ['alt', 'source', 'filename', 'updatedAt'],
   },
+  hooks: {
+    beforeValidate: [
+      ({ data, req }) => {
+        if (!data) return data
+        if (!data.alt || typeof data.alt !== 'string' || !data.alt.trim()) {
+          const fallback =
+            (data.filename as string) ||
+            (req as any)?.file?.name ||
+            (data.sourceFilename as string) ||
+            'Media asset'
+          data.alt = fallback
+        }
+        return data
+      },
+    ],
+  },
   upload: {
     staticDir: 'media',
     imageSizes: [
@@ -76,7 +92,7 @@ export const Media: CollectionConfig = {
     {
       name: 'alt',
       type: 'text',
-      required: true,
+      required: false,
     },
     {
       name: 'source',
