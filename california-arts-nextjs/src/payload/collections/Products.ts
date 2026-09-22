@@ -124,16 +124,18 @@ export const Products: CollectionConfig = {
 
           if (mediaIdsToCheck.size > 0) {
             try {
+              const ids = Array.from(mediaIdsToCheck)
               const found = await req.payload.find({
                 collection: 'media',
                 where: {
-                  id: { in: Array.from(mediaIdsToCheck) },
+                  id: { in: ids },
                 },
-                limit: 0,
                 depth: 0,
+                limit: ids.length,
                 pagination: false,
               })
-              const validSet = new Set(found.docs.map((d: any) => d.id))
+              const validIds = (found.docs || []).map((d: any) => Number(d.id)).filter(Boolean)
+              const validSet = new Set<number>(validIds)
 
               if (Array.isArray(data.videos)) {
                 for (const v of data.videos) {
@@ -169,6 +171,15 @@ export const Products: CollectionConfig = {
               }
             } catch (err) {
               console.error('[Products beforeChange] Error validating media references:', err)
+              // If query fails, null out any video/poster with an ID to protect SQLite foreign key constraints
+              if (Array.isArray(data.videos)) {
+                for (const v of data.videos) {
+                  if (v && typeof v === 'object') {
+                    v.video = null
+                    v.poster = null
+                  }
+                }
+              }
             }
           }
         }

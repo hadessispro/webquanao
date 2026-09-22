@@ -1104,42 +1104,53 @@ body#california-arts .dien-footer__brand p {
   pointer-events: none;
 }
 
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header {
-  backdrop-filter: blur(0);
+.site-header-stack--home:not(.site-header-stack--search-open) header {
+  backdrop-filter: blur(0) !important;
   background: transparent !important;
+  background-color: transparent !important;
   border-bottom: 0 !important;
   border-color: transparent !important;
   color: #fbfbf6 !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header a,
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) header button {
+.site-header-stack--home:not(.site-header-stack--search-open) header a,
+.site-header-stack--home:not(.site-header-stack--search-open) header button,
+.site-header-stack--home:not(.site-header-stack--search-open) .ca_menu-1st-button,
+.site-header-stack--home:not(.site-header-stack--search-open) .header-search-toggle {
   color: #fbfbf6 !important;
-  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.32);
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.32) !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .logo-image img {
-  filter: invert(1);
+.site-header-stack--home:not(.site-header-stack--search-open) .logo-image img {
+  filter: invert(1) !important;
 }
 
-.site-header-stack--menu-open header {
+.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle span {
+  background-color: #fbfbf6 !important;
+}
+
+.site-header-stack--home:not(.site-header-stack--search-open) .header-search-icon path {
+  fill: #fbfbf6 !important;
+}
+
+.site-header-stack--menu-open:not(.site-header-stack--home) header {
   backdrop-filter: blur(18px) saturate(128%);
   background: var(--dien-bg) !important;
   border-bottom: 1px solid rgba(19, 24, 24, 0.18) !important;
   color: #131818 !important;
 }
 
-.site-header-stack--menu-open header a,
-.site-header-stack--menu-open header button {
+.site-header-stack--menu-open:not(.site-header-stack--home) header a,
+.site-header-stack--menu-open:not(.site-header-stack--home) header button {
   color: #131818 !important;
   text-shadow: none !important;
 }
 
-.site-header-stack--menu-open .logo-image img {
+.site-header-stack--menu-open:not(.site-header-stack--home) .logo-image img {
   filter: none !important;
 }
 
-.site-header-stack--scrolled header,
+.site-header-stack--scrolled:not(.site-header-stack--home) header,
 .site-header-stack--search-open header {
   backdrop-filter: blur(18px) saturate(128%);
   background: var(--dien-bg) !important;
@@ -5196,46 +5207,48 @@ body#california-arts .dien-footer__brand p {
 }
 
 /* Final header state guard: homepage starts transparent, sticky state uses the warm site tone. */
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .c_header {
+body#california-arts .site-header-stack--home:not(.site-header-stack--search-open) .c_header {
   background: transparent !important;
+  background-color: transparent !important;
   border-bottom-color: transparent !important;
+  border-bottom: 0 !important;
   box-shadow: none !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .c_header a,
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .c_header button {
+body#california-arts .site-header-stack--home:not(.site-header-stack--search-open) .c_header a,
+body#california-arts .site-header-stack--home:not(.site-header-stack--search-open) .c_header button {
   color: #fdfcf9 !important;
-  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.34);
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.34) !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--search-open):not(.site-header-stack--menu-open) .logo-image img {
+body#california-arts .site-header-stack--home:not(.site-header-stack--search-open) .logo-image img {
   filter: invert(1) !important;
 }
 
-body#california-arts .site-header-stack--scrolled .c_header,
+body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) .c_header,
 body#california-arts .site-header-stack--search-open .c_header,
-body#california-arts .site-header-stack--menu-open .c_header,
+body#california-arts .site-header-stack--menu-open:not(.site-header-stack--home) .c_header,
 body#california-arts .site-header-stack:not(.site-header-stack--home) .c_header {
   background-color: var(--dien-bg) !important;
   border-bottom: 1px solid rgba(19, 24, 24, 0.16) !important;
   color: #131818 !important;
 }
 
-body#california-arts .site-header-stack--scrolled .c_header a,
-body#california-arts .site-header-stack--scrolled .c_header button,
+body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) .c_header a,
+body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) .c_header button,
 body#california-arts .site-header-stack--search-open .c_header a,
 body#california-arts .site-header-stack--search-open .c_header button,
-body#california-arts .site-header-stack--menu-open .c_header a,
-body#california-arts .site-header-stack--menu-open .c_header button,
+body#california-arts .site-header-stack--menu-open:not(.site-header-stack--home) .c_header a,
+body#california-arts .site-header-stack--menu-open:not(.site-header-stack--home) .c_header button,
 body#california-arts .site-header-stack:not(.site-header-stack--home) .c_header a,
 body#california-arts .site-header-stack:not(.site-header-stack--home) .c_header button {
   color: #131818 !important;
   text-shadow: none !important;
 }
 
-body#california-arts .site-header-stack--scrolled .logo-image img,
+body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) .logo-image img,
 body#california-arts .site-header-stack--search-open .logo-image img,
-body#california-arts .site-header-stack--menu-open .logo-image img,
+body#california-arts .site-header-stack--menu-open:not(.site-header-stack--home) .logo-image img,
 body#california-arts .site-header-stack:not(.site-header-stack--home) .logo-image img {
   filter: none !important;
 }

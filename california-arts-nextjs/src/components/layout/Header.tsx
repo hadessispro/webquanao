@@ -442,7 +442,9 @@ export default function Header({ header }: HeaderProps) {
       frameId = 0
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
       
-      if (justNavigatedHome.current) {
+      if (isHome) {
+        setScrolled(false)
+      } else if (justNavigatedHome.current) {
         if (scrollTop === 0) {
           justNavigatedHome.current = false
         }
@@ -529,7 +531,7 @@ export default function Header({ header }: HeaderProps) {
   const headerStackClass = [
     'site-header-stack',
     isHome ? 'site-header-stack--home' : '',
-    scrolled ? 'site-header-stack--scrolled' : '',
+    scrolled && !isHome ? 'site-header-stack--scrolled' : '',
     openMegaMenuHref ? 'site-header-stack--menu-open' : '',
     searchOpen ? 'site-header-stack--search-open' : '',
   ]
