@@ -65,12 +65,62 @@ async function run() {
         loop INTEGER DEFAULT 1,
         muted INTEGER DEFAULT 1,
         controls INTEGER DEFAULT 0,
-        FOREIGN KEY (video_id) REFERENCES media(id) ON UPDATE no action ON DELETE set null,
-        FOREIGN KEY (poster_id) REFERENCES media(id) ON UPDATE no action ON DELETE set null,
         FOREIGN KEY (_parent_id) REFERENCES products(id) ON UPDATE no action ON DELETE cascade
       )
     `)
     console.log('[ensure-schema] created table products_videos')
+  }
+
+  // 1b. Check if products_videos exists and has legacy foreign keys to media table
+  if (await tableExists('products_videos')) {
+    try {
+      const fks = await client.execute('PRAGMA foreign_key_list(products_videos)')
+      const hasMediaFk = fks.rows.some((r) => r.table === 'media')
+      if (hasMediaFk) {
+        console.log('[ensure-schema] migrating products_videos to remove strict foreign key constraints to media...')
+        await client.execute('PRAGMA foreign_keys = OFF')
+        await client.execute(`
+          CREATE TABLE products_videos_temp (
+            _order INTEGER NOT NULL DEFAULT 0,
+            _parent_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            video_id INTEGER,
+            source_url TEXT,
+            poster_id INTEGER,
+            poster_source_url TEXT,
+            alt TEXT,
+            color TEXT,
+            position NUMERIC DEFAULT 999,
+            placement TEXT DEFAULT 'inherit',
+            autoplay INTEGER DEFAULT 1,
+            loop INTEGER DEFAULT 1,
+            muted INTEGER DEFAULT 1,
+            controls INTEGER DEFAULT 0,
+            FOREIGN KEY (_parent_id) REFERENCES products(id) ON UPDATE no action ON DELETE cascade
+          )
+        `)
+        await client.execute(`
+          INSERT INTO products_videos_temp (
+            _order, _parent_id, id, video_id, source_url, poster_id, poster_source_url,
+            alt, color, position, placement, autoplay, loop, muted, controls
+          )
+          SELECT 
+            _order, _parent_id, id, video_id, source_url, poster_id, poster_source_url,
+            alt, color, position, placement, autoplay, loop, muted, controls
+          FROM products_videos
+        `)
+        await client.execute('DROP TABLE products_videos')
+        await client.execute('ALTER TABLE products_videos_temp RENAME TO products_videos')
+        await client.execute('CREATE INDEX IF NOT EXISTS products_videos_order_idx ON products_videos (_order)')
+        await client.execute('CREATE INDEX IF NOT EXISTS products_videos_parent_id_idx ON products_videos (_parent_id)')
+        await client.execute('CREATE INDEX IF NOT EXISTS products_videos_video_idx ON products_videos (video_id)')
+        await client.execute('CREATE INDEX IF NOT EXISTS products_videos_poster_idx ON products_videos (poster_id)')
+        await client.execute('PRAGMA foreign_keys = ON')
+        console.log('[ensure-schema] successfully migrated products_videos without strict foreign key constraints!')
+      }
+    } catch (err) {
+      console.warn('[ensure-schema] error checking/migrating products_videos foreign keys:', err.message)
+    }
   }
 
   // 2. Ensure table product_videos exists (for ProductVideos collection)
@@ -272,7 +322,7 @@ async function run() {
     }
   }
 
-  // 7. Ensure essential upload directories exist
+  // 7. Ensure essential upload directories exist and sync files
   const { mkdirSync, copyFileSync, readdirSync, statSync } = await import('node:fs')
   const { join } = await import('node:path')
 
@@ -294,6 +344,144 @@ async function run() {
         copyFileSync(src, dst)
         console.log(`[ensure-schema] synced ${f} to media/`)
       }
+    }
+  }
+
+  // Cross-sync files between product-videos and media folders so uploads in either collection resolve
+  const pvDir = 'product-videos'
+  if (existsSync(pvDir) && existsSync(mediaDir)) {
+    for (const f of readdirSync(pvDir)) {
+      const src = join(pvDir, f)
+      const dst = join(mediaDir, f)
+      if (statSync(src).isFile() && !existsSync(dst)) {
+        try {
+          copyFileSync(src, dst)
+          console.log(`[ensure-schema] cross-synced ${f} from product-videos/ to media/`)
+        } catch {}
+      }
+    }
+    for (const f of readdirSync(mediaDir)) {
+      const src = join(mediaDir, f)
+      const dst = join(pvDir, f)
+      if (statSync(src).isFile() && !existsSync(dst)) {
+        try {
+          copyFileSync(src, dst)
+          console.log(`[ensure-schema] cross-synced ${f} from media/ to product-videos/`)
+        } catch {}
+      }
+    }
+  }
+
+  // 8. Ensure product_videos table rows also exist in media table
+  if ((await tableExists('product_videos')) && (await tableExists('media'))) {
+    try {
+      const pvRows = await client.execute('SELECT * FROM product_videos')
+      for (const row of pvRows.rows) {
+        if (!row.id) continue
+        const inMedia = await client.execute({
+          sql: 'SELECT id FROM media WHERE id = ?',
+          args: [row.id],
+        })
+        if (inMedia.rows.length === 0) {
+          await client.execute({
+            sql: `
+              INSERT INTO media (
+                id, alt, source, source_url, updated_at, created_at,
+                url, thumbnail_u_r_l, filename, mime_type, filesize, width, height, focal_x, focal_y
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `,
+            args: [
+              row.id,
+              row.alt || row.filename || 'Product video',
+              row.source || 'manual',
+              row.source_url || null,
+              row.updated_at || new Date().toISOString(),
+              row.created_at || new Date().toISOString(),
+              row.url || (row.filename ? `/product-videos/${row.filename}` : null),
+              row.thumbnail_u_r_l || null,
+              row.filename || null,
+              row.mime_type || 'video/mp4',
+              row.filesize || null,
+              row.width || null,
+              row.height || null,
+              row.focal_x || null,
+              row.focal_y || null,
+            ],
+          })
+          console.log(`[ensure-schema] synced product_video id=${row.id} (${row.filename}) to media table`)
+        }
+      }
+    } catch (err) {
+      console.warn('[ensure-schema] note on product_videos to media sync:', err.message)
+    }
+  }
+
+  // 9. Auto-heal: Ensure any products with missing variants are automatically restored
+  if ((await tableExists('products')) && (await tableExists('products_variants'))) {
+    try {
+      const backupPath = 'scripts/product-variants-backup.json'
+      if (existsSync(backupPath)) {
+        const backup = JSON.parse(readFileSync(backupPath, 'utf8'))
+        const emptyProducts = await client.execute(`
+          SELECT p.id, p.title
+          FROM products p
+          LEFT JOIN products_variants v ON p.id = v._parent_id
+          GROUP BY p.id
+          HAVING count(v.id) = 0
+        `)
+        if (emptyProducts.rows.length > 0) {
+          console.log(`[ensure-schema] Found ${emptyProducts.rows.length} product(s) missing variants. Restoring...`)
+          for (const p of emptyProducts.rows) {
+            const pId = Number(p.id)
+            const pVars = backup.variants.filter((v) => Number(v._parent_id) === pId)
+            const pOpts = backup.options.filter((o) => Number(o._parent_id) === pId)
+            const pOptVals = backup.optionValues.filter((ov) => Number(ov._parent_id) === pId)
+
+            for (const v of pVars) {
+              await client.execute({
+                sql: `INSERT OR REPLACE INTO products_variants (
+                  _order, _parent_id, id, shopify_variant_id, title, sku,
+                  option1, option2, option3, price, compare_at_price, available,
+                  featured_image_id, featured_image_source_url
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                args: [
+                  v._order,
+                  v._parent_id,
+                  v.id,
+                  v.shopify_variant_id,
+                  v.title,
+                  v.sku,
+                  v.option1,
+                  v.option2,
+                  v.option3,
+                  v.price,
+                  v.compare_at_price,
+                  v.available,
+                  v.featured_image_id,
+                  v.featured_image_source_url,
+                ],
+              })
+            }
+
+            for (const o of pOpts) {
+              await client.execute({
+                sql: `INSERT OR REPLACE INTO products_options (_order, _parent_id, id, name, position) VALUES (?, ?, ?, ?, ?)`,
+                args: [o._order, o._parent_id, o.id, o.name, o.position],
+              })
+            }
+
+            for (const ov of pOptVals) {
+              await client.execute({
+                sql: `INSERT OR REPLACE INTO products_options_values (_order, _parent_id, id, value) VALUES (?, ?, ?, ?)`,
+                args: [ov._order, ov._parent_id, ov.id, ov.value],
+              })
+            }
+            console.log(`[ensure-schema] Restored ${pVars.length} variants and ${pOpts.length} options for Product ${pId} (${p.title})`)
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('[ensure-schema] note on auto-variant restore:', err.message)
     }
   }
 

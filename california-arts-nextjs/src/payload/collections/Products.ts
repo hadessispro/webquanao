@@ -79,8 +79,10 @@ export const Products: CollectionConfig = {
           }
         }
 
-        // Validate and sanitize foreign key references to media table to prevent
-        // SQLITE_CONSTRAINT_FOREIGNKEY errors if an uncreated or deleted media ID is referenced.
+        // Validate and sanitize foreign key references to media table for tables that
+        // enforce strict foreign keys (images, sizeChartImage, variants.featuredImage).
+        // Note: products_videos no longer has foreign keys to media, so video IDs
+        // (including uploads or product-video references) are preserved and never wiped!
         if (req?.payload) {
           const mediaIdsToCheck = new Set<number>()
           const extractId = (val: unknown): number | null => {
@@ -94,9 +96,9 @@ export const Products: CollectionConfig = {
             for (const v of data.videos) {
               if (v && typeof v === 'object') {
                 const vid = extractId(v.video)
-                if (vid) mediaIdsToCheck.add(vid)
                 const pid = extractId(v.poster)
-                if (pid) mediaIdsToCheck.add(pid)
+                if (vid) v.video = vid
+                if (pid) v.poster = pid
               }
             }
           }
@@ -137,17 +139,6 @@ export const Products: CollectionConfig = {
               const validIds = (found.docs || []).map((d: any) => Number(d.id)).filter(Boolean)
               const validSet = new Set<number>(validIds)
 
-              if (Array.isArray(data.videos)) {
-                for (const v of data.videos) {
-                  if (v && typeof v === 'object') {
-                    const vid = extractId(v.video)
-                    if (vid && !validSet.has(vid)) v.video = null
-                    const pid = extractId(v.poster)
-                    if (pid && !validSet.has(pid)) v.poster = null
-                  }
-                }
-              }
-
               if (Array.isArray(data.images)) {
                 for (const img of data.images) {
                   if (img && typeof img === 'object') {
@@ -171,15 +162,6 @@ export const Products: CollectionConfig = {
               }
             } catch (err) {
               console.error('[Products beforeChange] Error validating media references:', err)
-              // If query fails, null out any video/poster with an ID to protect SQLite foreign key constraints
-              if (Array.isArray(data.videos)) {
-                for (const v of data.videos) {
-                  if (v && typeof v === 'object') {
-                    v.video = null
-                    v.poster = null
-                  }
-                }
-              }
             }
           }
         }
