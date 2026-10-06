@@ -1,6 +1,7 @@
 import type { Product } from './products'
 import { getAllProductsFromJson, normalizeImageUrl } from './products'
 import { getPayloadClient } from './payload-client'
+import { richTextToHtml } from './rich-text'
 
 type MediaDoc = {
   id?: number | string
@@ -215,41 +216,6 @@ function mediaMeta(media: MediaDoc | number | string | undefined) {
   }
 }
 
-function richTextToHtml(value: unknown): string {
-  if (!value) return ''
-  if (typeof value === 'string') return value
-  if (typeof value !== 'object') return ''
-
-  const node = value as {
-    text?: string
-    type?: string
-    children?: unknown[]
-    root?: { children?: unknown[] }
-  }
-
-  if (node.root?.children) {
-    return node.root.children.map(richTextToHtml).join('')
-  }
-
-  if (typeof node.text === 'string') {
-    return node.text
-  }
-
-  const children = Array.isArray(node.children) ? node.children.map(richTextToHtml).join('') : ''
-
-  switch (node.type) {
-    case 'paragraph':
-      return children ? `<p>${children}</p>` : ''
-    case 'heading':
-      return children ? `<p><strong>${children}</strong></p>` : ''
-    case 'list':
-      return children ? `<ul>${children}</ul>` : ''
-    case 'listitem':
-      return children ? `<li>${children}</li>` : ''
-    default:
-      return children
-  }
-}
 
 function humanizeHandle(handle: string): string {
   return handle

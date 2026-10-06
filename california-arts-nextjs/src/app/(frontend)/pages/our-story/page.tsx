@@ -1,4 +1,5 @@
 import { getPageBySlug } from '@/lib/pages-data'
+import { richTextToHtml } from '@/lib/rich-text'
 
 export async function generateMetadata() {
   const page = await getPageBySlug('our-story')
@@ -55,53 +56,6 @@ const fallbackSections: StorySection[] = [
       'một thương hiệu tốt không chỉ làm ra sản phẩm đúng, mà còn phải phản hồi đúng lúc và đủ gần với người mặc.',
   },
 ]
-
-function richTextToHtml(value: unknown): string {
-  if (!value) return ''
-  if (typeof value === 'string') return value
-  if (typeof value !== 'object') return ''
-
-  const node = value as {
-    text?: string
-    type?: string
-    format?: number
-    tag?: string
-    children?: unknown[]
-    root?: { children?: unknown[] }
-  }
-
-  if (node.root?.children) {
-    return node.root.children.map(richTextToHtml).join('')
-  }
-
-  if (typeof node.text === 'string') {
-    let text = node.text
-    if (!text) return ''
-    if (typeof node.format === 'number') {
-      if (node.format & 1) text = `<strong>${text}</strong>`
-      if (node.format & 2) text = `<em>${text}</em>`
-      if (node.format & 8) text = `<u>${text}</u>`
-    }
-    return text
-  }
-
-  const children = Array.isArray(node.children) ? node.children.map(richTextToHtml).join('') : ''
-
-  switch (node.type) {
-    case 'paragraph':
-      return children ? `<p>${children}</p>` : ''
-    case 'heading': {
-      const tag = node.tag || 'h2'
-      return children ? `<${tag}>${children}</${tag}>` : ''
-    }
-    case 'list':
-      return node.tag === 'ol' ? `<ol>${children}</ol>` : `<ul>${children}</ul>`
-    case 'listitem':
-      return children ? `<li>${children}</li>` : ''
-    default:
-      return children
-  }
-}
 
 function resolveMediaUrl(media: unknown): string | undefined {
   if (!media || typeof media !== 'object') return undefined

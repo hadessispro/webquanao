@@ -12162,4 +12162,123 @@ h1.c_header-logo img {
   }
 }
 
+/* ==========================================================================
+   CMS Rich Text, Story Page, & Typography Effects
+   ========================================================================== */
+body#california-arts .cms-link,
+body#california-arts .story-page__copy a,
+body#california-arts .cms-page a:not(.cms-page__image-link):not(.cms-page__button),
+body#california-arts .product-detail__accordion-body a,
+body#california-arts .product-detail__info-panel a {
+  color: inherit !important;
+  text-decoration: underline !important;
+  text-decoration-line: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px !important;
+  cursor: pointer !important;
+  transition: opacity 0.15s ease;
+  word-break: break-word;
+}
+
+body#california-arts .cms-link:hover,
+body#california-arts .story-page__copy a:hover,
+body#california-arts .cms-page a:not(.cms-page__image-link):not(.cms-page__button):hover,
+body#california-arts .product-detail__accordion-body a:hover,
+body#california-arts .product-detail__info-panel a:hover {
+  opacity: 0.65 !important;
+}
+
+body#california-arts .story-page__copy code,
+body#california-arts .cms-page code,
+body#california-arts .product-detail__accordion-body code,
+body#california-arts .product-detail__info-panel code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  font-size: 0.9em !important;
+  background-color: rgba(19, 24, 24, 0.08) !important;
+  color: inherit !important;
+  padding: 1.5px 5.5px !important;
+  border-radius: 4px !important;
+  word-break: break-word;
+}
+
+body#california-arts .story-page__copy pre,
+body#california-arts .cms-page pre {
+  background-color: rgba(19, 24, 24, 0.06) !important;
+  padding: 12px 16px !important;
+  border-radius: 6px !important;
+  overflow-x: auto !important;
+  margin: 12px 0 !important;
+}
+
+body#california-arts .story-page__copy pre code,
+body#california-arts .cms-page pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+body#california-arts .story-page__copy blockquote,
+body#california-arts .cms-page blockquote {
+  border-left: 2px solid rgba(19, 24, 24, 0.25) !important;
+  margin: 14px 0 !important;
+  padding-left: 14px !important;
+  font-style: italic !important;
+  color: rgba(19, 24, 24, 0.75) !important;
+}
+
+body#california-arts .story-page__copy strong,
+body#california-arts .story-page__copy b,
+body#california-arts .cms-page strong,
+body#california-arts .cms-page b {
+  font-weight: 700 !important;
+}
+
+body#california-arts .story-page__copy em,
+body#california-arts .story-page__copy i,
+body#california-arts .cms-page em,
+body#california-arts .cms-page i {
+  font-style: italic !important;
+}
+
+body#california-arts .story-page__copy u,
+body#california-arts .cms-page u {
+  text-decoration: underline !important;
+}
+
+body#california-arts .story-page__copy s,
+body#california-arts .cms-page s {
+  text-decoration: line-through !important;
+}
+
+body#california-arts .story-page__copy mark,
+body#california-arts .cms-page mark {
+  background-color: rgba(254, 240, 138, 0.5) !important;
+  padding: 1px 4px !important;
+  border-radius: 2px !important;
+}
+
+body#california-arts .story-page__copy ul,
+body#california-arts .cms-page ul {
+  list-style-type: disc !important;
+  margin: 10px 0 !important;
+  padding-left: 20px !important;
+}
+
+body#california-arts .story-page__copy ol,
+body#california-arts .cms-page ol {
+  list-style-type: decimal !important;
+  margin: 10px 0 !important;
+  padding-left: 20px !important;
+}
+
+body#california-arts .story-page__copy li,
+body#california-arts .cms-page li {
+  margin-bottom: 4px !important;
+}
+
+body#california-arts .story-page__copy div > p + p {
+  margin-top: 12px !important;
+}
+
+
 
