@@ -39,6 +39,9 @@ export default async function HomePage() {
             <img
               alt={desktopImage.alt || title || 'điển'}
               className="home-hero__image"
+              decoding="async"
+              fetchPriority="high"
+              loading="eager"
               src={desktopImage.src}
               style={heroImageTransform ? { transform: heroImageTransform } : undefined}
             />

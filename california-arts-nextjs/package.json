@@ -12,7 +12,8 @@
     "seed:pages": "tsx scripts/seed-pages.ts",
     "seed:our-story": "tsx scripts/seed-our-story.ts",
     "seed:shop-all": "tsx scripts/seed-shop-all.ts",
-    "ensure-schema": "node scripts/ensure-schema.mjs"
+    "ensure-schema": "node scripts/ensure-schema.mjs",
+    "cleanup-media": "node scripts/cleanup-media.mjs"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "^3.83.0",
