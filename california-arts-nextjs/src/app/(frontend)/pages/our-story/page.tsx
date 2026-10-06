@@ -146,39 +146,47 @@ function StoryPage({ sections }: { sections: StorySection[] }) {
   return (
     <section className="story-page bg-primary-background text-primary-text">
       <div className="story-page__sections">
-        {sections.map((section, index) => (
-          <section
-            className={
-              section.media
-                ? 'story-page__section story-page__section--has-media'
-                : 'story-page__section'
-            }
-            key={section.key}
-          >
-            <div className="story-page__content story-page__content--right">
-              <div className="story-page__copy">
-                {section.title && <h2>{section.title}</h2>}
-                {section.bodyHtml ? (
-                  <div dangerouslySetInnerHTML={{ __html: section.bodyHtml }} />
-                ) : (
-                  section.body?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-                )}
-              </div>
-            </div>
+        {sections.map((section, index) => {
+          const hasContent = Boolean(
+            section.title || section.bodyHtml || (section.body && section.body.length > 0)
+          )
 
-            {section.media && (
-              <div className="story-page__media">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  alt={section.media.alt}
-                  className="story-page__media-image"
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  src={section.media.src}
-                />
-              </div>
-            )}
-          </section>
-        ))}
+          return (
+            <section
+              className={
+                section.media
+                  ? 'story-page__section story-page__section--has-media'
+                  : 'story-page__section'
+              }
+              key={section.key}
+            >
+              {hasContent && (
+                <div className="story-page__content story-page__content--right">
+                  <div className="story-page__copy">
+                    {section.title && <h2>{section.title}</h2>}
+                    {section.bodyHtml ? (
+                      <div dangerouslySetInnerHTML={{ __html: section.bodyHtml }} />
+                    ) : (
+                      section.body?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {section.media && (
+                <div className="story-page__media">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt={section.media.alt}
+                    className="story-page__media-image"
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    src={section.media.src}
+                  />
+                </div>
+              )}
+            </section>
+          )
+        })}
       </div>
     </section>
   )
