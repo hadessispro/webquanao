@@ -1,5 +1,5 @@
 import type { Product } from './products'
-import { getAllProductsFromJson, normalizeImageUrl } from './products'
+import { normalizeImageUrl } from './products'
 import { getPayloadClient } from './payload-client'
 import { richTextToHtml } from './rich-text'
 
@@ -588,7 +588,7 @@ async function loadAllStorefrontProducts(): Promise<Product[]> {
       }),
     ])
 
-    if (result.docs.length > 1) {
+    if (result && Array.isArray(result.docs)) {
       const collectionHandleById = makeCollectionHandleMap(collectionResult.docs as PayloadCollectionDoc[])
       return (result.docs as PayloadProductDoc[]).map((doc) =>
         normalizePayloadProduct(doc, collectionHandleById),
@@ -596,10 +596,9 @@ async function loadAllStorefrontProducts(): Promise<Product[]> {
     }
   } catch (err) {
     console.error('[product-data] loadAllStorefrontProducts error:', err)
-    // Keep storefront usable until Payload is installed, migrated, and seeded.
   }
 
-  return getAllProductsFromJson()
+  return []
 }
 
 export async function getAllStorefrontProducts(): Promise<Product[]> {
@@ -649,13 +648,12 @@ export async function getStorefrontProductByHandle(handle: string): Promise<Prod
     }
   } catch (err) {
     console.error('[product-data] getStorefrontProductByHandle error:', err)
-    // Fall through to JSON fallback.
   }
 
   const cachedProduct = (await getAllStorefrontProducts()).find((product) => product.handle === handle)
   if (cachedProduct) return cachedProduct
 
-  return getAllProductsFromJson().find((product) => product.handle === handle)
+  return undefined
 }
 
 async function getPayloadCollectionByHandle(handle: string): Promise<PayloadCollectionDoc | undefined> {
@@ -708,12 +706,15 @@ function collectionProductsFromDoc(collection: PayloadCollectionDoc | undefined,
     })
 }
 
-export async function getStorefrontCollectionByHandle(handle: string): Promise<StorefrontCollection> {
+export async function getStorefrontCollectionByHandle(handle: string): Promise<StorefrontCollection | undefined> {
   const [collection, allProducts] = await Promise.all([
     getPayloadCollectionByHandle(handle),
     getAllStorefrontProducts(),
   ])
   const alias = COLLECTION_ALIASES[handle]
+  if (!collection && !alias && handle !== 'shop-all') {
+    return undefined
+  }
   const matchHandles = [handle, ...(alias?.sourceHandles || [])]
   const explicitProducts = collectionProductsFromDoc(collection, allProducts)
   let products =

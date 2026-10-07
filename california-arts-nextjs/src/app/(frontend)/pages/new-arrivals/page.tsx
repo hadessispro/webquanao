@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import ProductGrid from '@/components/product/ProductGrid'
 import { getPageBySlug } from '@/lib/pages-data'
 import { getAllStorefrontProducts } from '@/lib/product-data'
@@ -9,6 +10,11 @@ export const metadata = {
 
 export default async function NewArrivalsPage() {
   const page = await getPageBySlug('new-arrivals')
+
+  if (!page) {
+    notFound()
+  }
+
   const products = await getAllStorefrontProducts()
   const sortedProducts = [...products].sort((a, b) => {
     const dateA = Date.parse(a.published_at || a.created_at || a.updated_at || '')
@@ -20,8 +26,8 @@ export default async function NewArrivalsPage() {
   return (
     <ProductGrid
       products={sortedProducts}
-      sectionTitle={page?.title || 'hàng mới'}
-      sectionSubtitle={page?.contentHtml || '<p><br/><br/><br/>những thiết kế mới nhất của điển.</p>'}
+      sectionTitle={page.title || 'hàng mới'}
+      sectionSubtitle={page.contentHtml || undefined}
     />
   )
 }

@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { getPageBySlug } from '@/lib/pages-data'
 import { richTextToHtml } from '@/lib/rich-text'
 
@@ -153,6 +154,9 @@ export default async function OurStoryPage() {
   //    or "Content Html" field, render that content directly.
   // 3. Otherwise, fallback to the built-in Vietnamese story so the page is never blank.
   const page = await getPageBySlug('our-story')
+  if (!page) {
+    notFound()
+  }
   const cmsSections = Array.isArray(page?.sections) ? blocksToSections(page.sections) : []
 
   let sections = cmsSections
