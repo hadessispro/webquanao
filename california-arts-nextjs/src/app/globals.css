@@ -1125,7 +1125,15 @@ body#california-arts .dien-footer__brand p {
   filter: invert(1) !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle span {
+.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle {
+  color: #fbfbf6 !important;
+}
+
+.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle__mark {
+  background: transparent !important;
+}
+
+.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle__mark span {
   background-color: #fbfbf6 !important;
 }
 
@@ -1536,9 +1544,23 @@ body#california-arts .dien-footer__brand p {
 }
 
 .header-menu-toggle__mark {
+  display: block;
+  width: 20px;
+  height: 8px;
+  background: transparent !important;
+  flex-shrink: 0;
+}
+
+svg.header-menu-toggle__mark {
+  display: block;
+  width: 20px;
+  height: 8px;
+  overflow: visible;
+}
+
+span.header-menu-toggle__mark {
   display: grid;
   gap: 6px;
-  width: 20px;
 }
 
 .header-menu-toggle__mark span {

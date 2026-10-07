@@ -79,10 +79,18 @@ function SearchIcon() {
 
 function MenuIcon() {
   return (
-    <span aria-hidden="true" className="header-menu-toggle__mark">
-      <span />
-      <span />
-    </span>
+    <svg
+      aria-hidden="true"
+      className="header-menu-toggle__mark"
+      fill="none"
+      height="8"
+      viewBox="0 0 20 8"
+      width="20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect fill="currentColor" height="1" rx="0.5" width="20" y="0" />
+      <rect fill="currentColor" height="1" rx="0.5" width="20" y="7" />
+    </svg>
   )
 }
 
