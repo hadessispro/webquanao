@@ -74,89 +74,199 @@ export const SiteSettings: GlobalConfig = {
           type: 'group',
           fields: [
             {
-              name: 'bodyFont',
-              type: 'relationship',
-              relationTo: 'fonts',
-              admin: {
-                description:
-                  'Default copy font. When empty, the storefront keeps SVN Times New Roman 2.',
-              },
-            },
-            {
-              type: 'row',
+              type: 'collapsible',
+              label: '1. Font chữ nội dung (Body Typography)',
+              initCollapsed: false,
               fields: [
                 {
-                  name: 'bodyBold',
-                  type: 'checkbox',
-                  label: 'Body Font Bold',
-                  defaultValue: false,
-                  admin: { width: '50%' },
+                  name: 'bodyFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font văn bản mặc định (Regular 400)',
+                  admin: {
+                    description:
+                      'Font chính cho toàn bộ trang (VD: TIMES thường). Nếu trống sẽ dùng SVN Times New Roman 2.',
+                  },
                 },
                 {
-                  name: 'bodyItalic',
-                  type: 'checkbox',
-                  label: 'Body Font Italic',
-                  defaultValue: false,
-                  admin: { width: '50%' },
+                  name: 'bodyBoldFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font chữ in đậm (Bold 700)',
+                  admin: {
+                    description:
+                      'File font cho chữ đậm (VD: times đậm). Để trống hệ thống sẽ tự động tìm font đậm tương ứng.',
+                  },
+                },
+                {
+                  name: 'bodyItalicFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font chữ in nghiêng (Italic)',
+                  admin: {
+                    description:
+                      'File font cho chữ nghiêng (VD: times nghiêng).',
+                  },
+                },
+                {
+                  name: 'bodyBoldItalicFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font vừa đậm vừa nghiêng (Bold Italic)',
+                  admin: {
+                    description:
+                      'File font cho chữ vừa đậm vừa nghiêng (VD: times đậm - nghiêng).',
+                  },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'bodyBold',
+                      type: 'checkbox',
+                      label: 'Mặc định toàn bộ Body in đậm',
+                      defaultValue: false,
+                      admin: { width: '50%' },
+                    },
+                    {
+                      name: 'bodyItalic',
+                      type: 'checkbox',
+                      label: 'Mặc định toàn bộ Body in nghiêng',
+                      defaultValue: false,
+                      admin: { width: '50%' },
+                    },
+                  ],
                 },
               ],
             },
             {
-              name: 'headingFont',
-              type: 'relationship',
-              relationTo: 'fonts',
-              admin: {
-                description:
-                  'Headings and editorial titles. When empty, the body font is used.',
-              },
-            },
-            {
-              type: 'row',
+              type: 'collapsible',
+              label: '2. Font tiêu đề (Heading Typography)',
+              initCollapsed: false,
               fields: [
                 {
-                  name: 'headingBold',
-                  type: 'checkbox',
-                  label: 'Heading Font Bold',
-                  defaultValue: false,
-                  admin: { width: '50%' },
+                  name: 'headingFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font tiêu đề mặc định (Regular 400)',
+                  admin: {
+                    description:
+                      'Tiêu đề H1 - H6 và tựa bài. Để trống sẽ tự dùng Font nội dung.',
+                  },
                 },
                 {
-                  name: 'headingItalic',
-                  type: 'checkbox',
-                  label: 'Heading Font Italic',
-                  defaultValue: false,
-                  admin: { width: '50%' },
+                  name: 'headingBoldFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font tiêu đề in đậm (Bold 700)',
+                  admin: {
+                    description: 'File font tiêu đề khi in đậm.',
+                  },
+                },
+                {
+                  name: 'headingItalicFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font tiêu đề in nghiêng (Italic)',
+                  admin: {
+                    description: 'File font tiêu đề khi in nghiêng.',
+                  },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'headingBold',
+                      type: 'checkbox',
+                      label: 'Mặc định toàn bộ Heading in đậm',
+                      defaultValue: false,
+                      admin: { width: '50%' },
+                    },
+                    {
+                      name: 'headingItalic',
+                      type: 'checkbox',
+                      label: 'Mặc định toàn bộ Heading in nghiêng',
+                      defaultValue: false,
+                      admin: { width: '50%' },
+                    },
+                  ],
                 },
               ],
             },
             {
-              name: 'uiFont',
-              type: 'relationship',
-              relationTo: 'fonts',
-              admin: {
-                description:
-                  'Buttons, inputs, navigation, mega menu, and other interface controls. When empty, SVN Arial 3 is used.',
-              },
-            },
-            {
-              type: 'row',
+              type: 'collapsible',
+              label: '3. Font giao diện & Menu (UI Typography)',
+              initCollapsed: false,
               fields: [
                 {
-                  name: 'uiBold',
-                  type: 'checkbox',
-                  label: 'UI Font Bold',
-                  defaultValue: false,
-                  admin: { width: '50%' },
+                  name: 'uiFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font UI mặc định (Regular 400)',
+                  admin: {
+                    description:
+                      'Nút bấm, menu header, thanh tìm kiếm, footer (VD: arial thường). Để trống sẽ dùng SVN Arial 3.',
+                  },
                 },
                 {
-                  name: 'uiItalic',
-                  type: 'checkbox',
-                  label: 'UI Font Italic',
-                  defaultValue: false,
-                  admin: { width: '50%' },
+                  name: 'uiBoldFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font UI in đậm (Bold 700)',
+                  admin: {
+                    description: 'File font UI khi in đậm.',
+                  },
+                },
+                {
+                  name: 'uiItalicFont',
+                  type: 'relationship',
+                  relationTo: 'fonts',
+                  label: 'Font UI in nghiêng (Italic)',
+                  admin: {
+                    description: 'File font UI khi in nghiêng.',
+                  },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'uiBold',
+                      type: 'checkbox',
+                      label: 'Mặc định toàn bộ UI in đậm',
+                      defaultValue: false,
+                      admin: { width: '50%' },
+                    },
+                    {
+                      name: 'uiItalic',
+                      type: 'checkbox',
+                      label: 'Mặc định toàn bộ UI in nghiêng',
+                      defaultValue: false,
+                      admin: { width: '50%' },
+                    },
+                  ],
                 },
               ],
             },
+            {
+              type: 'collapsible',
+              label: '4. Hiệu ứng chữ & Kích thước (Effects & Sizes)',
+              initCollapsed: false,
+              fields: [
+                {
+                  name: 'textTransform',
+                  type: 'select',
+                  label: 'Định dạng kiểu chữ Hoa / Thường (Text Transform)',
+                  defaultValue: 'none',
+                  options: [
+                    { label: 'Giữ nguyên theo nội dung gõ (Mặc định - Hỗ trợ CHỮ HOA & thường)', value: 'none' },
+                    { label: 'Tất cả chữ thường (lowercase - phong cách tối giản)', value: 'lowercase' },
+                    { label: 'Tất cả chữ in hoa (UPPERCASE)', value: 'uppercase' },
+                    { label: 'Viết hoa chữ cái đầu mỗi từ (Capitalize)', value: 'capitalize' },
+                  ],
+                  admin: {
+                    description: 'Áp dụng cho nội dung bài viết và các khối text.',
+                  },
+                },
             {
               type: 'row',
               fields: [
@@ -226,8 +336,10 @@ export const SiteSettings: GlobalConfig = {
             },
           ],
         },
-        {
-          name: 'spacing',
+      ],
+    },
+    {
+      name: 'spacing',
           type: 'group',
           fields: [
             {

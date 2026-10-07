@@ -30,33 +30,122 @@ function fontFormat(source: string) {
   return 'truetype'
 }
 
-function fontFace(font: StorefrontFont) {
-  if (!font.source) return ''
-  const safeSource = font.source.replace(/[<>\n\r]/g, '')
-
+function fontFaceRule(family: string, source: string, weight: number | string, style: string) {
+  if (!source) return ''
+  const safeSource = source.replace(/[<>\n\r]/g, '')
   return `
     @font-face {
-      font-family: "${sanitizeFontFamily(font.family)}";
+      font-family: "${sanitizeFontFamily(family)}";
       src: url(${JSON.stringify(safeSource)}) format("${fontFormat(safeSource)}");
       font-display: swap;
-      font-style: ${font.style};
-      font-weight: ${font.weight};
+      font-style: ${style};
+      font-weight: ${weight};
     }
   `
 }
 
+function buildAllFontFaces(
+  typography: DesignSystemData['typography'],
+  allFonts: StorefrontFont[],
+): string {
+  const rulesMap = new Map<string, string>()
+
+  const addRule = (family: string, source?: string, weight: number | string = 400, style = 'normal') => {
+    if (!family || !source) return
+    const key = `${family.toLowerCase().trim()}-${weight}-${style}-${source}`
+    if (!rulesMap.has(key)) {
+      rulesMap.set(key, fontFaceRule(family, source, weight, style))
+    }
+  }
+
+  // 1. Register each font in allFonts under its own family name
+  for (const font of allFonts) {
+    if (font.source) {
+      addRule(font.family, font.source, font.weight, font.style)
+    }
+  }
+
+  // Helper to link variants (bold, italic, bold italic) for a primary font
+  const linkVariants = (
+    primaryFont: StorefrontFont,
+    boldFont?: StorefrontFont,
+    italicFont?: StorefrontFont,
+    boldItalicFont?: StorefrontFont,
+  ) => {
+    const primaryFamily = primaryFont.family
+    if (primaryFont.source) {
+      addRule(primaryFamily, primaryFont.source, primaryFont.weight || 400, primaryFont.style || 'normal')
+    }
+
+    if (boldFont?.source) {
+      addRule(primaryFamily, boldFont.source, 700, 'normal')
+    }
+    if (italicFont?.source) {
+      addRule(primaryFamily, italicFont.source, 400, 'italic')
+    }
+    if (boldItalicFont?.source) {
+      addRule(primaryFamily, boldItalicFont.source, 700, 'italic')
+    }
+
+    // Auto-scan allFonts to link matching bold / italic files to the primary font family
+    const primaryBase = primaryFamily.toLowerCase().replace(/(thường|regular|normal|đậm|bold|nghiêng|italic)/g, '').trim()
+
+    for (const font of allFonts) {
+      if (!font.source) continue
+      const fnLower = (font.filename || '').toLowerCase()
+      const famLower = font.family.toLowerCase()
+
+      const isRelated = primaryBase ? (famLower.includes(primaryBase) || fnLower.includes(primaryBase)) : true
+      if (!isRelated && allFonts.length > 5) continue
+
+      const isBold = font.weight >= 600 || fnLower.includes('bold') || fnLower.includes('đậm') || famLower.includes('bold') || famLower.includes('đậm')
+      const isItalic = font.style === 'italic' || fnLower.includes('italic') || fnLower.includes('nghiêng') || famLower.includes('italic') || famLower.includes('nghiêng')
+
+      if (isBold && isItalic && !boldItalicFont) {
+        addRule(primaryFamily, font.source, 700, 'italic')
+      } else if (isBold && !isItalic && !boldFont) {
+        addRule(primaryFamily, font.source, 700, 'normal')
+      } else if (!isBold && isItalic && !italicFont) {
+        addRule(primaryFamily, font.source, 400, 'italic')
+      }
+    }
+  }
+
+  linkVariants(typography.bodyFont, typography.bodyBoldFont, typography.bodyItalicFont, typography.bodyBoldItalicFont)
+  linkVariants(typography.headingFont, typography.headingBoldFont, typography.headingItalicFont)
+  linkVariants(typography.uiFont, typography.uiBoldFont, typography.uiItalicFont)
+
+  // Alias common standard fonts
+  for (const font of allFonts) {
+    if (!font.source) continue
+    const fnLower = (font.filename || '').toLowerCase()
+    const famLower = font.family.toLowerCase()
+    if (famLower.includes('times') || fnLower.includes('times')) {
+      const isBold = font.weight >= 600 || fnLower.includes('bold') || fnLower.includes('đậm') || famLower.includes('bold') || famLower.includes('đậm')
+      const isItalic = font.style === 'italic' || fnLower.includes('italic') || fnLower.includes('nghiêng') || famLower.includes('italic') || famLower.includes('nghiêng')
+      const weight = isBold ? 700 : 400
+      const style = isItalic ? 'italic' : 'normal'
+      addRule('SVN Times New Roman 2', font.source, weight, style)
+      addRule('Times New Roman', font.source, weight, style)
+      addRule('TIMES thường', font.source, weight, style)
+    }
+    if (famLower.includes('arial') || fnLower.includes('arial')) {
+      const isBold = font.weight >= 600 || fnLower.includes('bold') || fnLower.includes('đậm') || famLower.includes('bold') || famLower.includes('đậm')
+      const isItalic = font.style === 'italic' || fnLower.includes('italic') || fnLower.includes('nghiêng') || famLower.includes('italic') || famLower.includes('nghiêng')
+      const weight = isBold ? 700 : 400
+      const style = isItalic ? 'italic' : 'normal'
+      addRule('SVN Arial 3', font.source, weight, style)
+      addRule('Arial', font.source, weight, style)
+      addRule('arial thường', font.source, weight, style)
+    }
+  }
+
+  return Array.from(rulesMap.values()).join('\n')
+}
+
 function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: StorefrontFont[] }) {
   const { typography, spacing, allFonts = [] } = designSystem
-  const fontFaces = Array.from(
-    new Map(
-      [typography.bodyFont, typography.headingFont, typography.uiFont, ...allFonts]
-        .filter((font) => font.source)
-        .map((font) => [
-          `${font.family}-${font.weight}-${font.style}-${font.source}`,
-          fontFace(font),
-        ]),
-    ).values(),
-  ).join('\n')
+  const fontFaces = buildAllFontFaces(typography, allFonts)
 
   return `
   ${fontFaces}
@@ -74,6 +163,7 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
     --dien-body-size: ${typography.bodySize}px;
     --dien-line-height: ${typography.lineHeight};
     --dien-letter-spacing: ${typography.letterSpacing}em;
+    --dien-text-transform: ${typography.textTransform || 'none'};
     --dien-spacing-scale: ${spacing.scale};
     --dien-page-padding-mobile: ${spacing.pagePaddingMobile}px;
     --dien-page-padding-desktop: ${spacing.pagePaddingDesktop}px;
@@ -89,18 +179,80 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
   body#california-arts {
     font-family: var(--dien-body-font-stack) !important;
     letter-spacing: var(--dien-letter-spacing) !important;
-    font-weight: ${typography.bodyBold ? 'bold' : 'normal'} !important;
-    font-style: ${typography.bodyItalic ? 'italic' : 'normal'} !important;
+    font-weight: ${typography.bodyBold ? 'bold' : 'normal'};
+    font-style: ${typography.bodyItalic ? 'italic' : 'normal'};
+    font-synthesis: weight style !important;
   }
 
-  body#california-arts main,
-  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss),
-  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss)::before,
-  body#california-arts main *:not(button):not(input):not(textarea):not(select):not(option):not([role='button']):not(.home-hero__cta):not(.cms-page__button):not(.collection-product-page__next-cta-button):not(.product-detail__add-button):not(.search-overlay__submit):not(.contact-intake-form__submit):not(.checkout-page__submit):not(.cart-drawer__checkout):not(.cart-drawer__continue):not(.newsletter-popup__submit):not(.newsletter-popup__dismiss)::after {
-    font-family: var(--dien-body-font-stack) !important;
-    letter-spacing: var(--dien-letter-spacing) !important;
-    font-weight: ${typography.bodyBold ? 'bold' : 'normal'} !important;
-    font-style: ${typography.bodyItalic ? 'italic' : 'normal'} !important;
+  body#california-arts main {
+    font-family: var(--dien-body-font-stack);
+    letter-spacing: var(--dien-letter-spacing);
+  }
+
+  /* Support bold, italic, underline, strikethrough, uppercase and formatting everywhere */
+  body#california-arts strong,
+  body#california-arts b,
+  body#california-arts main strong,
+  body#california-arts main b,
+  body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) :where(strong, b) {
+    font-weight: 700 !important;
+    font-weight: bold !important;
+  }
+
+  body#california-arts em,
+  body#california-arts i,
+  body#california-arts main em,
+  body#california-arts main i,
+  body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) :where(em, i) {
+    font-style: italic !important;
+  }
+
+  body#california-arts u,
+  body#california-arts main u,
+  body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) u {
+    text-decoration: underline !important;
+    text-decoration-line: underline !important;
+  }
+
+  body#california-arts :where(s, del, strike),
+  body#california-arts main :where(s, del, strike),
+  body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) :where(s, del, strike) {
+    text-decoration: line-through !important;
+    text-decoration-line: line-through !important;
+  }
+
+  body#california-arts :where(code, pre),
+  body#california-arts main :where(code, pre) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  }
+
+  body#california-arts :where(sub),
+  body#california-arts main :where(sub) {
+    vertical-align: sub !important;
+    font-size: 0.75em !important;
+    line-height: 0 !important;
+  }
+
+  body#california-arts :where(sup),
+  body#california-arts main :where(sup) {
+    vertical-align: super !important;
+    font-size: 0.75em !important;
+    line-height: 0 !important;
+  }
+
+  body#california-arts :where(mark),
+  body#california-arts main :where(mark) {
+    background-color: rgba(254, 240, 138, 0.5) !important;
+    padding: 1px 4px !important;
+    border-radius: 2px !important;
+  }
+
+  /* Editorial & CMS content preserves typed casing */
+  body#california-arts :where(.story-page__copy, .cms-page, .cms-rich-text, .product-detail__summary, .product-detail__accordion) {
+    text-transform: ${typography.textTransform || 'none'} !important;
+  }
+  body#california-arts :where(.story-page__copy, .cms-page, .cms-rich-text, .product-detail__summary, .product-detail__accordion) * {
+    text-transform: ${typography.textTransform || 'none'} !important;
   }
 
   html {

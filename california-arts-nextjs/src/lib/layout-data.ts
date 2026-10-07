@@ -88,11 +88,35 @@ function normalizeFont(font: unknown, fallback: StorefrontFont): StorefrontFont 
   const value = font as Exclude<FontLike, number | string | null | undefined>
 
   const family = value.fontFamily?.trim() || fallback.family
+  const filename = (value.filename || '').trim()
   const source = ensureAbsoluteUrl(
     value.url ||
-      (value.filename ? `/api/fonts/file/${encodeURIComponent(value.filename)}` : undefined),
+      (filename ? `/api/fonts/file/${encodeURIComponent(filename)}` : undefined),
   )
-  const style = value.style === 'italic' ? 'italic' : 'normal'
+
+  const fnLower = filename.toLowerCase()
+  const famLower = family.toLowerCase()
+
+  let style: 'normal' | 'italic' = value.style === 'italic' ? 'italic' : 'normal'
+  if (style === 'normal' && (fnLower.includes('italic') || fnLower.includes('nghiêng') || famLower.includes('italic') || famLower.includes('nghiêng'))) {
+    style = 'italic'
+  }
+
+  let defaultWeight = fallback.weight
+  if (fnLower.includes('bold') || fnLower.includes('đậm') || famLower.includes('bold') || famLower.includes('đậm')) {
+    defaultWeight = 700
+  } else if (fnLower.includes('black') || famLower.includes('black')) {
+    defaultWeight = 900
+  } else if (fnLower.includes('light') || famLower.includes('light')) {
+    defaultWeight = 300
+  } else if (fnLower.includes('medium') || famLower.includes('medium')) {
+    defaultWeight = 500
+  } else if (fnLower.includes('semi') || famLower.includes('semi')) {
+    defaultWeight = 600
+  }
+
+  const weight = clampNumber(value.weight ?? defaultWeight, defaultWeight, 100, 900)
+
   const fontFallback =
     value.fallback === 'serif' ||
     value.fallback === 'monospace' ||
@@ -103,9 +127,10 @@ function normalizeFont(font: unknown, fallback: StorefrontFont): StorefrontFont 
   return {
     family,
     source,
-    weight: clampNumber(value.weight, fallback.weight, 100, 900),
+    weight,
     style,
     fallback: fontFallback,
+    filename: filename || undefined,
   }
 }
 
@@ -397,14 +422,22 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
       designSystem?: {
         typography?: {
           bodyFont?: FontLike
+          bodyBoldFont?: FontLike
+          bodyItalicFont?: FontLike
+          bodyBoldItalicFont?: FontLike
           bodyBold?: boolean
           bodyItalic?: boolean
           headingFont?: FontLike
+          headingBoldFont?: FontLike
+          headingItalicFont?: FontLike
           headingBold?: boolean
           headingItalic?: boolean
           uiFont?: FontLike
+          uiBoldFont?: FontLike
+          uiItalicFont?: FontLike
           uiBold?: boolean
           uiItalic?: boolean
+          textTransform?: 'none' | 'lowercase' | 'uppercase' | 'capitalize'
           headingSize?: number
           subheadingSize?: number
           bodySize?: number
@@ -426,23 +459,59 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
       typography?.bodyFont,
       DEFAULT_DESIGN_SYSTEM.typography.bodyFont,
     )
+    const bodyBoldFont = typography?.bodyBoldFont
+      ? normalizeFont(typography.bodyBoldFont, { ...bodyFont, weight: 700 })
+      : undefined
+    const bodyItalicFont = typography?.bodyItalicFont
+      ? normalizeFont(typography.bodyItalicFont, { ...bodyFont, style: 'italic' })
+      : undefined
+    const bodyBoldItalicFont = typography?.bodyBoldItalicFont
+      ? normalizeFont(typography.bodyBoldItalicFont, { ...bodyFont, weight: 700, style: 'italic' })
+      : undefined
+
     const headingFont = normalizeFont(typography?.headingFont, bodyFont)
+    const headingBoldFont = typography?.headingBoldFont
+      ? normalizeFont(typography.headingBoldFont, { ...headingFont, weight: 700 })
+      : undefined
+    const headingItalicFont = typography?.headingItalicFont
+      ? normalizeFont(typography.headingItalicFont, { ...headingFont, style: 'italic' })
+      : undefined
+
     const uiFont = normalizeFont(
       typography?.uiFont,
       DEFAULT_DESIGN_SYSTEM.typography.uiFont,
     )
+    const uiBoldFont = typography?.uiBoldFont
+      ? normalizeFont(typography.uiBoldFont, { ...uiFont, weight: 700 })
+      : undefined
+    const uiItalicFont = typography?.uiItalicFont
+      ? normalizeFont(typography.uiItalicFont, { ...uiFont, style: 'italic' })
+      : undefined
+
+    const validTransforms = ['none', 'lowercase', 'uppercase', 'capitalize'] as const
+    const textTransform = validTransforms.includes(typography?.textTransform as any)
+      ? (typography?.textTransform as 'none' | 'lowercase' | 'uppercase' | 'capitalize')
+      : 'none'
 
     return {
       typography: {
         bodyFont,
+        bodyBoldFont,
+        bodyItalicFont,
+        bodyBoldItalicFont,
         bodyBold: !!typography?.bodyBold,
         bodyItalic: !!typography?.bodyItalic,
         headingFont,
+        headingBoldFont,
+        headingItalicFont,
         headingBold: !!typography?.headingBold,
         headingItalic: !!typography?.headingItalic,
         uiFont,
+        uiBoldFont,
+        uiItalicFont,
         uiBold: !!typography?.uiBold,
         uiItalic: !!typography?.uiItalic,
+        textTransform,
         headingSize: clampNumber(
           typography?.headingSize,
           DEFAULT_DESIGN_SYSTEM.typography.headingSize,

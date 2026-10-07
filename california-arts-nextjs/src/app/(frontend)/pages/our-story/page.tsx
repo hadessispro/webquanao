@@ -120,7 +120,7 @@ function StoryPage({ sections }: { sections: StorySection[] }) {
                   <div className="story-page__copy">
                     {section.title && <h2>{section.title}</h2>}
                     {section.bodyHtml ? (
-                      <div dangerouslySetInnerHTML={{ __html: section.bodyHtml }} />
+                      <div className="cms-rich-text" dangerouslySetInnerHTML={{ __html: section.bodyHtml }} />
                     ) : (
                       section.body?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
                     )}

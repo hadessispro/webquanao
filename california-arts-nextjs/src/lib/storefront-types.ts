@@ -248,19 +248,28 @@ export interface StorefrontFont {
   weight: number
   style: 'normal' | 'italic'
   fallback: 'serif' | 'sans-serif' | 'monospace'
+  filename?: string
 }
 
 export interface DesignSystemData {
   typography: {
     bodyFont: StorefrontFont
+    bodyBoldFont?: StorefrontFont
+    bodyItalicFont?: StorefrontFont
+    bodyBoldItalicFont?: StorefrontFont
     bodyBold?: boolean
     bodyItalic?: boolean
     headingFont: StorefrontFont
+    headingBoldFont?: StorefrontFont
+    headingItalicFont?: StorefrontFont
     headingBold?: boolean
     headingItalic?: boolean
     uiFont: StorefrontFont
+    uiBoldFont?: StorefrontFont
+    uiItalicFont?: StorefrontFont
     uiBold?: boolean
     uiItalic?: boolean
+    textTransform?: 'none' | 'lowercase' | 'uppercase' | 'capitalize'
     headingSize: number
     subheadingSize: number
     bodySize: number
@@ -306,6 +315,7 @@ export const DEFAULT_DESIGN_SYSTEM: DesignSystemData = {
     bodySize: 16,
     lineHeight: 1.5,
     letterSpacing: 0,
+    textTransform: 'none',
   },
   spacing: {
     scale: 1,

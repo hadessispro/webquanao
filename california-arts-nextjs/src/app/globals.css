@@ -99,7 +99,6 @@ body {
   padding: 0;
   min-height: 100%;
   overflow-x: clip;
-  text-transform: lowercase;
 }
 
 html {
@@ -113,7 +112,6 @@ body {
   font-size: var(--dien-body-size);
   line-height: 1.5;
   overflow-y: visible;
-  text-transform: lowercase;
 }
 
 body#california-arts {
@@ -121,7 +119,6 @@ body#california-arts {
   font-family: var(--body-font-stack) !important;
   font-size: var(--dien-body-size);
   line-height: 1.5;
-  text-transform: lowercase;
 }
 
 body#california-arts main *,
@@ -129,9 +126,6 @@ body#california-arts main *::before,
 body#california-arts main *::after {
   font-family: var(--body-font-stack) !important;
   letter-spacing: 0 !important;
-  text-decoration: none !important;
-  text-decoration-line: none !important;
-  text-transform: lowercase !important;
 }
 
 body#california-arts .font-heading,
@@ -12248,32 +12242,59 @@ body#california-arts .cms-page blockquote {
   color: rgba(19, 24, 24, 0.75) !important;
 }
 
-body#california-arts .story-page__copy strong,
-body#california-arts .story-page__copy b,
-body#california-arts .cms-page strong,
-body#california-arts .cms-page b {
+body#california-arts strong,
+body#california-arts b,
+body#california-arts main strong,
+body#california-arts main b,
+body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) :where(strong, b) {
   font-weight: 700 !important;
+  font-weight: bold !important;
 }
 
-body#california-arts .story-page__copy em,
-body#california-arts .story-page__copy i,
-body#california-arts .cms-page em,
-body#california-arts .cms-page i {
+body#california-arts em,
+body#california-arts i,
+body#california-arts main em,
+body#california-arts main i,
+body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) :where(em, i) {
   font-style: italic !important;
 }
 
-body#california-arts .story-page__copy u,
-body#california-arts .cms-page u {
+body#california-arts u,
+body#california-arts main u,
+body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) u {
   text-decoration: underline !important;
+  text-decoration-line: underline !important;
 }
 
-body#california-arts .story-page__copy s,
-body#california-arts .cms-page s {
+body#california-arts :where(s, del, strike),
+body#california-arts main :where(s, del, strike),
+body#california-arts :where(.story-page, .cms-page, .cms-rich-text, article, .product-detail) :where(s, del, strike) {
   text-decoration: line-through !important;
+  text-decoration-line: line-through !important;
+}
+
+body#california-arts :where(sub),
+body#california-arts main :where(sub) {
+  vertical-align: sub !important;
+  font-size: 0.75em !important;
+  line-height: 0 !important;
+}
+
+body#california-arts :where(sup),
+body#california-arts main :where(sup) {
+  vertical-align: super !important;
+  font-size: 0.75em !important;
+  line-height: 0 !important;
+}
+
+body#california-arts :where(code),
+body#california-arts main :where(code) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 body#california-arts .story-page__copy mark,
-body#california-arts .cms-page mark {
+body#california-arts .cms-page mark,
+body#california-arts .cms-rich-text mark {
   background-color: rgba(254, 240, 138, 0.5) !important;
   padding: 1px 4px !important;
   border-radius: 2px !important;

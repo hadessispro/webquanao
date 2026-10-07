@@ -102,6 +102,10 @@ export function richTextToHtml(value: unknown): string {
     if (isSuper) text = `<sup>${text}</sup>`
     if (isHighlight) text = `<mark>${text}</mark>`
 
+    if (node.style && typeof node.style === 'string') {
+      text = `<span style="${escapeHtml(node.style)}">${text}</span>`
+    }
+
     return text
   }
 

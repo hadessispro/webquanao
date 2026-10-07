@@ -15,6 +15,39 @@ export const Fonts: CollectionConfig = {
     description:
       'Upload TTF, OTF, WOFF, or WOFF2 files, then assign them in Site Settings > Typography & Spacing.',
   },
+  hooks: {
+    beforeChange: [
+      ({ data, originalDoc }) => {
+        if (!data) return data
+        const filename = (data.filename || originalDoc?.filename || '').toLowerCase()
+        const family = (data.fontFamily || originalDoc?.fontFamily || '').toLowerCase()
+
+        // Auto-detect weight if default 400
+        if (!data.weight || data.weight === '400') {
+          if (filename.includes('bold') || filename.includes('đậm') || family.includes('bold') || family.includes('đậm')) {
+            data.weight = '700'
+          } else if (filename.includes('black') || family.includes('black')) {
+            data.weight = '900'
+          } else if (filename.includes('light') || family.includes('light')) {
+            data.weight = '300'
+          } else if (filename.includes('medium') || family.includes('medium')) {
+            data.weight = '500'
+          } else if (filename.includes('semi') || family.includes('semi')) {
+            data.weight = '600'
+          }
+        }
+
+        // Auto-detect style if default normal
+        if (!data.style || data.style === 'normal') {
+          if (filename.includes('italic') || filename.includes('nghiêng') || family.includes('italic') || family.includes('nghiêng')) {
+            data.style = 'italic'
+          }
+        }
+
+        return data
+      },
+    ],
+  },
   upload: {
     staticDir: process.env.FONT_UPLOAD_DIR || 'font-files',
     mimeTypes: [
@@ -34,7 +67,7 @@ export const Fonts: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'CSS font-family name, for example: SVN Times New Roman 2.',
+        description: 'Tên Font Family (VD: SVN Times New Roman 2, TIMES thường). Hệ thống sẽ tự liên kết các file Đậm/Nghiêng có liên quan.',
       },
     },
     {
@@ -42,6 +75,9 @@ export const Fonts: CollectionConfig = {
       type: 'select',
       required: true,
       defaultValue: '400',
+      admin: {
+        description: 'Độ đậm font (400 - Thường, 700 - Đậm). Tự động nhận diện nếu tên file có chữ bold/đậm.',
+      },
       options: [
         { label: '100 - Thin', value: '100' },
         { label: '200 - Extra Light', value: '200' },
