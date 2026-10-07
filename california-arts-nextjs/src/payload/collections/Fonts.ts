@@ -47,6 +47,38 @@ export const Fonts: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [
+      async () => {
+        try {
+          const { resetStorefrontLayoutCache } = await import('../../lib/layout-data')
+          resetStorefrontLayoutCache()
+        } catch (err) {
+          console.error('Failed to reset storefront layout cache:', err)
+        }
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+        } catch (err) {
+          console.error('Failed to revalidate layout:', err)
+        }
+      },
+    ],
+    afterDelete: [
+      async () => {
+        try {
+          const { resetStorefrontLayoutCache } = await import('../../lib/layout-data')
+          resetStorefrontLayoutCache()
+        } catch (err) {
+          console.error('Failed to reset storefront layout cache:', err)
+        }
+        try {
+          const { revalidatePath } = await import('next/cache')
+          revalidatePath('/', 'layout')
+        } catch (err) {
+          console.error('Failed to revalidate layout:', err)
+        }
+      },
+    ],
   },
   upload: {
     staticDir: process.env.FONT_UPLOAD_DIR || 'font-files',

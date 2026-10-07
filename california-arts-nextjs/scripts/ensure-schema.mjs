@@ -46,6 +46,36 @@ async function columnNames(table) {
 async function run() {
   let added = 0
 
+  // 0. SQLite performance PRAGMAs & indexes
+  try {
+    await client.execute('PRAGMA journal_mode = WAL;')
+    await client.execute('PRAGMA synchronous = NORMAL;')
+    await client.execute('PRAGMA cache_size = -64000;')
+    await client.execute('PRAGMA temp_store = MEMORY;')
+    await client.execute('PRAGMA mmap_size = 268435456;')
+    console.log('[ensure-schema] SQLite performance PRAGMAs applied (WAL, synchronous=NORMAL, cache_size 64MB, mmap 256MB)')
+  } catch (err) {
+    console.warn('[ensure-schema] PRAGMA notice:', err.message)
+  }
+
+  const performanceIndexes = [
+    'CREATE INDEX IF NOT EXISTS idx_products_handle ON products(handle);',
+    'CREATE INDEX IF NOT EXISTS idx_products_status ON products(status);',
+    'CREATE INDEX IF NOT EXISTS idx_products_updated_at ON products(updated_at);',
+    'CREATE INDEX IF NOT EXISTS idx_product_collections_handle ON product_collections(handle);',
+    'CREATE INDEX IF NOT EXISTS idx_product_collections_status ON product_collections(status);',
+    'CREATE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);',
+    'CREATE INDEX IF NOT EXISTS idx_fonts_filename ON fonts(filename);',
+    'CREATE INDEX IF NOT EXISTS idx_fonts_family ON fonts(font_family);',
+  ]
+  for (const idxSql of performanceIndexes) {
+    try {
+      await client.execute(idxSql)
+    } catch {
+      // safe ignore if table not created yet
+    }
+  }
+
   // 1. Ensure table products_videos exists (for product detail videos)
   if (await tableExists('products') && !(await tableExists('products_videos'))) {
     await client.execute(`

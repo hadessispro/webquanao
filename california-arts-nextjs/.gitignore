@@ -35,6 +35,8 @@ dev-server*.log
 /media/
 /product-videos/
 database.before-shopify-import.db
+*.db-shm
+*.db-wal
 
 # env files (can opt-in for committing if needed)
 .env*

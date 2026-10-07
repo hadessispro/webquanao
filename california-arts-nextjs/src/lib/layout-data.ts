@@ -23,6 +23,48 @@ import {
 } from './size-finder'
 import { getPayloadClient } from './payload-client'
 
+const LAYOUT_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes cache
+
+type CacheEntry<T> = {
+  data: T
+  expiresAt: number
+}
+
+const layoutCache = new Map<string, CacheEntry<unknown>>()
+const inFlightRequests = new Map<string, Promise<unknown>>()
+
+export function resetStorefrontLayoutCache() {
+  layoutCache.clear()
+  inFlightRequests.clear()
+}
+
+async function getCachedLayoutData<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
+  const now = Date.now()
+  const cached = layoutCache.get(key)
+  if (cached && cached.expiresAt > now) {
+    return cached.data as T
+  }
+
+  const pending = inFlightRequests.get(key)
+  if (pending) {
+    return pending as Promise<T>
+  }
+
+  const promise = fetcher()
+    .then((result) => {
+      layoutCache.set(key, { data: result, expiresAt: Date.now() + LAYOUT_CACHE_TTL_MS })
+      inFlightRequests.delete(key)
+      return result
+    })
+    .catch((err) => {
+      inFlightRequests.delete(key)
+      throw err
+    })
+
+  inFlightRequests.set(key, promise)
+  return promise
+}
+
 type MediaLike =
   | number
   | string
@@ -399,8 +441,9 @@ function normalizeFooterColumns(columns: unknown): FooterColumn[] {
 }
 
 export async function getDesignSystemData(): Promise<DesignSystemData & { allFonts?: StorefrontFont[] }> {
-  try {
-    const payload = await getPayloadClient()
+  return getCachedLayoutData('design-system', async () => {
+    try {
+      const payload = await getPayloadClient()
     let allFonts: StorefrontFont[] = []
     try {
       const fontsRes = await payload.find({
@@ -571,9 +614,10 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
       },
       allFonts,
     }
-  } catch {
-    return DEFAULT_DESIGN_SYSTEM
-  }
+    } catch {
+      return DEFAULT_DESIGN_SYSTEM
+    }
+  })
 }
 
 export type SiteMetadata = {
@@ -590,103 +634,109 @@ const DEFAULT_SITE_METADATA: SiteMetadata = {
 // Site-wide SEO defaults, editable in the admin under Site Settings -> SEO.
 // Used for the homepage and as a fallback title template.
 export async function getSiteMetadata(): Promise<SiteMetadata> {
-  try {
-    const payload = await getPayloadClient()
-    const settings = (await payload.findGlobal({
-      slug: 'site-settings',
-      depth: 2,
-    })) as {
-      siteName?: string
-      siteDescription?: string
-      seo?: {
-        title?: string
-        description?: string
-        image?: MediaLike
+  return getCachedLayoutData('site-metadata', async () => {
+    try {
+      const payload = await getPayloadClient()
+      const settings = (await payload.findGlobal({
+        slug: 'site-settings',
+        depth: 2,
+      })) as {
+        siteName?: string
+        siteDescription?: string
+        seo?: {
+          title?: string
+          description?: string
+          image?: MediaLike
+        }
       }
-    }
 
-    const image = mediaToImage(settings.seo?.image)?.src
+      const image = mediaToImage(settings.seo?.image)?.src
 
-    return {
-      title: settings.seo?.title || settings.siteName || DEFAULT_SITE_METADATA.title,
-      description:
-        settings.seo?.description || settings.siteDescription || DEFAULT_SITE_METADATA.description,
-      image,
+      return {
+        title: settings.seo?.title || settings.siteName || DEFAULT_SITE_METADATA.title,
+        description:
+          settings.seo?.description || settings.siteDescription || DEFAULT_SITE_METADATA.description,
+        image,
+      }
+    } catch {
+      return DEFAULT_SITE_METADATA
     }
-  } catch {
-    return DEFAULT_SITE_METADATA
-  }
+  })
 }
 
 // Size finder config for the product page "tìm size" tool. Editable in the
 // admin (Site Settings -> Size finder). Falls back to the built-in default.
 export async function getSizeFinderConfig(): Promise<SizeFinderConfig> {
-  try {
-    const payload = await getPayloadClient()
-    const settings = (await payload.findGlobal({
-      slug: 'site-settings',
-      depth: 0,
-    })) as { sizeFinder?: unknown }
-    return normalizeSizeFinder(settings.sizeFinder)
-  } catch {
-    return DEFAULT_SIZE_FINDER
-  }
+  return getCachedLayoutData('size-finder', async () => {
+    try {
+      const payload = await getPayloadClient()
+      const settings = (await payload.findGlobal({
+        slug: 'site-settings',
+        depth: 0,
+      })) as { sizeFinder?: unknown }
+      return normalizeSizeFinder(settings.sizeFinder)
+    } catch {
+      return DEFAULT_SIZE_FINDER
+    }
+  })
 }
 
 export async function getHeaderData(): Promise<HeaderData> {
-  try {
-    const payload = await getPayloadClient()
-    const header = (await payload.findGlobal({
-      slug: 'header',
-      depth: 2,
-    })) as {
-      logoText?: string
-      logoHref?: string
-      logoAlt?: string
-      logo?: MediaLike
-      shippingBar?: {
-        enabled?: boolean
-        text?: string
-        textVi?: string
-        href?: string
+  return getCachedLayoutData('header', async () => {
+    try {
+      const payload = await getPayloadClient()
+      const header = (await payload.findGlobal({
+        slug: 'header',
+        depth: 2,
+      })) as {
+        logoText?: string
+        logoHref?: string
+        logoAlt?: string
+        logo?: MediaLike
+        shippingBar?: {
+          enabled?: boolean
+          text?: string
+          textVi?: string
+          href?: string
+        }
+        countrySelector?: {
+          enabled?: boolean
+          label?: string
+          labelVi?: string
+        }
+        navigation?: unknown
       }
-      countrySelector?: {
-        enabled?: boolean
-        label?: string
-        labelVi?: string
+
+      const navigation = normalizeNavigation(header.navigation)
+
+      return {
+        logoText: header.logoText || DEFAULT_HEADER.logoText,
+        logoHref: header.logoHref || DEFAULT_HEADER.logoHref,
+        logoAlt: header.logoAlt || header.logoText || DEFAULT_HEADER.logoAlt,
+        logo: mediaToImage(header.logo, header.logoAlt || header.logoText) || DEFAULT_HEADER.logo,
+        shippingBar: {
+          enabled: header.shippingBar?.enabled ?? DEFAULT_HEADER.shippingBar.enabled,
+          text: header.shippingBar?.text || DEFAULT_HEADER.shippingBar.text,
+          textVi:
+            header.shippingBar?.textVi ||
+            translateSourceTextToVi(header.shippingBar?.text) ||
+            DEFAULT_HEADER.shippingBar.textVi,
+          href: header.shippingBar?.href || DEFAULT_HEADER.shippingBar.href,
+        },
+        countrySelector: {
+          enabled: header.countrySelector?.enabled ?? DEFAULT_HEADER.countrySelector.enabled,
+          label: header.countrySelector?.label || DEFAULT_HEADER.countrySelector.label,
+          labelVi:
+            header.countrySelector?.labelVi ||
+            translateSourceTextToVi(header.countrySelector?.label) ||
+            DEFAULT_HEADER.countrySelector.labelVi,
+        },
+        navigation,
       }
-      navigation?: unknown
+    } catch {
+      return DEFAULT_HEADER
     }
-
-    const navigation = normalizeNavigation(header.navigation)
-
-    return {
-      logoText: header.logoText || DEFAULT_HEADER.logoText,
-      logoHref: header.logoHref || DEFAULT_HEADER.logoHref,
-      logoAlt: header.logoAlt || header.logoText || DEFAULT_HEADER.logoAlt,
-      logo: mediaToImage(header.logo, header.logoAlt || header.logoText) || DEFAULT_HEADER.logo,
-      shippingBar: {
-        enabled: header.shippingBar?.enabled ?? DEFAULT_HEADER.shippingBar.enabled,
-        text: header.shippingBar?.text || DEFAULT_HEADER.shippingBar.text,
-        textVi:
-          header.shippingBar?.textVi ||
-          translateSourceTextToVi(header.shippingBar?.text) ||
-          DEFAULT_HEADER.shippingBar.textVi,
-        href: header.shippingBar?.href || DEFAULT_HEADER.shippingBar.href,
-      },
-      countrySelector: {
-        enabled: header.countrySelector?.enabled ?? DEFAULT_HEADER.countrySelector.enabled,
-        label: header.countrySelector?.label || DEFAULT_HEADER.countrySelector.label,
-        labelVi:
-          header.countrySelector?.labelVi ||
-          translateSourceTextToVi(header.countrySelector?.label) ||
-          DEFAULT_HEADER.countrySelector.labelVi,
-      },
-      navigation,
-    }
-  } catch {
-    return DEFAULT_HEADER
-  }
+  })
 }
 
 
@@ -702,72 +752,75 @@ function normalizeSocialLinks(socialLinks: unknown) {
 }
 
 export async function getFooterData(): Promise<FooterData> {
-  try {
-    const payload = await getPayloadClient()
-    const footer = (await payload.findGlobal({
-      slug: 'footer',
-      depth: 2,
-    })) as {
-      desktopLogo?: MediaLike
-      mobileLogo?: MediaLike
-      columns?: unknown
-      newsletter?: Partial<FooterData['newsletter']>
-      copyright?: string
-      locationText?: string
-      socialLinks?: unknown
-    }
+  return getCachedLayoutData('footer', async () => {
+    try {
+      const payload = await getPayloadClient()
+      const footer = (await payload.findGlobal({
+        slug: 'footer',
+        depth: 2,
+      })) as {
+        desktopLogo?: MediaLike
+        mobileLogo?: MediaLike
+        columns?: unknown
+        newsletter?: Partial<FooterData['newsletter']>
+        copyright?: string
+        locationText?: string
+        socialLinks?: unknown
+      }
 
-    return {
-      desktopLogo:
-        mediaToImage(footer.desktopLogo, 'điển') || DEFAULT_FOOTER.desktopLogo,
-      mobileLogo:
-        mediaToImage(footer.mobileLogo, 'điển') || DEFAULT_FOOTER.mobileLogo,
-      columns: normalizeFooterColumns(footer.columns),
-      newsletter: {
-        title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
-        titleVi:
-          footer.newsletter?.titleVi ||
-          translateSourceTextToVi(footer.newsletter?.title) ||
-          DEFAULT_FOOTER.newsletter.titleVi,
-        description:
-          footer.newsletter?.description || DEFAULT_FOOTER.newsletter.description,
-        descriptionVi:
-          footer.newsletter?.descriptionVi ||
-          translateSourceTextToVi(footer.newsletter?.description) ||
-          DEFAULT_FOOTER.newsletter.descriptionVi,
-        placeholder:
-          footer.newsletter?.placeholder || DEFAULT_FOOTER.newsletter.placeholder,
-        placeholderVi:
-          footer.newsletter?.placeholderVi ||
-          translateSourceTextToVi(footer.newsletter?.placeholder) ||
-          DEFAULT_FOOTER.newsletter.placeholderVi,
-        buttonLabel:
-          footer.newsletter?.buttonLabel || DEFAULT_FOOTER.newsletter.buttonLabel,
-        buttonLabelVi:
-          footer.newsletter?.buttonLabelVi ||
-          translateSourceTextToVi(footer.newsletter?.buttonLabel) ||
-          DEFAULT_FOOTER.newsletter.buttonLabelVi,
-        privacyText:
-          footer.newsletter?.privacyText || DEFAULT_FOOTER.newsletter.privacyText,
-        privacyTextVi:
-          footer.newsletter?.privacyTextVi ||
-          translateSourceTextToVi(footer.newsletter?.privacyText) ||
-          DEFAULT_FOOTER.newsletter.privacyTextVi,
-        privacyHref:
-          footer.newsletter?.privacyHref || DEFAULT_FOOTER.newsletter.privacyHref,
-      },
-      copyright: footer.copyright || DEFAULT_FOOTER.copyright,
-      locationText: footer.locationText || DEFAULT_FOOTER.locationText,
-      socialLinks: normalizeSocialLinks(footer.socialLinks),
+      return {
+        desktopLogo:
+          mediaToImage(footer.desktopLogo, 'điển') || DEFAULT_FOOTER.desktopLogo,
+        mobileLogo:
+          mediaToImage(footer.mobileLogo, 'điển') || DEFAULT_FOOTER.mobileLogo,
+        columns: normalizeFooterColumns(footer.columns),
+        newsletter: {
+          title: footer.newsletter?.title || DEFAULT_FOOTER.newsletter.title,
+          titleVi:
+            footer.newsletter?.titleVi ||
+            translateSourceTextToVi(footer.newsletter?.title) ||
+            DEFAULT_FOOTER.newsletter.titleVi,
+          description:
+            footer.newsletter?.description || DEFAULT_FOOTER.newsletter.description,
+          descriptionVi:
+            footer.newsletter?.descriptionVi ||
+            translateSourceTextToVi(footer.newsletter?.description) ||
+            DEFAULT_FOOTER.newsletter.descriptionVi,
+          placeholder:
+            footer.newsletter?.placeholder || DEFAULT_FOOTER.newsletter.placeholder,
+          placeholderVi:
+            footer.newsletter?.placeholderVi ||
+            translateSourceTextToVi(footer.newsletter?.placeholder) ||
+            DEFAULT_FOOTER.newsletter.placeholderVi,
+          buttonLabel:
+            footer.newsletter?.buttonLabel || DEFAULT_FOOTER.newsletter.buttonLabel,
+          buttonLabelVi:
+            footer.newsletter?.buttonLabelVi ||
+            translateSourceTextToVi(footer.newsletter?.buttonLabel) ||
+            DEFAULT_FOOTER.newsletter.buttonLabelVi,
+          privacyText:
+            footer.newsletter?.privacyText || DEFAULT_FOOTER.newsletter.privacyText,
+          privacyTextVi:
+            footer.newsletter?.privacyTextVi ||
+            translateSourceTextToVi(footer.newsletter?.privacyText) ||
+            DEFAULT_FOOTER.newsletter.privacyTextVi,
+          privacyHref:
+            footer.newsletter?.privacyHref || DEFAULT_FOOTER.newsletter.privacyHref,
+        },
+        copyright: footer.copyright || DEFAULT_FOOTER.copyright,
+        locationText: footer.locationText || DEFAULT_FOOTER.locationText,
+        socialLinks: normalizeSocialLinks(footer.socialLinks),
+      }
+    } catch {
+      return DEFAULT_FOOTER
     }
-  } catch {
-    return DEFAULT_FOOTER
-  }
+  })
 }
 
 export async function getHomeHeroData(): Promise<HomeHeroData> {
-  try {
-    const payload = await getPayloadClient()
+  return getCachedLayoutData('home-hero', async () => {
+    try {
+      const payload = await getPayloadClient()
     const settings = (await payload.findGlobal({
       slug: 'site-settings',
       depth: 2,
@@ -848,11 +901,13 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
   } catch {
     return DEFAULT_HOME_HERO
   }
+})
 }
 
 export async function getNewsletterPopupData(): Promise<NewsletterPopupData> {
-  try {
-    const payload = await getPayloadClient()
+  return getCachedLayoutData('newsletter-popup', async () => {
+    try {
+      const payload = await getPayloadClient()
     const settings = (await payload.findGlobal({
       slug: 'site-settings',
       depth: 2,
@@ -928,4 +983,5 @@ export async function getNewsletterPopupData(): Promise<NewsletterPopupData> {
   } catch {
     return DEFAULT_NEWSLETTER_POPUP
   }
+})
 }

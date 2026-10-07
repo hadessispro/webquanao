@@ -12,7 +12,7 @@ import {
 } from '@/lib/layout-data'
 import type { DesignSystemData, StorefrontFont } from '@/lib/storefront-types'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 function sanitizeFontFamily(value: string) {
   return value.replace(/["\\\n\r{};]/g, '').trim()

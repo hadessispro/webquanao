@@ -11,6 +11,12 @@ export const SiteSettings: GlobalConfig = {
     afterChange: [
       async () => {
         try {
+          const { resetStorefrontLayoutCache } = await import('../../lib/layout-data')
+          resetStorefrontLayoutCache()
+        } catch (err) {
+          console.error('Failed to reset storefront layout cache:', err)
+        }
+        try {
           const { revalidatePath } = await import('next/cache')
           revalidatePath('/', 'layout')
           console.log('Revalidated site settings layout cache')
