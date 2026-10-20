@@ -328,6 +328,14 @@ const COLLECTION_ALIASES: Record<
       return text.includes('tee') || text.includes('t-shirt') || text.includes('henley') || text.includes('tank')
     },
   },
+  'ao-thun': {
+    title: 'Áo thun',
+    sourceHandles: ['collection-t-shirts-tanks', 't-shirts'],
+    match: (product) => {
+      const text = productText(product)
+      return text.includes('tee') || text.includes('t-shirt') || text.includes('henley') || text.includes('áo thun')
+    },
+  },
   'category-vests': {
     title: 'Tanks & Vests',
     sourceHandles: ['fw25-sale-vests-copy'],
@@ -712,7 +720,7 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
     getAllStorefrontProducts(),
   ])
   const alias = COLLECTION_ALIASES[handle]
-  if (!collection && !alias && handle !== 'shop-all') {
+  if (!collection && handle !== 'shop-all') {
     return undefined
   }
   const matchHandles = [handle, ...(alias?.sourceHandles || [])]
@@ -732,7 +740,7 @@ export async function getStorefrontCollectionByHandle(handle: string): Promise<S
       return text.includes(titleText) || product.product_type.toLowerCase() === titleText
     })
   }
-  const title = alias?.title || collection?.title || humanizeHandle(handle)
+  const title = collection?.title || alias?.title || humanizeHandle(handle)
   const descriptionHtml =
     collection?.descriptionHtml ||
     richTextToHtml(collection?.description) ||

@@ -11,7 +11,7 @@ export const PRODUCT_MENU_GROUPS: ProductMenuGroup[] = [
   {
     title: "áo",
     items: [
-      { label: "áo thun", href: "/collections/collection-t-shirts-tanks" },
+      { label: "áo thun", href: "/collections/ao-thun" },
       { label: "áo sơ mi" },
       { label: "áo khoác", href: "/collections/coats-jackets" },
     ],

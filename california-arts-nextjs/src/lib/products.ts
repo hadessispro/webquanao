@@ -367,3 +367,24 @@ export function expandProductByColors(product: Product): Product[] {
   });
 }
 
+export function optimizeShopifyImageUrl(src: string | undefined | null, width?: number): string {
+  if (!src) return '';
+  if (!src.includes('cdn.shopify.com')) return src;
+  if (!width) return src;
+
+  try {
+    const url = new URL(src, 'https://cdn.shopify.com');
+    url.searchParams.set('width', String(width));
+    return url.toString();
+  } catch {
+    const separator = src.includes('?') ? '&' : '?';
+    return `${src}${separator}width=${width}`;
+  }
+}
+
+export function shopifyImageSrcSet(src: string | undefined | null, widths: number[] = [400, 600, 1000, 1400]): string {
+  if (!src || !src.includes('cdn.shopify.com')) return '';
+  return widths.map((w) => `${optimizeShopifyImageUrl(src, w)} ${w}w`).join(', ');
+}
+
+

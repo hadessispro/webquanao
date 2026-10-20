@@ -1115,24 +1115,64 @@ body#california-arts .dien-footer__brand p {
   text-shadow: 0 1px 16px rgba(0, 0, 0, 0.32) !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--search-open) .logo-image img {
-  filter: invert(1) !important;
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .logo-image img {
+  filter: invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.95)) !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle {
+.site-header-stack--home:is(.site-header-stack--scrolled, .site-header-stack--menu-open, .site-header-stack--search-open) .logo-image img,
+.site-header-stack:not(.site-header-stack--home) .logo-image img {
+  filter: none !important;
+}
+
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .header-menu-toggle {
   color: #fbfbf6 !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.95)) !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle__mark {
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .header-menu-toggle__mark {
   background: transparent !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--search-open) .header-menu-toggle__mark span {
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .header-menu-toggle__mark span {
   background-color: #fbfbf6 !important;
 }
 
-.site-header-stack--home:not(.site-header-stack--search-open) .header-search-icon path {
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .header-search-icon {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.95)) !important;
+}
+
+.site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .header-search-icon path {
   fill: #fbfbf6 !important;
+}
+
+/* Scrolled / Menu Open / Search Open / Inner Pages: Dark icons and logo */
+.site-header-stack--scrolled .header-search-icon path,
+.site-header-stack--menu-open .header-search-icon path,
+.site-header-stack--search-open .header-search-icon path,
+.site-header-stack:not(.site-header-stack--home) .header-search-icon path {
+  fill: #131818 !important;
+}
+
+.site-header-stack--scrolled .header-search-icon,
+.site-header-stack--menu-open .header-search-icon,
+.site-header-stack--search-open .header-search-icon,
+.site-header-stack:not(.site-header-stack--home) .header-search-icon {
+  filter: none !important;
+}
+
+.site-header-stack--scrolled .header-menu-toggle,
+.site-header-stack--menu-open .header-menu-toggle,
+.site-header-stack--search-open .header-menu-toggle,
+.site-header-stack:not(.site-header-stack--home) .header-menu-toggle {
+  color: #131818 !important;
+  filter: none !important;
+}
+
+.site-header-stack--scrolled .header-menu-toggle__mark span,
+.site-header-stack--menu-open .header-menu-toggle__mark span,
+.site-header-stack--search-open .header-menu-toggle__mark span,
+.site-header-stack:not(.site-header-stack--home) .header-menu-toggle__mark span {
+  background-color: #131818 !important;
 }
 
 .site-header-stack--menu-open:not(.site-header-stack--home) header {
@@ -6778,7 +6818,6 @@ body#california-arts .site-header-stack header {
     color 0.16s ease !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):where(:hover, :focus-within) header,
 body#california-arts .site-header-stack--menu-open header,
 body#california-arts .site-header-stack--search-open header,
 body#california-arts .site-header-stack--scrolled header {
@@ -6787,9 +6826,6 @@ body#california-arts .site-header-stack--scrolled header {
   color: #131818 !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):where(:hover, :focus-within) .c_header-main,
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):where(:hover, :focus-within) .site-header__mobile,
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):where(:hover, :focus-within) :where(a, button, svg),
 body#california-arts .site-header-stack--menu-open :where(.c_header-main, .site-header__mobile, a, button, svg),
 body#california-arts .site-header-stack--search-open :where(.c_header-main, .site-header__mobile, a, button, svg),
 body#california-arts .site-header-stack--scrolled :where(.c_header-main, .site-header__mobile, a, button, svg) {
@@ -6797,7 +6833,6 @@ body#california-arts .site-header-stack--scrolled :where(.c_header-main, .site-h
   text-shadow: none !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):where(:hover, :focus-within) .logo-image img,
 body#california-arts .site-header-stack--menu-open .logo-image img,
 body#california-arts .site-header-stack--search-open .logo-image img,
 body#california-arts .site-header-stack--scrolled .logo-image img {
@@ -7199,7 +7234,6 @@ body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):
   border-bottom-color: transparent !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):is(:hover, :focus-within) header,
 body#california-arts .site-header-stack--scrolled header,
 body#california-arts .site-header-stack--menu-open header,
 body#california-arts .site-header-stack--search-open header {
@@ -8566,16 +8600,16 @@ body#california-arts .contact-intake-form__submit {
   font-family: var(--dien-ui-final) !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within),
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) .c_header,
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) .c_header-main {
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open),
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .c_header,
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .c_header-main {
   background: transparent !important;
   border-bottom-color: transparent !important;
 }
 
-body#california-arts .site-header-stack:is(:hover, :focus-within),
-body#california-arts .site-header-stack:is(:hover, :focus-within) .c_header,
-body#california-arts .site-header-stack:is(:hover, :focus-within) .c_header-main,
+body#california-arts .site-header-stack:not(.site-header-stack--home):is(:hover, :focus-within),
+body#california-arts .site-header-stack:not(.site-header-stack--home):is(:hover, :focus-within) .c_header,
+body#california-arts .site-header-stack:not(.site-header-stack--home):is(:hover, :focus-within) .c_header-main,
 body#california-arts .site-header-stack--scrolled,
 body#california-arts .site-header-stack--scrolled .c_header,
 body#california-arts .site-header-stack--scrolled .c_header-main,
@@ -9008,15 +9042,15 @@ body#california-arts .site-header-stack:not(.site-header-stack--home),
 body#california-arts .site-header-stack--scrolled,
 body#california-arts .site-header-stack--menu-open,
 body#california-arts .site-header-stack--search-open,
-body#california-arts .site-header-stack:hover,
-body#california-arts .site-header-stack:focus-within {
+body#california-arts .site-header-stack:not(.site-header-stack--home):hover,
+body#california-arts .site-header-stack:not(.site-header-stack--home):focus-within {
   background: var(--dien-page-tone) !important;
   border-color: rgba(19, 24, 24, 0.18) !important;
   color: #131818 !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within),
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) :where(.c_header, .c_header-main) {
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open),
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) :where(.c_header, .c_header-main) {
   background: transparent !important;
   border-bottom-color: transparent !important;
 }
@@ -9791,9 +9825,9 @@ body#california-arts .brand-price .brand-currency-mark {
   width: 0.96em !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within),
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) .c_header,
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) .c_header-main {
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open),
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .c_header,
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) .c_header-main {
   background: transparent !important;
   border-bottom-color: transparent !important;
 }
@@ -9802,8 +9836,8 @@ body#california-arts .site-header-stack:not(.site-header-stack--home),
 body#california-arts .site-header-stack--scrolled,
 body#california-arts .site-header-stack--menu-open,
 body#california-arts .site-header-stack--search-open,
-body#california-arts .site-header-stack:hover,
-body#california-arts .site-header-stack:focus-within {
+body#california-arts .site-header-stack:not(.site-header-stack--home):hover,
+body#california-arts .site-header-stack:not(.site-header-stack--home):focus-within {
   background: var(--dien-page-tone) !important;
   border-bottom: 1px solid rgba(19, 24, 24, 0.22) !important;
 }
@@ -10118,12 +10152,12 @@ body#california-arts .site-header-stack:not(.site-header-stack--home),
 body#california-arts .site-header-stack--scrolled,
 body#california-arts .site-header-stack--menu-open,
 body#california-arts .site-header-stack--search-open,
-body#california-arts .site-header-stack:hover,
-body#california-arts .site-header-stack:focus-within {
+body#california-arts .site-header-stack:not(.site-header-stack--home):hover,
+body#california-arts .site-header-stack:not(.site-header-stack--home):focus-within {
   background: var(--dien-page-tone) !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) {
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) {
   background: transparent !important;
 }
 
@@ -10406,13 +10440,13 @@ body#california-arts .site-header-stack:not(.site-header-stack--home),
 body#california-arts .site-header-stack--scrolled,
 body#california-arts .site-header-stack--menu-open,
 body#california-arts .site-header-stack--search-open,
-body#california-arts .site-header-stack:hover,
-body#california-arts .site-header-stack:focus-within {
+body#california-arts .site-header-stack:not(.site-header-stack--home):hover,
+body#california-arts .site-header-stack:not(.site-header-stack--home):focus-within {
   background-color: var(--dien-page-tone) !important;
 }
 
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within),
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) :where(.c_header, .c_header-main) {
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open),
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) :where(.c_header, .c_header-main) {
   background-color: transparent !important;
 }
 
@@ -10921,8 +10955,9 @@ body#california-arts .site-header-stack .header-search-toggle {
 }
 
 /* 2. Transparent header elements: must be white when not hovered */
-body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open):not(:hover):not(:focus-within) :where(.ca_menu-1st-button, .header-search-toggle, .header-menu-toggle, .c_header-main, .c_header-main *, .site-header__mobile, .site-header__mobile *) {
+body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):not(.site-header-stack--menu-open):not(.site-header-stack--search-open) :where(.ca_menu-1st-button, .header-search-toggle, .header-menu-toggle, .c_header-main, .c_header-main *, .site-header__mobile, .site-header__mobile *) {
   color: #fff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.95) !important;
 }
 
 /* 3. Revert relative container so dropdown spans full header width */

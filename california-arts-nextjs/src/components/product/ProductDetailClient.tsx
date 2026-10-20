@@ -11,6 +11,8 @@ import {
   getProductColors,
   getProductSizes,
   isProductSoldOut,
+  optimizeShopifyImageUrl,
+  shopifyImageSrcSet,
 } from "@/lib/products";
 import {
   DEFAULT_SIZE_FINDER,
@@ -163,14 +165,21 @@ function ProductMediaImage({
   index: number;
   title: string;
 }) {
+  const optimizedSrc = optimizeShopifyImageUrl(image.src, 1000);
+  const srcSet = shopifyImageSrcSet(image.src, [600, 1000, 1400]);
+
   return (
     <img
       className="product-detail__image"
-      src={image.src}
+      src={optimizedSrc}
+      srcSet={srcSet || undefined}
+      sizes="(max-width: 768px) 100vw, 50vw"
       alt={image.alt || `${title} ${index + 1}`}
       width={image.width || undefined}
       height={image.height || undefined}
       loading={index === 0 ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={index === 0 ? "high" : "low"}
     />
   );
 }
@@ -1284,7 +1293,8 @@ export default function ProductDetailClient({
                         className="product-detail__suggestion-image product-detail__suggestion-image--primary"
                         draggable={false}
                         loading="lazy"
-                        src={firstImage.src}
+                        decoding="async"
+                        src={optimizeShopifyImageUrl(firstImage.src, 400)}
                       />
                       {hoverImage && (
                         <img
@@ -1293,7 +1303,8 @@ export default function ProductDetailClient({
                           className="product-detail__suggestion-image product-detail__suggestion-image--hover"
                           draggable={false}
                           loading="lazy"
-                          src={hoverImage.src}
+                          decoding="async"
+                          src={optimizeShopifyImageUrl(hoverImage.src, 400)}
                         />
                       )}
                     </span>
@@ -1367,7 +1378,9 @@ export default function ProductDetailClient({
                 <img
                   alt={item.image.alt || product.title}
                   className="product-detail__lightbox-image"
-                  src={item.image.src}
+                  src={optimizeShopifyImageUrl(item.image.src, 1600)}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             ))}

@@ -12,6 +12,8 @@ import {
   getImageAspectRatio,
   isProductSoldOut,
   getProductSizes,
+  optimizeShopifyImageUrl,
+  shopifyImageSrcSet,
 } from "@/lib/products";
 import { BrandPrice } from "@/components/ui/BrandCurrency";
 
@@ -76,9 +78,12 @@ export default function ProductCard({
               >
                 <img
                   className="responsive-image block absolute top-0 left-0 w-full h-full transition-opacity duration-200 ease-in-out"
-                  src={imageFailed ? "/media/dien-mark-black.png" : mainImage}
+                  src={imageFailed ? "/media/dien-mark-black.png" : optimizeShopifyImageUrl(mainImage, 600)}
+                  srcSet={!imageFailed ? shopifyImageSrcSet(mainImage, [300, 500, 800]) || undefined : undefined}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   alt={product.title}
                   loading="lazy"
+                  decoding="async"
                   onError={() => {
                     setImageFailed(true);
                     setImageLoaded(true);
@@ -98,7 +103,7 @@ export default function ProductCard({
               {hoverImage && (
                 <div
                   className="product-item-hover bg-primary-background absolute top-0 left-0 bottom-0 right-0 opacity-0 z-10 bg-cover bg-no-repeat bg-center transition-opacity duration-200 ease-in-out group-hover:opacity-100"
-                  style={{ backgroundImage: `url(${hoverImage})` }}
+                  style={{ backgroundImage: `url(${optimizeShopifyImageUrl(hoverImage, 600)})` }}
                 />
               )}
             </div>

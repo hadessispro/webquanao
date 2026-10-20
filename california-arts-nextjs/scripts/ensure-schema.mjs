@@ -523,6 +523,85 @@ async function run() {
     }
   }
 
+  // 8. Ensure initial default collections and pages exist so admin sees them all
+  try {
+    await client.execute(`CREATE TABLE IF NOT EXISTS _schema_migration_flags (
+      key TEXT PRIMARY KEY,
+      created_at TEXT DEFAULT (datetime('now'))
+    );`)
+
+    const flagCheck = await client.execute({
+      sql: 'SELECT key FROM _schema_migration_flags WHERE key = ? LIMIT 1',
+      args: ['initial_collections_and_pages_seeded_v1'],
+    })
+
+    if (flagCheck.rows.length === 0) {
+      const DEFAULT_COLLECTIONS = [
+        { handle: 'shop-all', title: 'Xem tất cả', menu_label: 'xem tất cả' },
+        { handle: 'ao-thun', title: 'Áo thun', menu_label: 'áo thun' },
+        { handle: 'collection-t-shirts-tanks', title: 'Áo thun & Henley', menu_label: 'áo thun' },
+        { handle: 'coats-jackets', title: 'Áo khoác', menu_label: 'áo khoác' },
+        { handle: 'category-tailoring', title: 'May đo', menu_label: 'may đo' },
+        { handle: 'knitwear', title: 'Đồ dệt kim', menu_label: 'đồ dệt kim' },
+        { handle: 'collection-sweater', title: 'Áo nỉ & quần nỉ', menu_label: 'áo nỉ & quần nỉ' },
+        { handle: 'shirts-all-navigation', title: 'Áo sơ mi', menu_label: 'áo sơ mi' },
+        { handle: 'category-polos', title: 'Áo polo', menu_label: 'áo polo' },
+        { handle: 'category-vests', title: 'Áo tank & vest', menu_label: 'áo tank & vest' },
+        { handle: 'trousers-shorts', title: 'Quần dài & short', menu_label: 'quần dài' },
+        { handle: 'category-nav-denim', title: 'Đồ denim', menu_label: 'đồ denim' },
+        { handle: 'accessories', title: 'Phụ kiện', menu_label: 'phụ kiện' },
+      ]
+
+      for (const col of DEFAULT_COLLECTIONS) {
+        const existing = await client.execute({
+          sql: 'SELECT id FROM product_collections WHERE handle = ? LIMIT 1',
+          args: [col.handle],
+        })
+        if (existing.rows.length === 0) {
+          await client.execute({
+            sql: `INSERT INTO product_collections (
+              title, handle, status, show_in_menu, menu_label, created_at, updated_at
+            ) VALUES (?, ?, 'published', 1, ?, datetime('now'), datetime('now'))`,
+            args: [col.title, col.handle, col.menu_label],
+          })
+          console.log(`[ensure-schema] Seeded collection: ${col.title} (${col.handle})`)
+        }
+      }
+
+      const DEFAULT_PAGES = [
+        { slug: 'about', title: 'Customer care' },
+        { slug: 'our-story', title: 'Về điển' },
+        { slug: 'campaign', title: 'Chiến dịch sáng tạo' },
+        { slug: 'new-arrivals', title: 'Hàng mới về' },
+        { slug: 'returns-exchanges', title: 'Chính sách đổi trả & vận chuyển' },
+        { slug: 'privacy-policy', title: 'Chính sách bảo mật' },
+      ]
+
+      for (const pg of DEFAULT_PAGES) {
+        const existing = await client.execute({
+          sql: 'SELECT id FROM pages WHERE slug = ? LIMIT 1',
+          args: [pg.slug],
+        })
+        if (existing.rows.length === 0) {
+          await client.execute({
+            sql: `INSERT INTO pages (
+              title, slug, status, created_at, updated_at
+            ) VALUES (?, ?, 'published', datetime('now'), datetime('now'))`,
+            args: [pg.title, pg.slug],
+          })
+          console.log(`[ensure-schema] Seeded page: ${pg.title} (${pg.slug})`)
+        }
+      }
+
+      await client.execute({
+        sql: "INSERT OR IGNORE INTO _schema_migration_flags (key) VALUES ('initial_collections_and_pages_seeded_v1')",
+      })
+      console.log('[ensure-schema] Marked initial_collections_and_pages_seeded_v1')
+    }
+  } catch (err) {
+    console.warn('[ensure-schema] notice on initial collections/pages seed:', err.message)
+  }
+
   console.log(`[ensure-schema] done (${added} column(s) added)`)
 }
 

@@ -584,7 +584,7 @@ export default function Header({ header }: HeaderProps) {
           />
 
           <section data-section-type="header" data-sticky="true">
-            <header className="bg-header-background text-header-text relative z-10">
+            <header className={`${isHome && !scrolled && !openMegaMenuHref && !searchOpen ? 'bg-transparent' : 'bg-header-background'} text-header-text relative z-10`}>
               <nav className="relative hidden lg:block" aria-label="Primary">
                 <div className="c_header-main site-header__inner section-x-padding text-sm">
                   <div className="site-header__left">
