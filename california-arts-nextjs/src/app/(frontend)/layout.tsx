@@ -278,7 +278,7 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
     font-style: ${typography.headingItalic ? 'italic' : 'normal'} !important;
   }
 
-  body#california-arts button,
+  body#california-arts button:not(.product-detail__size):not(.product-detail__size *),
   body#california-arts input,
   body#california-arts textarea,
   body#california-arts select,
@@ -306,6 +306,16 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
     font-family: var(--dien-ui-font-stack) !important;
     font-weight: ${typography.uiBold ? 'bold' : 'normal'} !important;
     font-style: ${typography.uiItalic ? 'italic' : 'normal'} !important;
+  }
+  body#california-arts button.product-detail__size,
+  body#california-arts .product-detail__size,
+  body#california-arts .product-detail__sizes button,
+  body#california-arts .product-detail__size--text,
+  body#california-arts .product-detail__size--box,
+  body#california-arts .product-detail__size * {
+    font-family: var(--dien-heading-font-stack, "Times New Roman", Times, serif) !important;
+    font-weight: normal !important;
+    font-style: normal !important;
   }
 
   body#california-arts .site-header-stack,

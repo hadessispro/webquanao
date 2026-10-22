@@ -401,7 +401,7 @@ body#california-arts .bg-footer-background,
 }
 
 .cms-page__section {
-  border-top: 1px solid rgba(19, 24, 24, 0.16);
+  border-top: none;
   overflow: hidden;
 }
 
@@ -10897,7 +10897,8 @@ body#california-arts :where(
 ) {
   border-radius: 0 !important;
   font-family: var(--dien-ui-final) !important;
-  font-size: var(--dien-body-size) !important;
+  font-size: calc(var(--dien-body-size, 16px) - 2px) !important;
+  text-transform: none !important;
   font-weight: 400 !important;
   line-height: 1 !important;
   min-height: 46px !important;
@@ -12357,6 +12358,59 @@ body#california-arts .cms-page li {
 body#california-arts .story-page__copy div > p + p {
   margin-top: 12px !important;
 }
+
+/* === BRAND TYPOGRAPHY & UI POLISH OVERRIDES === */
+/* 1. Size options font: Times (có chân) instead of Arial */
+body#california-arts :where(.product-detail__size, .product-detail__sizes, .product-detail__size--text, .product-detail__size--box, .product-detail__size *),
+body#california-arts button.product-detail__size {
+  font-family: var(--dien-copy-final, var(--dien-heading-font-stack, "Times New Roman", Times, serif)) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+}
+
+/* 2. Text links (gợi ý size?, bảng size): Arial reduced by 2 units (14px -> 12px) */
+body#california-arts .product-detail__text-link {
+  font-size: calc(var(--dien-subheading-size, 14px) - 2px) !important;
+  text-transform: none !important;
+}
+
+/* 3. Info tabs (chi tiết, chất liệu, giao hàng & đổi trả): Arial reduced by 2 units (14px -> 12px) */
+body#california-arts .product-detail__info-tab {
+  font-size: calc(var(--dien-subheading-size, 14px) - 2px) !important;
+  text-transform: none !important;
+}
+
+/* 4. Action buttons: Arial reduced by 2 units (16px -> 14px) and prevent forced uppercase */
+body#california-arts :where(
+  .home-hero__cta,
+  .cms-page__button,
+  .collection-product-page__next-cta-button,
+  .product-detail__add-button,
+  .search-overlay__submit,
+  .contact-intake-form__submit,
+  .checkout-page__submit,
+  .cart-drawer__checkout,
+  .cart-drawer__continue,
+  .newsletter-popup__submit,
+  .newsletter-popup__continue
+) {
+  font-size: calc(var(--dien-body-size, 16px) - 2px) !important;
+  text-transform: none !important;
+}
+
+/* 5. Option labels: ensure lowercase display (màu, kích cỡ) */
+body#california-arts .product-detail__option-label {
+  text-transform: lowercase !important;
+}
+
+/* 6. CMS pages: completely eliminate redundant horizontal divider lines */
+body#california-arts :where(.cms-page, .cms-page__section, .cms-page--standard, .cms-page--policy-static) .cms-page__section,
+body#california-arts .cms-page .cms-page__section,
+body#california-arts .cms-page__section {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
 
 
 
