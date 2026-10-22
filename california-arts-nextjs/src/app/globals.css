@@ -3799,7 +3799,7 @@ body.art-menu-lock {
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.2;
-  text-transform: uppercase;
+  text-transform: lowercase;
 }
 
 .product-detail__finder-fit-options {
@@ -11785,14 +11785,14 @@ body#california-arts .product-detail__lightbox-nav svg {
 /* === Mobile collection polish: full divider, calmer type and style-with rails === */
 @media (max-width: 767px) {
   body#california-arts .collection-page-intro__copy h1 {
-    font-size: 18px !important;
+    font-size: calc(var(--dien-heading-size, 22px) - 6px) !important;
     line-height: 1.12 !important;
     margin-bottom: 8px !important;
   }
 
   body#california-arts .collection-page-intro__description,
   body#california-arts .collection-page-intro__description p {
-    font-size: 13px !important;
+    font-size: calc(var(--dien-body-size, 16px) - 3px) !important;
     line-height: 1.24 !important;
   }
 
@@ -12467,7 +12467,20 @@ body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):
   fill: #fff !important;
 }
 
-
-
-
-
+/* 8. Size finder: ensure labels, placeholders, dropdown items, fit tabs and chart titles remain lowercase */
+body#california-arts :where(
+  .product-detail__finder,
+  .product-detail__finder-field,
+  .product-detail__finder-field span,
+  .product-detail__finder-dropdown,
+  .product-detail__finder-trigger,
+  .product-detail__finder-trigger span,
+  .product-detail__finder-menu,
+  .product-detail__finder-option,
+  .product-detail__finder-fit-option,
+  .product-detail__modal-tab,
+  .product-detail__size-chart-block h3,
+  .product-detail__size-chart-block table th:first-child
+) {
+  text-transform: lowercase !important;
+}

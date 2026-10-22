@@ -1496,7 +1496,7 @@ export default function ProductDetailClient({
                 />
                 <FinderDropdown
                   isOpen={openFinderDropdown === "weight"}
-                  label="cân nặng"
+                  label="cân nặng:"
                   onSelect={(value) => {
                     setSelectedWeight(value);
                     setRecommendedSize(null);
