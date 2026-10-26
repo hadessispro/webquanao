@@ -374,11 +374,25 @@ body#california-arts .bg-footer-background,
 
 @media (max-width: 767px) {
   .home-hero {
+    height: 100dvh;
     min-height: 100svh;
+    min-height: 100dvh;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .home-hero__link,
+  .home-hero__picture {
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .home-hero__image {
     object-position: 66% center;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .home-hero__content {
@@ -11488,10 +11502,13 @@ body#california-arts .product-detail__mobile-track {
   display: flex;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scroll-snap-type: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
   scrollbar-width: none;
   touch-action: pan-x pan-y;
   width: 100%;
+  -webkit-overflow-scrolling: touch;
+  will-change: scroll-position;
 }
 
 body#california-arts .product-detail__lightbox-track {
@@ -11504,6 +11521,7 @@ body#california-arts .product-detail__lightbox-track {
   scrollbar-width: none;
   width: 100%;
   touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 }
 
 body#california-arts .product-detail__mobile-track::-webkit-scrollbar,
@@ -11514,7 +11532,14 @@ body#california-arts .product-detail__suggestions-grid::-webkit-scrollbar {
 
 body#california-arts .product-detail__mobile-slide {
   flex: 0 0 100%;
-  min-width: 0;
+  min-width: 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 body#california-arts .product-detail__lightbox-slide {

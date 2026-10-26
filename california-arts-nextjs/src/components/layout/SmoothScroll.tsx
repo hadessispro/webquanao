@@ -36,8 +36,14 @@ export default function SmoothScroll() {
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+    const isTouchOrMobile =
+      typeof navigator !== 'undefined' &&
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(navigator.userAgent) ||
+        'ontouchstart' in window ||
+        navigator.maxTouchPoints > 0 ||
+        coarsePointer)
 
-    if (prefersReducedMotion || coarsePointer) return undefined
+    if (prefersReducedMotion || isTouchOrMobile) return undefined
 
     let current = window.scrollY
     let target = window.scrollY

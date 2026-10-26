@@ -505,14 +505,6 @@ export default function ProductDetailClient({
     useState<SizeFinderDropdownKey | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
-  const scrollEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mobileGalleryGestureRef = useRef<{
-    isLeftEdge: boolean;
-    startedOnFirstImage: boolean;
-    x: number;
-    y: number;
-  } | null>(null);
-  const isLeavingProductRef = useRef(false);
   const lightboxGalleryRef = useRef<HTMLDivElement>(null);
   const suggestionsDragRef = useRef<{
     moved: boolean;
@@ -530,26 +522,6 @@ export default function ProductDetailClient({
     () => buildProductMediaItems(product, imgs, selColor),
     [imgs, product, selColor],
   );
-  const loopMediaItems = useMemo(() => {
-    if (mediaItems.length <= 1) return mediaItems;
-    const lastItem = mediaItems[mediaItems.length - 1];
-    const firstItem = mediaItems[0];
-    return [
-      { ...lastItem, key: `clone-last-${lastItem.key}` },
-      ...mediaItems,
-      { ...firstItem, key: `clone-first-${firstItem.key}` },
-    ];
-  }, [mediaItems]);
-
-  useEffect(() => {
-    if (mediaItems.length > 1 && mobileGalleryRef.current) {
-      const gallery = mobileGalleryRef.current;
-      if (gallery.clientWidth > 0) {
-        gallery.scrollTo({ behavior: "auto", left: gallery.clientWidth * 1 });
-        setMobileIdx(0);
-      }
-    }
-  }, [selColor, mediaItems.length]);
 
   const imageMediaItems = useMemo(
     () =>
@@ -701,9 +673,7 @@ export default function ProductDetailClient({
     setSelColor(color);
     setMobileIdx(0);
     const gallery = mobileGalleryRef.current;
-    if (gallery && gallery.clientWidth > 0 && mediaItems.length > 1) {
-      gallery.scrollTo({ behavior: "auto", left: gallery.clientWidth * 1 });
-    } else if (gallery) {
+    if (gallery) {
       gallery.scrollTo({ behavior: "auto", left: 0 });
     }
     setSelSize((currentSize) => {
@@ -718,175 +688,50 @@ export default function ProductDetailClient({
     });
   };
 
-  const goToMobileImage = (index: number, behavior: ScrollBehavior = "smooth") => {
-    if (mediaItems.length === 0) return;
-
-    if (mediaItems.length <= 1) {
-      setMobileIdx(0);
-      return;
-    }
-
-    const nextRealIdx = ((index % mediaItems.length) + mediaItems.length) % mediaItems.length;
-    setMobileIdx(nextRealIdx);
-
-    const gallery = mobileGalleryRef.current;
-    if (gallery && gallery.clientWidth > 0) {
-      const targetTrackIdx = nextRealIdx + 1;
-      gallery.scrollTo({ behavior, left: gallery.clientWidth * targetTrackIdx });
-    }
-  };
-
-  const snapToCloneIfNeeded = () => {
+  const goToMobileImage = (index: number) => {
     if (mediaItems.length <= 1) return;
     const gallery = mobileGalleryRef.current;
     if (!gallery || gallery.clientWidth === 0) return;
-
-    const slideWidth = gallery.clientWidth;
-    const trackIdx = Math.round(gallery.scrollLeft / slideWidth);
-
-    if (trackIdx === 0) {
-      gallery.scrollTo({ behavior: "auto", left: slideWidth * mediaItems.length });
-      setMobileIdx(mediaItems.length - 1);
-    } else if (trackIdx >= mediaItems.length + 1) {
-      gallery.scrollTo({ behavior: "auto", left: slideWidth * 1 });
-      setMobileIdx(0);
-    } else {
-      setMobileIdx(trackIdx - 1);
-    }
+    gallery.scrollTo({ behavior: "smooth", left: gallery.clientWidth * index });
+    setMobileIdx(index);
   };
 
   const nextMobileImage = () => {
     if (mediaItems.length <= 1) return;
-
     const gallery = mobileGalleryRef.current;
     if (!gallery || gallery.clientWidth === 0) return;
 
     const slideWidth = gallery.clientWidth;
-    const currentTrackIdx = Math.round(gallery.scrollLeft / slideWidth);
-    const nextTrackIdx = currentTrackIdx + 1;
+    const currentIdx = Math.round(gallery.scrollLeft / slideWidth);
+    const nextIdx = currentIdx < mediaItems.length - 1 ? currentIdx + 1 : 0;
 
-    gallery.scrollTo({ behavior: "smooth", left: slideWidth * nextTrackIdx });
-
-    const realIdx = nextTrackIdx <= mediaItems.length
-      ? (nextTrackIdx - 1) % mediaItems.length
-      : 0;
-    setMobileIdx(realIdx);
-
-    if (nextTrackIdx >= mediaItems.length + 1) {
-      setTimeout(() => {
-        if (mobileGalleryRef.current && mobileGalleryRef.current.clientWidth > 0) {
-          mobileGalleryRef.current.scrollTo({ behavior: "auto", left: mobileGalleryRef.current.clientWidth * 1 });
-        }
-      }, 350);
-    }
+    gallery.scrollTo({ behavior: "smooth", left: slideWidth * nextIdx });
+    setMobileIdx(nextIdx);
   };
 
   const prevMobileImage = () => {
     if (mediaItems.length <= 1) return;
-
     const gallery = mobileGalleryRef.current;
     if (!gallery || gallery.clientWidth === 0) return;
 
     const slideWidth = gallery.clientWidth;
-    const currentTrackIdx = Math.round(gallery.scrollLeft / slideWidth);
-    const prevTrackIdx = currentTrackIdx - 1;
+    const currentIdx = Math.round(gallery.scrollLeft / slideWidth);
+    const prevIdx = currentIdx > 0 ? currentIdx - 1 : mediaItems.length - 1;
 
-    gallery.scrollTo({ behavior: "smooth", left: slideWidth * prevTrackIdx });
-
-    const realIdx = prevTrackIdx >= 1
-      ? prevTrackIdx - 1
-      : mediaItems.length - 1;
-    setMobileIdx(realIdx);
-
-    if (prevTrackIdx <= 0) {
-      setTimeout(() => {
-        if (mobileGalleryRef.current && mobileGalleryRef.current.clientWidth > 0) {
-          mobileGalleryRef.current.scrollTo({ behavior: "auto", left: mobileGalleryRef.current.clientWidth * mediaItems.length });
-        }
-      }, 350);
-    }
-  };
-
-  const leaveProductDetail = () => {
-    if (isLeavingProductRef.current) return;
-    isLeavingProductRef.current = true;
-
-    if (window.history.length > 1) {
-      router.back();
-      return;
-    }
-
-    router.push("/collections/shop-all");
-  };
-
-  const handleMobileGalleryTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    const touch = event.touches[0];
-    if (!touch) return;
-
-    const startX = touch.clientX;
-    const startY = touch.clientY;
-    const isLeftEdge = startX <= 48 || startX <= window.innerWidth * 0.18;
-
-    mobileGalleryGestureRef.current = {
-      isLeftEdge,
-      startedOnFirstImage: mobileIdx === 0,
-      x: startX,
-      y: startY,
-    };
-  };
-
-  const handleMobileGalleryTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-    const gesture = mobileGalleryGestureRef.current;
-    const touch = event.changedTouches[0];
-    mobileGalleryGestureRef.current = null;
-    if (!gesture || !touch) return;
-
-    const distanceX = touch.clientX - gesture.x;
-    const distanceY = touch.clientY - gesture.y;
-
-    if (Math.abs(distanceX) < 32 || Math.abs(distanceX) < Math.abs(distanceY) * 1.2) {
-      return;
-    }
-
-    if (distanceX > 0) {
-      // Swiping Right (Previous image gesture)
-      if (gesture.isLeftEdge && gesture.startedOnFirstImage) {
-        leaveProductDetail();
-      } else {
-        prevMobileImage();
-      }
-    } else {
-      // Swiping Left (Next image gesture)
-      nextMobileImage();
-    }
+    gallery.scrollTo({ behavior: "smooth", left: slideWidth * prevIdx });
+    setMobileIdx(prevIdx);
   };
 
   const handleMobileGalleryScroll = () => {
-    if (mediaItems.length <= 1) return;
     const gallery = mobileGalleryRef.current;
-    if (!gallery || gallery.clientWidth === 0) return;
+    if (!gallery || gallery.clientWidth === 0 || mediaItems.length <= 1) return;
 
     const slideWidth = gallery.clientWidth;
-    const trackIdx = Math.round(gallery.scrollLeft / slideWidth);
-
-    // Update visual index immediately
-    if (trackIdx === 0) {
-      setMobileIdx(mediaItems.length - 1);
-    } else if (trackIdx >= mediaItems.length + 1) {
-      setMobileIdx(0);
-    } else {
-      setMobileIdx(trackIdx - 1);
+    const currentIdx = Math.round(gallery.scrollLeft / slideWidth);
+    const clamped = Math.max(0, Math.min(mediaItems.length - 1, currentIdx));
+    if (clamped !== mobileIdx) {
+      setMobileIdx(clamped);
     }
-
-    // Debounce: when scroll settles, snap if on a clone
-    if (scrollEndTimerRef.current) clearTimeout(scrollEndTimerRef.current);
-    scrollEndTimerRef.current = setTimeout(() => {
-      snapToCloneIfNeeded();
-    }, 120);
-  };
-
-  const handleMobileGalleryTouchCancel = () => {
-    mobileGalleryGestureRef.current = null;
   };
 
   const handleSuggestionsPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -1045,38 +890,32 @@ export default function ProductDetailClient({
               <div
                 className="product-detail__mobile-track"
                 onScroll={handleMobileGalleryScroll}
-                onTouchCancel={handleMobileGalleryTouchCancel}
-                onTouchEnd={handleMobileGalleryTouchEnd}
-                onTouchStart={handleMobileGalleryTouchStart}
                 ref={mobileGalleryRef}
               >
-                {loopMediaItems.map((item, index) => {
-                  const rawKey = item.key.replace(/^clone-(first|last)-/, "");
-                  return (
-                    <div className="product-detail__mobile-slide" key={item.key}>
-                      {item.type === "image" ? (
-                        <button
-                          aria-label={`xem lớn ${product.title}`}
-                          className="product-detail__media-button"
-                          onClick={() =>
-                            openLightbox(
-                              imageMediaItems.findIndex((imageItem) => imageItem.key === rawKey),
-                            )
-                          }
-                          type="button"
-                        >
-                          <ProductMediaImage
-                            image={item.image}
-                            index={index}
-                            title={product.title}
-                          />
-                        </button>
-                      ) : (
-                        <ProductMediaVideo video={item.video} />
-                      )}
-                    </div>
-                  );
-                })}
+                {mediaItems.map((item, index) => (
+                  <div className="product-detail__mobile-slide" key={item.key}>
+                    {item.type === "image" ? (
+                      <button
+                        aria-label={`xem lớn ${product.title}`}
+                        className="product-detail__media-button"
+                        onClick={() =>
+                          openLightbox(
+                            imageMediaItems.findIndex((imageItem) => imageItem.key === item.key),
+                          )
+                        }
+                        type="button"
+                      >
+                        <ProductMediaImage
+                          image={item.image}
+                          index={index}
+                          title={product.title}
+                        />
+                      </button>
+                    ) : (
+                      <ProductMediaVideo video={item.video} />
+                    )}
+                  </div>
+                ))}
               </div>
 
               {mediaItems.length > 1 && (

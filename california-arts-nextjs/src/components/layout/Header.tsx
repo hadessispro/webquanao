@@ -445,20 +445,28 @@ export default function Header({ header }: HeaderProps) {
     let frameId = 0
     let settleFrameId = 0
     let settleTimerId = 0
+    let lastHeaderHeight = -1
+    let lastScrolledState = false
 
     const updateHeaderState = () => {
       frameId = 0
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
       
+      let nextScrolled = false
       if (isHome) {
-        setScrolled(false)
+        nextScrolled = false
       } else if (justNavigatedHome.current) {
         if (scrollTop === 0) {
           justNavigatedHome.current = false
         }
-        setScrolled(false)
+        nextScrolled = false
       } else {
-        setScrolled(scrollTop > 18)
+        nextScrolled = scrollTop > 18
+      }
+
+      if (nextScrolled !== lastScrolledState) {
+        lastScrolledState = nextScrolled
+        setScrolled(nextScrolled)
       }
 
       const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
@@ -466,7 +474,11 @@ export default function Header({ header }: HeaderProps) {
       if (scrollTop > 18 && !isHome) {
         headerHeight -= 30
       }
-      document.documentElement.style.setProperty('--header-stack-height', `${Math.round(headerHeight)}px`)
+      const roundedHeight = Math.round(headerHeight)
+      if (roundedHeight !== lastHeaderHeight) {
+        lastHeaderHeight = roundedHeight
+        document.documentElement.style.setProperty('--header-stack-height', `${roundedHeight}px`)
+      }
     }
 
     const queueUpdate = () => {

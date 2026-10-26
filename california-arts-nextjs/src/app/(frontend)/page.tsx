@@ -42,7 +42,7 @@ export default async function HomePage() {
               decoding="async"
               fetchPriority="high"
               loading="eager"
-              src={desktopImage.src}
+              src={mobileImage ? mobileImage.src : desktopImage.src}
               style={heroImageTransform ? { transform: heroImageTransform } : undefined}
             />
           </picture>
