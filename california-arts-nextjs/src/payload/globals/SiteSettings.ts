@@ -309,6 +309,18 @@ export const SiteSettings: GlobalConfig = {
                     description: 'Body text size in px.',
                   },
                 },
+                {
+                  name: 'sectionHeadingSize',
+                  label: 'Cỡ chữ mục (01, 02...)',
+                  type: 'number',
+                  defaultValue: 18,
+                  min: 12,
+                  max: 48,
+                  admin: {
+                    width: '33.333%',
+                    description: 'Section title size (e.g. 01 áo túi james) in px.',
+                  },
+                },
               ],
             },
             {

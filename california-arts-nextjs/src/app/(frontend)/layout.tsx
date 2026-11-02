@@ -160,6 +160,7 @@ function createDesignSystemStyle(designSystem: DesignSystemData & { allFonts?: S
     --ui-font-stack: var(--dien-ui-font-stack);
     --dien-heading-size: ${typography.headingSize}px;
     --dien-subheading-size: ${typography.subheadingSize}px;
+    --dien-section-heading-size: ${typography.sectionHeadingSize || 18}px;
     --dien-body-size: ${typography.bodySize}px;
     --dien-line-height: ${typography.lineHeight};
     --dien-letter-spacing: ${typography.letterSpacing}em;

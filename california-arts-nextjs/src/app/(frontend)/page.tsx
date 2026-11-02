@@ -36,13 +36,14 @@ export default async function HomePage() {
           <picture className="home-hero__picture" style={{ opacity: hero.imageOpacity ?? 0.7 }}>
             {mobileImage && <source media="(max-width: 767px)" srcSet={mobileImage.src} />}
             {hero.tabletImage && <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={hero.tabletImage.src} />}
+            <source media="(min-width: 1024px)" srcSet={desktopImage.src} />
             <img
               alt={desktopImage.alt || title || 'điển'}
               className="home-hero__image"
               decoding="async"
               fetchPriority="high"
               loading="eager"
-              src={mobileImage ? mobileImage.src : desktopImage.src}
+              src={desktopImage.src}
               style={heroImageTransform ? { transform: heroImageTransform } : undefined}
             />
           </picture>

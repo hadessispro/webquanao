@@ -1070,8 +1070,7 @@ body#california-arts .dien-footer__brand p {
   top: 0;
   transition:
     color 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   width: 100%;
   z-index: 60;
 }
@@ -11052,7 +11051,7 @@ body#california-arts :is(a, button, span, input, select, textarea).newsletter-po
 
 /* 7. Smoothly translate header up on scroll instead of collapsing announcement bar (prevents layout jitter) */
 body#california-arts .site-header-stack--scrolled:not(.site-header-stack--home) {
-  transform: translateY(-30px) !important;
+  transform: none !important;
 }
 
 /* 9. Align left menu items (sản phẩm, về điển) vertically with logo and search toggle */
@@ -11502,13 +11501,12 @@ body#california-arts .product-detail__mobile-track {
   display: flex;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  touch-action: pan-x pan-y;
+  touch-action: pan-y !important;
   width: 100%;
-  -webkit-overflow-scrolling: touch;
-  will-change: scroll-position;
+  -webkit-overflow-scrolling: touch !important;
 }
 
 body#california-arts .product-detail__lightbox-track {
@@ -11516,12 +11514,12 @@ body#california-arts .product-detail__lightbox-track {
   display: flex;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   width: 100%;
-  touch-action: pan-x;
-  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
 }
 
 body#california-arts .product-detail__mobile-track::-webkit-scrollbar,
@@ -11535,7 +11533,7 @@ body#california-arts .product-detail__mobile-slide {
   min-width: 100%;
   width: 100%;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal !important;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   backface-visibility: hidden;
@@ -11546,7 +11544,7 @@ body#california-arts .product-detail__lightbox-slide {
   flex: 0 0 100%;
   min-width: 0;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal !important;
 }
 
 body#california-arts .product-detail__mobile-slide .product-detail__media-button,
@@ -11737,9 +11735,9 @@ body#california-arts .product-detail__lightbox-nav svg {
   }
 
   body#california-arts .ca_pro-item .responsive-image-wrapper {
-    aspect-ratio: 3 / 4 !important;
-    height: auto !important;
-    padding-top: 0 !important;
+    aspect-ratio: auto !important;
+
+
   }
 
   body#california-arts .ca_pro-item .c_grid-content {
@@ -11869,7 +11867,7 @@ body#california-arts .product-detail__lightbox-nav svg {
   }
 
   body#california-arts .product-grid__bar-content h2 {
-    font-size: 13px !important;
+    font-size: var(--dien-section-heading-size, 18px) !important;
     line-height: 1.16 !important;
     padding: 0 !important;
     text-align: right !important;
@@ -11994,7 +11992,7 @@ body#california-arts .product-grid__mobile-sticky-title {
   }
 
   body#california-arts .product-grid__mobile-sticky-title h2 {
-    font-size: 13px !important;
+    font-size: var(--dien-section-heading-size, 18px) !important;
     font-weight: 400;
     line-height: 1.16;
     margin: 0;
@@ -12494,8 +12492,8 @@ body#california-arts .site-header-stack--home:not(.site-header-stack--scrolled):
 
 /* 8. Size finder: ensure labels, placeholders, dropdown items, fit tabs and chart titles remain lowercase */
 body#california-arts :where(
-  .product-detail__finder,
-  .product-detail__finder-field,
+
+
   .product-detail__finder-field span,
   .product-detail__finder-dropdown,
   .product-detail__finder-trigger,
@@ -12505,7 +12503,22 @@ body#california-arts :where(
   .product-detail__finder-fit-option,
   .product-detail__modal-tab,
   .product-detail__size-chart-block h3,
+  .product-detail__finder-result span,
   .product-detail__size-chart-block table th:first-child
 ) {
   text-transform: lowercase !important;
+}
+
+body#california-arts :where(.product-detail__finder-result strong, .product-detail__size-chart td) {
+  text-transform: none !important;
+  font-family: var(--heading-font-stack, 'Times New Roman', serif) !important;
+}
+
+body#california-arts :where(.product-grid__bar h2, .product-grid__bar-content h2, .product-grid__bar-heading h2, .product-grid__mobile-sticky-title h2) {
+  font-size: var(--dien-section-heading-size, 18px) !important;
+}
+
+body#california-arts .home-hero {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }

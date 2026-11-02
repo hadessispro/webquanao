@@ -484,6 +484,7 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
           headingSize?: number
           subheadingSize?: number
           bodySize?: number
+          sectionHeadingSize?: number
           lineHeight?: number
           letterSpacing?: number
         }
@@ -572,6 +573,12 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
           DEFAULT_DESIGN_SYSTEM.typography.bodySize,
           12,
           24,
+        ),
+        sectionHeadingSize: clampNumber(
+          typography?.sectionHeadingSize,
+          DEFAULT_DESIGN_SYSTEM.typography.sectionHeadingSize || 18,
+          12,
+          48,
         ),
         lineHeight: clampNumber(
           typography?.lineHeight,

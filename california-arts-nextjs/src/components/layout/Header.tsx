@@ -443,15 +443,18 @@ export default function Header({ header }: HeaderProps) {
 
   useEffect(() => {
     let frameId = 0
-    let settleFrameId = 0
-    let settleTimerId = 0
-    let lastHeaderHeight = -1
     let lastScrolledState = false
 
-    const updateHeaderState = () => {
+    const updateHeaderMetrics = () => {
+      const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
+      const height = headerEl ? Math.round(headerEl.getBoundingClientRect().height) : 58
+      document.documentElement.style.setProperty('--header-stack-height', `${height || 58}px`)
+    }
+
+    const updateHeaderScroll = () => {
       frameId = 0
       const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
-      
+
       let nextScrolled = false
       if (isHome) {
         nextScrolled = false
@@ -468,38 +471,23 @@ export default function Header({ header }: HeaderProps) {
         lastScrolledState = nextScrolled
         setScrolled(nextScrolled)
       }
-
-      const headerEl = document.querySelector<HTMLElement>('.site-header-stack')
-      let headerHeight = headerEl?.getBoundingClientRect().height || 90
-      if (scrollTop > 18 && !isHome) {
-        headerHeight -= 30
-      }
-      const roundedHeight = Math.round(headerHeight)
-      if (roundedHeight !== lastHeaderHeight) {
-        lastHeaderHeight = roundedHeight
-        document.documentElement.style.setProperty('--header-stack-height', `${roundedHeight}px`)
-      }
     }
 
-    const queueUpdate = () => {
+    const queueScrollUpdate = () => {
       if (frameId) return
-      frameId = window.requestAnimationFrame(updateHeaderState)
+      frameId = window.requestAnimationFrame(updateHeaderScroll)
     }
 
-    updateHeaderState()
-    settleFrameId = window.requestAnimationFrame(updateHeaderState)
-    settleTimerId = window.setTimeout(updateHeaderState, 120)
-    window.addEventListener('scroll', queueUpdate, { passive: true })
-    document.addEventListener('scroll', queueUpdate, { capture: true, passive: true })
-    window.addEventListener('resize', queueUpdate)
+    updateHeaderMetrics()
+    updateHeaderScroll()
+
+    window.addEventListener('scroll', queueScrollUpdate, { passive: true })
+    window.addEventListener('resize', updateHeaderMetrics, { passive: true })
 
     return () => {
       if (frameId) window.cancelAnimationFrame(frameId)
-      if (settleFrameId) window.cancelAnimationFrame(settleFrameId)
-      if (settleTimerId) window.clearTimeout(settleTimerId)
-      window.removeEventListener('scroll', queueUpdate)
-      document.removeEventListener('scroll', queueUpdate, true)
-      window.removeEventListener('resize', queueUpdate)
+      window.removeEventListener('scroll', queueScrollUpdate)
+      window.removeEventListener('resize', updateHeaderMetrics)
       document.documentElement.style.removeProperty('--header-stack-height')
     }
   }, [isHome])
@@ -559,8 +547,8 @@ export default function Header({ header }: HeaderProps) {
     .join(' ')
 
   return (
-    <div className={headerStackClass}>
-      {header.shippingBar.enabled && (
+    <>
+      {header.shippingBar.enabled && !isHome && (
         <div id="shopify-section-announcement-bar" className="shopify-section site-announcement">
           <div className="ge-free-shipping-container">
             <div className="ge-free-shipping-msg">
@@ -576,7 +564,8 @@ export default function Header({ header }: HeaderProps) {
         </div>
       )}
 
-      <div className="header-sticky-shell relative" style={{ position: 'sticky', top: 0, zIndex: 30 }}>
+      <div className={headerStackClass}>
+        <div className="header-sticky-shell relative" style={{ position: 'relative', zIndex: 30 }}>
         <div id="shopify-section-header" className="shopify-section section-header" style={{ position: 'relative', zIndex: 30 }}>
           <style
             dangerouslySetInnerHTML={{
@@ -760,5 +749,6 @@ export default function Header({ header }: HeaderProps) {
         </div>
       </div>
     </div>
+    </>
   )
 }

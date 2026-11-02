@@ -273,6 +273,7 @@ export interface DesignSystemData {
     headingSize: number
     subheadingSize: number
     bodySize: number
+    sectionHeadingSize?: number
     lineHeight: number
     letterSpacing: number
   }
@@ -313,6 +314,7 @@ export const DEFAULT_DESIGN_SYSTEM: DesignSystemData = {
     headingSize: 22,
     subheadingSize: 17,
     bodySize: 16,
+    sectionHeadingSize: 18,
     lineHeight: 1.5,
     letterSpacing: 0,
     textTransform: 'none',

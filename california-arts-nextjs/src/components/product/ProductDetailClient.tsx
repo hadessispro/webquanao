@@ -722,17 +722,6 @@ export default function ProductDetailClient({
     setMobileIdx(prevIdx);
   };
 
-  const handleMobileGalleryScroll = () => {
-    const gallery = mobileGalleryRef.current;
-    if (!gallery || gallery.clientWidth === 0 || mediaItems.length <= 1) return;
-
-    const slideWidth = gallery.clientWidth;
-    const currentIdx = Math.round(gallery.scrollLeft / slideWidth);
-    const clamped = Math.max(0, Math.min(mediaItems.length - 1, currentIdx));
-    if (clamped !== mobileIdx) {
-      setMobileIdx(clamped);
-    }
-  };
 
   const handleSuggestionsPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse" || event.button !== 0) return;
@@ -889,7 +878,6 @@ export default function ProductDetailClient({
             <div className="product-detail__mobile-frame">
               <div
                 className="product-detail__mobile-track"
-                onScroll={handleMobileGalleryScroll}
                 ref={mobileGalleryRef}
               >
                 {mediaItems.map((item, index) => (
