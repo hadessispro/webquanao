@@ -262,6 +262,7 @@ async function run() {
       { name: 'design_system_typography_ui_bold_font_id', ddl: 'design_system_typography_ui_bold_font_id INTEGER' },
       { name: 'design_system_typography_ui_italic_font_id', ddl: 'design_system_typography_ui_italic_font_id INTEGER' },
       { name: 'design_system_typography_text_transform', ddl: "design_system_typography_text_transform TEXT DEFAULT 'none'" },
+      { name: 'design_system_typography_section_heading_size', ddl: 'design_system_typography_section_heading_size NUMERIC DEFAULT 18' },
     ],
     product_collections_view_all_sections: [
       { name: 'collection_id', ddl: 'collection_id INTEGER' },

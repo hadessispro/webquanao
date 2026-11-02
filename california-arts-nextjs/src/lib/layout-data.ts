@@ -621,7 +621,8 @@ export async function getDesignSystemData(): Promise<DesignSystemData & { allFon
       },
       allFonts,
     }
-    } catch {
+    } catch (err) {
+      console.error('[getDesignSystemData] Failed to load site settings:', err)
       return DEFAULT_DESIGN_SYSTEM
     }
   })
@@ -905,7 +906,8 @@ export async function getHomeHeroData(): Promise<HomeHeroData> {
       imageOpacity: hero.imageOpacity ?? DEFAULT_HOME_HERO.imageOpacity ?? 0.7,
       flipHorizontal: hero.flipHorizontal ?? false,
     }
-  } catch {
+  } catch (err) {
+    console.error('[getHomeHeroData] Failed to load site settings:', err)
     return DEFAULT_HOME_HERO
   }
 })
